@@ -81,7 +81,7 @@ export const categories = [
     name: "Pasabocas",
     slug: "pasabocas",
     subcategories: ["Papas", "Frutos Secos", "Mixtos", "Dulces"],
-    image: "https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=400&h=300&fit=crop",
+    image: "/images/pasabocas-category.png",
   },
   {
     name: "Juegos de Mesa",
