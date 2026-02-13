@@ -58,7 +58,7 @@ function CategoryCard({ cat, index }: { cat: (typeof categories)[number]; index:
 export default function CategoryGrid() {
   return (
     <section className="pt-16 md:pt-20 pb-10 md:pb-14 bg-brand-black">
-      <div className="w-full px-4 sm:px-6 lg:px-10">
+      <div className="w-full flex flex-col items-center">
         <div className="text-center mb-12">
           <p className="text-brand-gold text-sm md:text-base uppercase tracking-[0.25em] mb-3">
             Nuestras categorias
@@ -68,7 +68,7 @@ export default function CategoryGrid() {
           </h2>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-5">
+        <div className="w-[90%] max-w-[1300px] grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4">
           {categories.map((cat, i) => (
             <CategoryCard key={cat.slug} cat={cat} index={i} />
           ))}
