@@ -59,7 +59,7 @@ export default function CategoryGrid() {
   return (
     <section className="pt-16 md:pt-20 pb-10 md:pb-14 bg-brand-black">
       <div className="w-full flex flex-col items-center">
-        <div className="text-center mb-12">
+        <div className="text-center mb-16">
           <p className="text-brand-gold text-sm md:text-base uppercase tracking-[0.25em] mb-3">
             Nuestras categorias
           </p>
