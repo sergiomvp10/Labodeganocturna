@@ -48,11 +48,12 @@ export default function FloatingSidebar() {
           <Search size={22} />
         </button>
 
-        <button
+        <Link
+          href="/admin"
           className="w-12 h-12 flex items-center justify-center rounded-xl text-brand-muted hover:text-brand-gold hover:bg-brand-gold/10 transition-all cursor-pointer"
         >
           <User size={22} />
-        </button>
+        </Link>
       </div>
 
       {showMenu && (
