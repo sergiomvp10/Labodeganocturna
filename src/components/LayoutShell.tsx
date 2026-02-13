@@ -10,6 +10,7 @@ import AgeVerification from "@/components/AgeVerification";
 import PromoBanner from "@/components/PromoBanner";
 import FloatingSidebar from "@/components/FloatingSidebar";
 import { AuthProvider } from "@/context/AuthContext";
+import ProductPageClient from "@/app/producto/[id]/ProductPageClient";
 
 import AdminLoginPage from "@/app/admin/page";
 import ProductosPage from "@/app/admin/productos/page";
@@ -178,6 +179,9 @@ export default function LayoutShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith("/admin");
 
+  const productMatch = pathname?.match(/^\/producto\/(\d+)/);
+  const productId = productMatch ? productMatch[1] : null;
+
   if (isAdmin) {
     return <AdminPanel />;
   }
@@ -187,7 +191,9 @@ export default function LayoutShell({ children }: { children: ReactNode }) {
       <AgeVerification />
       <Header />
       <FloatingSidebar />
-      <main className="min-h-screen">{children}</main>
+      <main className="min-h-screen">
+        {productId ? <ProductPageClient id={productId} /> : children}
+      </main>
       <Footer />
       <PromoBanner />
       <div className="h-10" />
