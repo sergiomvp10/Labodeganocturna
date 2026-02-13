@@ -33,7 +33,7 @@ export const categories = [
     name: "Aguardiente",
     slug: "aguardiente",
     subcategories: ["Sin Azúcar", "Tradicional"],
-    image: "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=400&h=300&fit=crop",
+    image: "/images/aguardiente-category.png",
   },
   {
     name: "Ron",
