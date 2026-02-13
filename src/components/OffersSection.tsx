@@ -1,6 +1,6 @@
 "use client";
 
-import { Product } from "@/data/products";
+import { Product, products as staticProducts } from "@/data/products";
 import ProductCard from "./ProductCard";
 import { useEffect, useState } from "react";
 import { api, ProductAPI } from "@/lib/api";
@@ -9,11 +9,15 @@ function toProduct(p: ProductAPI): Product {
   return { ...p, originalPrice: p.originalPrice ?? undefined, discount: p.discount ?? undefined };
 }
 
+const staticOffers = staticProducts.filter((p) => p.originalPrice !== undefined);
+
 export default function OffersSection() {
-  const [offers, setOffers] = useState<Product[]>([]);
+  const [offers, setOffers] = useState<Product[]>(staticOffers);
 
   useEffect(() => {
-    api.storefront.offers().then((data) => setOffers(data.map(toProduct))).catch(() => {});
+    api.storefront.offers().then((data) => {
+      if (data.length > 0) setOffers(data.map(toProduct));
+    }).catch(() => {});
   }, []);
 
   if (offers.length === 0) return null;

@@ -1,6 +1,6 @@
 "use client";
 
-import { Product } from "@/data/products";
+import { Product, products as staticProducts } from "@/data/products";
 import ProductCard from "./ProductCard";
 import { useState, useEffect } from "react";
 import { api, ProductAPI } from "@/lib/api";
@@ -9,12 +9,16 @@ function toProduct(p: ProductAPI): Product {
   return { ...p, originalPrice: p.originalPrice ?? undefined, discount: p.discount ?? undefined };
 }
 
+const staticFeatured = staticProducts.filter((p) => p.featured);
+
 export default function FeaturedProducts() {
   const [paused, setPaused] = useState(false);
-  const [featured, setFeatured] = useState<Product[]>([]);
+  const [featured, setFeatured] = useState<Product[]>(staticFeatured);
 
   useEffect(() => {
-    api.storefront.featured().then((data) => setFeatured(data.map(toProduct))).catch(() => {});
+    api.storefront.featured().then((data) => {
+      if (data.length > 0) setFeatured(data.map(toProduct));
+    }).catch(() => {});
   }, []);
 
   if (featured.length === 0) return null;
