@@ -20,19 +20,16 @@ export default function CityModal() {
 
   return (
     <div className="fixed inset-0 z-[150] flex items-center justify-center bg-brand-black/95 backdrop-blur-sm">
-      <div className="w-full max-w-2xl mx-auto px-6 relative">
-        <div className="text-center mb-10">
+      <div className="w-full max-w-4xl mx-auto px-6 relative">
+        <div className="flex flex-col items-center text-center mb-10">
           <img
             src="/logo.png"
             alt="La Bodega Nocturna 23"
-            className="h-24 md:h-32 w-auto mx-auto mb-6"
+            className="h-28 md:h-36 w-auto mb-6"
           />
-          <h2 className="text-2xl md:text-3xl font-bold text-brand-text mb-2">
+          <h2 className="text-2xl md:text-3xl font-bold text-brand-text">
             Selecciona tu ciudad
           </h2>
-          <p className="text-brand-muted text-sm">
-            Escoge la ciudad donde deseas recibir tu pedido
-          </p>
         </div>
 
         {hasSelectedCity && (
