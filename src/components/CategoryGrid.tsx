@@ -56,7 +56,7 @@ function CategoryCard({ cat, index }: { cat: (typeof categories)[number]; index:
 
 export default function CategoryGrid() {
   return (
-    <section className="pt-16 md:pt-20 pb-32 md:pb-40 bg-brand-black">
+    <section className="pt-16 md:pt-20 bg-brand-black" style={{ paddingBottom: "12rem" }}>
       <div className="w-full flex flex-col items-center">
         <div className="text-center" style={{ marginBottom: "5rem" }}>
           <p className="text-brand-gold text-sm md:text-base uppercase tracking-[0.25em] mb-3">
