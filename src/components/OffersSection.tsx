@@ -27,7 +27,7 @@ export default function OffersSection() {
   const speeds = [0.3, -0.2, 0.4, -0.15, 0.25, -0.35, 0.2, -0.25, 0.35, -0.3, 0.15, -0.4];
 
   return (
-    <section ref={sectionRef} className="py-10 md:py-14 bg-brand-black overflow-hidden">
+    <section ref={sectionRef} className="pt-10 md:pt-14 bg-brand-black overflow-hidden" style={{ paddingBottom: "12rem" }}>
       <div className="w-full px-4 sm:px-6 lg:px-10">
         <div className="text-center" style={{ marginBottom: "5rem" }}>
           <p className="text-brand-gold text-sm md:text-base uppercase tracking-[0.25em] mb-3">
