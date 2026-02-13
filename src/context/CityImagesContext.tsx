@@ -9,7 +9,7 @@ interface CityImageData {
 const DEFAULT_IMAGES: CityImageData = {
   Duitama: "/images/duitama.jpg",
   Tunja: "https://picsum.photos/seed/tunja/800/400",
-  Sogamoso: "https://picsum.photos/seed/sogamoso/800/400",
+  Sogamoso: "/images/sogamoso.jpg",
 };
 
 interface CityImagesContextType {
