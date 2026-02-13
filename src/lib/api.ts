@@ -53,7 +53,10 @@ export const api = {
     request<{ ok: boolean }>(`/api/auth/users/${id}`, { method: "DELETE" }),
 
   getProducts: () =>
-    request<ProductAPI[]>("/api/products"),
+    request<ProductAPI[]>("/api/products/lite"),
+
+  getProduct: (id: number) =>
+    request<ProductAPI>(`/api/products/${id}`),
 
   createProduct: (p: ProductAPI) =>
     request<{ id: number; ok: boolean }>("/api/products", {

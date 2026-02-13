@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Product, categories } from "@/data/products";
-import { Plus, Pencil, Trash2, Search, X, Upload, ChevronDown } from "lucide-react";
+import { Plus, Pencil, Trash2, Search, X, Upload, ChevronDown, Loader2 } from "lucide-react";
 import { api, ProductAPI } from "@/lib/api";
 
 function toProduct(p: ProductAPI): Product {
@@ -16,12 +16,16 @@ export default function ProductosPage() {
   const [showForm, setShowForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState("");
 
   const loadProducts = async () => {
     try {
+      setError("");
       const data = await api.getProducts();
       setProducts(data.map(toProduct));
-    } catch {}
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Error al cargar productos");
+    }
     setLoaded(true);
   };
 
@@ -78,7 +82,19 @@ export default function ProductosPage() {
   const formatPrice = (price: number) =>
     new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(price);
 
-  if (!loaded) return null;
+  if (!loaded) return (
+    <div className="flex flex-col items-center justify-center py-20 gap-3">
+      <Loader2 size={32} className="text-[#c9a84c] animate-spin" />
+      <p className="text-[#888] text-sm">Cargando productos...</p>
+    </div>
+  );
+
+  if (error) return (
+    <div className="flex flex-col items-center justify-center py-20 gap-3">
+      <p className="text-red-400 text-sm">{error}</p>
+      <button onClick={loadProducts} className="text-[#c9a84c] text-sm hover:underline cursor-pointer">Reintentar</button>
+    </div>
+  );
 
   return (
     <div className="space-y-4">
