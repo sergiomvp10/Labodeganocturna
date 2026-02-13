@@ -3,6 +3,7 @@
 import { useRef, useState, useCallback, useSyncExternalStore } from "react";
 import { ChevronRight, Check, MapPin } from "lucide-react";
 import { useCity } from "@/context/CityContext";
+import { useCityImages } from "@/context/CityImagesContext";
 import { cities } from "@/data/products";
 
 function getSnapshot() {
@@ -26,11 +27,11 @@ type Step = "age" | "city";
 export default function AgeVerification() {
   const onboardingDone = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   const { setSelectedCity } = useCity();
+  const { cityImages } = useCityImages();
   const [step, setStep] = useState<Step>("age");
   const [dragging, setDragging] = useState(false);
   const [offsetX, setOffsetX] = useState(0);
   const [sliderCompleted, setSliderCompleted] = useState(false);
-  const [hoveredCity, setHoveredCity] = useState<string | null>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const startXRef = useRef(0);
 
@@ -162,7 +163,7 @@ export default function AgeVerification() {
                 Escoge tu ciudad
               </p>
             </div>
-            <p className="text-brand-muted text-sm mb-6">
+            <p className="text-brand-muted text-sm mb-5">
               Entregamos a domicilio en las siguientes ciudades:
             </p>
 
@@ -171,44 +172,29 @@ export default function AgeVerification() {
                 <button
                   key={city}
                   onClick={() => handleCitySelect(city)}
-                  onMouseEnter={() => setHoveredCity(city)}
-                  onMouseLeave={() => setHoveredCity(null)}
-                  className="w-full flex items-center justify-between px-5 py-4 rounded-xl border-2 transition-all duration-200 cursor-pointer"
-                  style={{
-                    borderColor: hoveredCity === city ? "#a31621" : "#e5e7eb",
-                    backgroundColor: hoveredCity === city ? "#fef2f2" : "#ffffff",
-                    transform: hoveredCity === city ? "scale(1.02)" : "scale(1)",
-                  }}
+                  className="w-full block rounded-xl overflow-hidden relative cursor-pointer group"
+                  style={{ aspectRatio: "16/7" }}
                 >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className="w-10 h-10 rounded-full flex items-center justify-center"
-                      style={{
-                        backgroundColor: hoveredCity === city ? "#a31621" : "#f3f4f6",
-                      }}
-                    >
-                      <MapPin
-                        size={20}
-                        style={{
-                          color: hoveredCity === city ? "#ffffff" : "#6b7280",
-                        }}
-                      />
-                    </div>
-                    <span className="font-semibold text-brand-text text-base">
-                      {city}
-                    </span>
-                  </div>
-                  <ChevronRight
-                    size={20}
-                    style={{
-                      color: hoveredCity === city ? "#a31621" : "#9ca3af",
-                    }}
+                  <img
+                    src={cityImages[city]}
+                    alt={city}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent transition-opacity duration-300 group-hover:from-black/80" />
+                  <div className="absolute bottom-0 left-0 right-0 p-4 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <MapPin size={18} className="text-white" />
+                      <span className="text-white font-bold text-lg tracking-wide">
+                        {city.toUpperCase()}
+                      </span>
+                    </div>
+                    <ChevronRight size={22} className="text-white opacity-70 group-hover:opacity-100 transition-opacity" />
+                  </div>
                 </button>
               ))}
             </div>
 
-            <p className="text-xs text-gray-400 mt-5">
+            <p className="text-xs text-gray-400 mt-4">
               Servicio a domicilio 23 horas al día
             </p>
           </>
