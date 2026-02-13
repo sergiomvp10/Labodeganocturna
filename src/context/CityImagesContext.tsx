@@ -8,7 +8,7 @@ interface CityImageData {
 
 const DEFAULT_IMAGES: CityImageData = {
   Duitama: "/images/duitama.jpg",
-  Tunja: "https://picsum.photos/seed/tunja/800/400",
+  Tunja: "/images/tunja.jpg",
   Sogamoso: "/images/sogamoso.jpg",
 };
 
