@@ -45,9 +45,9 @@ function CategoryCard({ cat, index }: { cat: (typeof categories)[number]; index:
             "https://placehold.co/400x400/111/c9a84c?text=" + encodeURIComponent(cat.name);
         }}
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-      <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
-        <span className="text-sm md:text-base font-bold text-white drop-shadow-lg">
+      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+      <div className="absolute inset-0 flex items-end justify-center pb-4 md:pb-5">
+        <span className="text-base md:text-lg font-bold text-[#b91c1c] drop-shadow-lg tracking-wide" style={{ fontFamily: "'Times New Roman', 'Georgia', serif" }}>
           {cat.name}
         </span>
       </div>
