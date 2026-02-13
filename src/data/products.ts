@@ -21,7 +21,7 @@ export const categories = [
     name: "Whisky",
     slug: "whisky",
     subcategories: ["Escocés", "Irlandés", "Bourbon", "Japonés"],
-    image: "https://images.unsplash.com/photo-1527281400683-1aae777175f8?w=400&h=300&fit=crop",
+    image: "/images/whisky-category.png",
   },
   {
     name: "Tequila",

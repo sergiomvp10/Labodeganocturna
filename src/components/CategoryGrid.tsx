@@ -29,28 +29,28 @@ function CategoryCard({ cat, index }: { cat: (typeof categories)[number]; index:
       ref={ref}
       key={cat.slug}
       href={`/#${cat.slug}`}
-      className="group relative aspect-square rounded-2xl overflow-hidden border-2 border-brand-gold/20 hover:border-brand-gold transition-all duration-700 ease-out"
+      className="group flex flex-col items-center transition-all duration-700 ease-out"
       style={{
         opacity: visible ? 1 : 0,
         transform: visible ? "translateX(0)" : "translateX(80px)",
         transitionDelay: `${index * 80}ms`,
       }}
     >
-      <img
-        src={cat.image}
-        alt={cat.name}
-        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-        onError={(e) => {
-          (e.target as HTMLImageElement).src =
-            "https://placehold.co/400x400/111/c9a84c?text=" + encodeURIComponent(cat.name);
-        }}
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
-      <div className="absolute inset-0 flex items-end justify-center pb-4 md:pb-5">
-        <span className="text-base md:text-lg font-bold text-white drop-shadow-lg tracking-wide" style={{ fontFamily: "'Times New Roman', 'Georgia', serif" }}>
-          {cat.name}
-        </span>
+      <div className="relative w-full aspect-square rounded-full overflow-hidden border-2 border-brand-gold/20 group-hover:border-brand-gold transition-all duration-300">
+        <img
+          src={cat.image}
+          alt={cat.name}
+          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+          onError={(e) => {
+            (e.target as HTMLImageElement).src =
+              "https://placehold.co/400x400/111/c9a84c?text=" + encodeURIComponent(cat.name);
+          }}
+        />
+        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
       </div>
+      <span className="mt-3 text-base md:text-lg font-bold text-white tracking-wide text-center" style={{ fontFamily: "'Times New Roman', 'Georgia', serif" }}>
+        {cat.name}
+      </span>
     </Link>
   );
 }
