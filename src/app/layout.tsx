@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import CartSidebar from "@/components/CartSidebar";
 import CityModal from "@/components/CityModal";
 import AgeVerification from "@/components/AgeVerification";
+import PromoBanner from "@/components/PromoBanner";
 
 export const metadata: Metadata = {
   title: "La Bodega Nocturna | Licorería a Domicilio 23 Horas",
@@ -29,6 +30,8 @@ export default function RootLayout({
           <Header />
           <main className="min-h-screen">{children}</main>
           <Footer />
+          <PromoBanner />
+          <div className="h-10" />
           <CartSidebar />
           <CityModal />
         </Providers>
