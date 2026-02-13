@@ -3,11 +3,12 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 
 const THUMB_SIZE = 52;
+const THUMB_PADDING = 4;
 
 export default function AgeVerification() {
   const [verified, setVerified] = useState(false);
   const [hidden, setHidden] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const [thumbLeft, setThumbLeft] = useState(THUMB_PADDING);
   const [completed, setCompleted] = useState(false);
   const trackRef = useRef<HTMLDivElement>(null);
   const dragging = useRef(false);
@@ -22,27 +23,39 @@ export default function AgeVerification() {
     }
   }, []);
 
-  const getProgress = useCallback((clientX: number) => {
+  const getThumbLeft = useCallback((clientX: number): number => {
+    if (!trackRef.current) return THUMB_PADDING;
+    const rect = trackRef.current.getBoundingClientRect();
+    const minLeft = THUMB_PADDING;
+    const maxLeft = rect.width - THUMB_SIZE - THUMB_PADDING;
+    const raw = clientX - rect.left - THUMB_SIZE / 2;
+    return Math.min(Math.max(raw, minLeft), maxLeft);
+  }, []);
+
+  const getProgress = useCallback((left: number): number => {
     if (!trackRef.current) return 0;
     const rect = trackRef.current.getBoundingClientRect();
-    const maxX = rect.width - THUMB_SIZE;
-    const x = Math.min(Math.max(clientX - rect.left - THUMB_SIZE / 2, 0), maxX);
-    return x / maxX;
+    const maxLeft = rect.width - THUMB_SIZE - THUMB_PADDING;
+    return (left - THUMB_PADDING) / (maxLeft - THUMB_PADDING);
   }, []);
 
   const handleStart = useCallback((clientX: number) => {
     if (completed) return;
     dragging.current = true;
-    setProgress(getProgress(clientX));
-  }, [completed, getProgress]);
+    setThumbLeft(getThumbLeft(clientX));
+  }, [completed, getThumbLeft]);
 
   const handleMove = useCallback((clientX: number) => {
     if (!dragging.current || completed) return;
-    const p = getProgress(clientX);
-    setProgress(p);
-    if (p >= 0.85) {
+    const left = getThumbLeft(clientX);
+    setThumbLeft(left);
+    const p = getProgress(left);
+    if (p >= 0.9) {
       dragging.current = false;
-      setProgress(1);
+      if (trackRef.current) {
+        const rect = trackRef.current.getBoundingClientRect();
+        setThumbLeft(rect.width - THUMB_SIZE - THUMB_PADDING);
+      }
       setCompleted(true);
       setTimeout(() => {
         sessionStorage.setItem("age-verified", "true");
@@ -50,12 +63,12 @@ export default function AgeVerification() {
         setTimeout(() => setHidden(true), 500);
       }, 800);
     }
-  }, [completed, getProgress]);
+  }, [completed, getThumbLeft, getProgress]);
 
   const handleEnd = useCallback(() => {
     if (!dragging.current || completed) return;
     dragging.current = false;
-    setProgress(0);
+    setThumbLeft(THUMB_PADDING);
   }, [completed]);
 
   useEffect(() => {
@@ -65,7 +78,7 @@ export default function AgeVerification() {
     };
     const onUp = () => handleEnd();
     window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("touchmove", onTouchMove);
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
     window.addEventListener("mouseup", onUp);
     window.addEventListener("touchend", onUp);
     return () => {
@@ -75,6 +88,10 @@ export default function AgeVerification() {
       window.removeEventListener("touchend", onUp);
     };
   }, [handleMove, handleEnd]);
+
+  const progressWidth = trackRef.current
+    ? (thumbLeft - THUMB_PADDING) / (trackRef.current.getBoundingClientRect().width - THUMB_SIZE - THUMB_PADDING * 2) * 100
+    : 0;
 
   if (hidden) return null;
 
@@ -97,11 +114,11 @@ export default function AgeVerification() {
 
         <div
           ref={trackRef}
-          className="relative w-full h-14 rounded-full overflow-hidden border border-brand-gold/30 bg-brand-dark2"
+          className="relative w-full h-14 rounded-full overflow-hidden border border-brand-gold/30 bg-brand-dark2 touch-none"
         >
           <div
-            className="absolute inset-y-0 left-0 bg-gradient-to-r from-brand-gold/20 to-brand-gold/40 rounded-full transition-none"
-            style={{ width: `${progress * 100}%` }}
+            className="absolute inset-y-0 left-0 bg-gradient-to-r from-brand-gold/20 to-brand-gold/40 rounded-full"
+            style={{ width: `${Math.max(progressWidth, 0)}%` }}
           />
           {!completed && (
             <span className="absolute inset-0 flex items-center justify-center text-brand-muted text-sm pointer-events-none select-none">
@@ -122,10 +139,12 @@ export default function AgeVerification() {
             style={{
               width: THUMB_SIZE,
               height: THUMB_SIZE - 8,
-              left: `calc(${progress * 100}% * (1 - ${THUMB_SIZE}px / 100%) + 4px)`,
-              ...(completed ? { left: `calc(100% - ${THUMB_SIZE + 4}px)` } : {}),
+              left: thumbLeft,
             }}
-            onMouseDown={(e) => handleStart(e.clientX)}
+            onMouseDown={(e) => {
+              e.preventDefault();
+              handleStart(e.clientX);
+            }}
             onTouchStart={(e) => {
               if (e.touches[0]) handleStart(e.touches[0].clientX);
             }}
