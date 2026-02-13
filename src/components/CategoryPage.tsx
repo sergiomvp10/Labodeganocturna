@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Product, categories } from "@/data/products";
+import { Product, products as staticProducts, categories } from "@/data/products";
 import { api, ProductAPI } from "@/lib/api";
 import ProductCard from "./ProductCard";
 import Link from "next/link";
@@ -11,20 +11,23 @@ function toProduct(p: ProductAPI): Product {
   return { ...p, originalPrice: p.originalPrice ?? undefined, discount: p.discount ?? undefined };
 }
 
+function filterByCategory(list: Product[], name: string): Product[] {
+  return list.filter((p) => p.category.toLowerCase() === name.toLowerCase());
+}
+
 export default function CategoryPage({ slug }: { slug: string }) {
   const category = categories.find((c) => c.slug === slug);
   const categoryName = category?.name || slug;
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>(() =>
+    filterByCategory(staticProducts, categoryName)
+  );
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.getProducts()
+    api.storefront.products()
       .then((data) => {
         const all = data.map(toProduct);
-        const filtered = all.filter(
-          (p) => p.category.toLowerCase() === categoryName.toLowerCase()
-        );
-        setProducts(filtered);
+        setProducts(filterByCategory(all, categoryName));
       })
       .catch(() => {})
       .finally(() => setLoading(false));
