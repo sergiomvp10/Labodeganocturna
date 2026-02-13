@@ -8,18 +8,10 @@ import { Star, ShoppingCart, Minus, Plus, ArrowLeft, Truck, Clock, Shield } from
 import Link from "next/link";
 
 export default function ProductPageClient({ id }: { id: string }) {
-  const { products: allProducts, ready } = useProducts();
+  const { products: allProducts } = useProducts();
   const product = allProducts.find((p) => p.id === parseInt(id)) || null;
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
-
-  if (!ready) {
-    return (
-      <div className="bg-brand-black min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-brand-muted">Cargando...</div>
-      </div>
-    );
-  }
 
   if (!product) {
     return (

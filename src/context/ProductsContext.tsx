@@ -38,20 +38,21 @@ const ProductsContext = createContext<ProductsContextType>({
 });
 
 export function ProductsProvider({ children }: { children: ReactNode }) {
-  const cached = getCached();
-  const [products, setProducts] = useState<Product[]>(cached || []);
-  const [ready, setReady] = useState(!!cached);
+  const [products, setProducts] = useState<Product[]>(staticProducts);
+  const [ready, setReady] = useState(true);
 
   useEffect(() => {
+    const cached = getCached();
+    if (cached && cached.length > 0) {
+      setProducts(cached);
+    }
     api.storefront.products()
       .then((data) => {
         const fresh = data.map(toProduct);
         setProducts(fresh);
         setCache(fresh);
       })
-      .catch(() => {
-        if (!cached) setProducts(staticProducts);
-      })
+      .catch(() => {})
       .finally(() => setReady(true));
   }, []);
 
