@@ -29,14 +29,14 @@ export default function HeroBanner() {
   const next = () => setCurrent((c) => (c + 1) % slides.length);
 
   return (
-    <section className="w-full px-6 sm:px-10 lg:px-16 py-4 bg-brand-black">
-      <div className="relative w-full overflow-hidden rounded-2xl">
+    <section className="w-full px-10 sm:px-16 lg:px-24 py-5 bg-brand-black">
+      <div className="relative w-full max-h-[420px] overflow-hidden rounded-2xl">
         <div
           className="flex transition-transform duration-700 ease-in-out"
           style={{ transform: `translateX(-${current * 100}%)` }}
         >
           {slides.map((slide, i) => (
-            <div key={i} className="min-w-full relative" style={{ aspectRatio: "2.8/1" }}>
+            <div key={i} className="min-w-full relative h-[280px] sm:h-[340px] lg:h-[400px]">
               <div
                 className="absolute inset-0 bg-cover bg-center"
                 style={{ backgroundImage: `url(${slide.image})` }}
