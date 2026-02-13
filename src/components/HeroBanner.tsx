@@ -29,8 +29,8 @@ export default function HeroBanner() {
   const next = () => setCurrent((c) => (c + 1) % slides.length);
 
   return (
-    <section className="w-full py-5 bg-brand-black">
-      <div className="mx-auto" style={{ width: "80%", maxWidth: "1200px" }}>
+    <section className="w-full py-5 bg-brand-black flex justify-center">
+      <div className="w-[78%] max-w-[1200px]">
         <div className="relative w-full overflow-hidden rounded-2xl">
           <div
             className="flex transition-transform duration-700 ease-in-out"
