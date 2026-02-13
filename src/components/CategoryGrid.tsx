@@ -1,7 +1,59 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { categories } from "@/data/products";
 import Link from "next/link";
+
+function CategoryCard({ cat, index }: { cat: (typeof categories)[number]; index: number }) {
+  const ref = useRef<HTMLAnchorElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.unobserve(el);
+        }
+      },
+      { threshold: 0.15 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <Link
+      ref={ref}
+      key={cat.slug}
+      href={`/#${cat.slug}`}
+      className="group relative aspect-square rounded-2xl overflow-hidden border-2 border-brand-gold/20 hover:border-brand-gold transition-all duration-700 ease-out"
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateX(0)" : "translateX(80px)",
+        transitionDelay: `${index * 80}ms`,
+      }}
+    >
+      <img
+        src={cat.image}
+        alt={cat.name}
+        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+        onError={(e) => {
+          (e.target as HTMLImageElement).src =
+            "https://placehold.co/400x400/111/c9a84c?text=" + encodeURIComponent(cat.name);
+        }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
+        <span className="text-sm md:text-base font-bold text-white drop-shadow-lg">
+          {cat.name}
+        </span>
+      </div>
+    </Link>
+  );
+}
 
 export default function CategoryGrid() {
   return (
@@ -17,28 +69,8 @@ export default function CategoryGrid() {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-5">
-          {categories.map((cat) => (
-            <Link
-              key={cat.slug}
-              href={`/#${cat.slug}`}
-              className="group relative aspect-square rounded-2xl overflow-hidden border-2 border-brand-gold/20 hover:border-brand-gold transition-all duration-300"
-            >
-              <img
-                src={cat.image}
-                alt={cat.name}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src =
-                    "https://placehold.co/400x400/111/c9a84c?text=" + encodeURIComponent(cat.name);
-                }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
-                <span className="text-sm md:text-base font-bold text-white drop-shadow-lg">
-                  {cat.name}
-                </span>
-              </div>
-            </Link>
+          {categories.map((cat, i) => (
+            <CategoryCard key={cat.slug} cat={cat} index={i} />
           ))}
         </div>
       </div>
