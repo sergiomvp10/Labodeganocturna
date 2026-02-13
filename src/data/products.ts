@@ -27,7 +27,7 @@ export const categories = [
     name: "Tequila",
     slug: "tequila",
     subcategories: ["Blanco", "Reposado", "Añejo"],
-    image: "https://images.unsplash.com/photo-1585553616435-2dc0a54e271d?w=400&h=300&fit=crop",
+    image: "/images/tequila-category.png",
   },
   {
     name: "Aguardiente",
