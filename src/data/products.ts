@@ -63,7 +63,7 @@ export const categories = [
     name: "Especiales",
     slug: "especiales",
     subcategories: ["Vodka", "Ginebra", "Cremas", "Brandy"],
-    image: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=400&h=300&fit=crop",
+    image: "/images/especiales-category.png",
   },
   {
     name: "No Alcohólicas",
