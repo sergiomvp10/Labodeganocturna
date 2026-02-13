@@ -2,27 +2,61 @@
 
 import { products } from "@/data/products";
 import ProductCard from "./ProductCard";
+import { useRef } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function FeaturedProducts() {
-  const featured = products.filter((p) => p.featured);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const featured = products.filter((p) => p.featured).slice(0, 12);
+
+  const scroll = (dir: "left" | "right") => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({
+        left: dir === "left" ? -300 : 300,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  if (featured.length === 0) return null;
 
   return (
-    <section className="py-12 bg-brand-dark2">
-      <div className="max-w-7xl mx-auto px-6 md:px-10">
+    <section className="py-10 md:py-14 bg-brand-dark">
+      <div className="w-full px-4 sm:px-8 lg:px-12">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <div className="w-10 h-0.5 bg-brand-gold mb-3" />
-            <h2 className="text-2xl md:text-3xl font-bold text-brand-text">
-              Productos Destacados
-            </h2>
-            <p className="text-brand-muted text-sm mt-1 tracking-wide">
-              Los más vendidos de la semana
+            <p className="text-brand-gold text-xs uppercase tracking-[0.2em] mb-2">
+              Lo más vendido
             </p>
+            <h2 className="text-2xl md:text-3xl font-bold text-brand-text">
+              Productos destacados
+            </h2>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => scroll("left")}
+              className="bg-brand-dark2 border border-brand-gold/20 text-brand-gold p-2 rounded-full hover:bg-brand-gold hover:text-brand-black transition-colors cursor-pointer"
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <button
+              onClick={() => scroll("right")}
+              className="bg-brand-dark2 border border-brand-gold/20 text-brand-gold p-2 rounded-full hover:bg-brand-gold hover:text-brand-black transition-colors cursor-pointer"
+            >
+              <ChevronRight size={18} />
+            </button>
           </div>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+
+        <div
+          ref={scrollRef}
+          className="flex gap-5 overflow-x-auto pb-4"
+          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        >
           {featured.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <div key={product.id} className="flex-shrink-0 w-56 md:w-64">
+              <ProductCard product={product} />
+            </div>
           ))}
         </div>
       </div>

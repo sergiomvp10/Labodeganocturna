@@ -1,59 +1,77 @@
 "use client";
 
-import { X, MapPin, Check } from "lucide-react";
 import { useCity } from "@/context/CityContext";
+import { useCityImages } from "@/context/CityImagesContext";
+import { X } from "lucide-react";
 import { cities } from "@/data/products";
 
 export default function CityModal() {
-  const { selectedCity, setSelectedCity, isCityModalOpen, setIsCityModalOpen } =
-    useCity();
+  const { selectedCity, setSelectedCity, isCityModalOpen, setIsCityModalOpen, hasSelectedCity } = useCity();
+  const { cityImages } = useCityImages();
 
-  if (!isCityModalOpen) return null;
+  const showModal = isCityModalOpen || !hasSelectedCity;
+
+  if (!showModal) return null;
+
+  const handleSelect = (city: string) => {
+    setSelectedCity(city);
+    setIsCityModalOpen(false);
+  };
 
   return (
-    <>
-      <div
-        className="fixed inset-0 bg-black/60 z-50"
-        onClick={() => setIsCityModalOpen(false)}
-      />
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-brand-dark border border-brand-gold/30 rounded-xl shadow-2xl z-50 w-full max-w-sm p-6">
-        <div className="flex items-center justify-between mb-5">
-          <div className="flex items-center gap-2">
-            <MapPin size={20} className="text-brand-gold" />
-            <h2 className="font-bold text-lg text-brand-text">
-              Selecciona tu Ciudad
-            </h2>
-          </div>
+    <div className="fixed inset-0 z-[150] flex items-center justify-center bg-brand-black/95 backdrop-blur-sm">
+      <div className="w-full max-w-2xl mx-auto px-6 relative">
+        <div className="text-center mb-10">
+          <img
+            src="/logo.png"
+            alt="La Bodega Nocturna 23"
+            className="h-24 md:h-32 w-auto mx-auto mb-6"
+          />
+          <h2 className="text-2xl md:text-3xl font-bold text-brand-text mb-2">
+            Selecciona tu ciudad
+          </h2>
+          <p className="text-brand-muted text-sm">
+            Escoge la ciudad donde deseas recibir tu pedido
+          </p>
+        </div>
+
+        {hasSelectedCity && (
           <button
             onClick={() => setIsCityModalOpen(false)}
-            className="text-brand-muted hover:text-brand-gold transition-colors cursor-pointer"
+            className="absolute top-0 right-6 text-brand-muted hover:text-brand-gold cursor-pointer"
           >
-            <X size={22} />
+            <X size={24} />
           </button>
-        </div>
-        <p className="text-sm text-brand-muted mb-4">
-          Entregamos a domicilio en las siguientes ciudades:
-        </p>
-        <div className="space-y-2">
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {cities.map((city) => (
             <button
               key={city}
-              onClick={() => {
-                setSelectedCity(city);
-                setIsCityModalOpen(false);
-              }}
-              className={`w-full flex items-center justify-between px-4 py-3 rounded-lg border transition-colors cursor-pointer ${
-                selectedCity === city
-                  ? "border-brand-gold bg-brand-gold/10 text-brand-gold"
-                  : "border-brand-gold/20 hover:border-brand-gold/40 hover:bg-white/5 text-brand-text"
+              onClick={() => handleSelect(city)}
+              className={`group relative overflow-hidden rounded-xl cursor-pointer transition-all duration-300 border-2 ${
+                selectedCity === city && hasSelectedCity
+                  ? "border-brand-gold shadow-lg shadow-brand-gold/20"
+                  : "border-brand-gold/10 hover:border-brand-gold/40"
               }`}
             >
-              <span className="font-medium">{city}</span>
-              {selectedCity === city && <Check size={18} className="text-brand-gold" />}
+              <div className="aspect-[4/3] overflow-hidden">
+                <img
+                  src={cityImages[city] || `https://picsum.photos/seed/${city.toLowerCase()}/400/300`}
+                  alt={city}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                />
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 p-5 text-center">
+                <h3 className="text-xl md:text-2xl font-bold text-white tracking-wider uppercase">
+                  {city}
+                </h3>
+              </div>
             </button>
           ))}
         </div>
       </div>
-    </>
+    </div>
   );
 }

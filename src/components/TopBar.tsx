@@ -1,32 +1,27 @@
 "use client";
 
-import { MapPin, Clock, Phone } from "lucide-react";
 import { useCity } from "@/context/CityContext";
+import { Phone, Truck } from "lucide-react";
 
 export default function TopBar() {
-  const { selectedCity, setIsCityModalOpen } = useCity();
+  const { selectedCity } = useCity();
 
   return (
-    <div className="bg-brand-black text-brand-muted text-xs border-b border-brand-gold/20">
-      <div className="max-w-7xl mx-auto px-6 md:px-10 flex items-center justify-between h-9">
-        <div className="flex items-center gap-6">
-          <button
-            onClick={() => setIsCityModalOpen(true)}
-            className="flex items-center gap-1.5 hover:text-brand-gold transition-colors cursor-pointer"
-          >
-            <MapPin size={12} className="text-brand-gold" />
-            <span>Entrega en: <strong className="text-brand-gold">{selectedCity}</strong></span>
-          </button>
-          <div className="hidden md:flex items-center gap-1.5">
-            <Clock size={12} className="text-brand-gold" />
-            <span>Abierto 23 horas al día</span>
-          </div>
+    <div className="bg-brand-black border-b border-brand-gold/10">
+      <div className="w-full px-4 sm:px-8 lg:px-12 py-2 flex items-center justify-between text-[11px] text-brand-muted">
+        <div className="flex items-center gap-4">
+          <span className="flex items-center gap-1">
+            <Truck size={12} className="text-brand-gold" />
+            Domicilios 23 horas
+          </span>
+          <span className="hidden sm:flex items-center gap-1">
+            <Phone size={12} className="text-brand-gold" />
+            +57 300 000 0000
+          </span>
         </div>
-        <div className="flex items-center gap-1.5">
-          <Phone size={12} className="text-brand-gold" />
-          <span className="hidden sm:inline">Línea de pedidos: </span>
-          <strong className="text-brand-gold">300 123 4567</strong>
-        </div>
+        <span className="text-brand-gold font-medium">
+          {selectedCity}
+        </span>
       </div>
     </div>
   );
