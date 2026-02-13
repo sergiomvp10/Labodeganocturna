@@ -21,7 +21,7 @@ export default function CityModal() {
   return (
     <div className="fixed inset-0 z-[150] flex items-center justify-center bg-brand-black/95 backdrop-blur-sm">
       <div className="w-full max-w-4xl mx-auto px-6 relative">
-        <div className="flex flex-col items-center text-center mb-10">
+        <div className="flex flex-col items-center text-center mb-14">
           <img
             src="/logo.png"
             alt="La Bodega Nocturna 23"
