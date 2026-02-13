@@ -7,9 +7,9 @@ interface CityImageData {
 }
 
 const DEFAULT_IMAGES: CityImageData = {
-  Duitama: "https://images.unsplash.com/photo-1611460415343-e5e1c50a3ce3?w=800&h=400&fit=crop&crop=center",
-  Tunja: "https://images.unsplash.com/photo-1585924544007-2c66e2e63cbe?w=800&h=400&fit=crop&crop=center",
-  Sogamoso: "https://images.unsplash.com/photo-1627789197675-86b946f83b6c?w=800&h=400&fit=crop&crop=center",
+  Duitama: "https://picsum.photos/seed/duitama/800/400",
+  Tunja: "https://picsum.photos/seed/tunja/800/400",
+  Sogamoso: "https://picsum.photos/seed/sogamoso/800/400",
 };
 
 interface CityImagesContextType {
