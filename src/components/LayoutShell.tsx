@@ -1,0 +1,197 @@
+"use client";
+
+import { ReactNode, useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import CartSidebar from "@/components/CartSidebar";
+import CityModal from "@/components/CityModal";
+import AgeVerification from "@/components/AgeVerification";
+import PromoBanner from "@/components/PromoBanner";
+import FloatingSidebar from "@/components/FloatingSidebar";
+import { AuthProvider } from "@/context/AuthContext";
+
+import AdminLoginPage from "@/app/admin/page";
+import ProductosPage from "@/app/admin/productos/page";
+import PedidosPage from "@/app/admin/pedidos/page";
+import DestacadosPage from "@/app/admin/destacados/page";
+import ConfiguracionPage from "@/app/admin/configuracion/page";
+import {
+  Package,
+  ShoppingCart,
+  Settings,
+  Star,
+  LogOut,
+  Menu,
+  X,
+  LayoutDashboard,
+} from "lucide-react";
+
+function AdminPanel() {
+  const pathname = usePathname();
+  const [currentUser, setCurrentUser] = useState<{ username: string; role: string } | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("lbn_admin_session");
+    if (stored) {
+      setCurrentUser(JSON.parse(stored));
+    }
+  }, []);
+
+  const p = pathname?.replace(/\/$/, "") || "";
+  const isLoginPage = p === "/admin" || p === "";
+
+  if (isLoginPage && !currentUser) {
+    return (
+      <div className="fixed inset-0 z-[300] bg-[#0a0a0a]">
+        <AuthProvider>
+          <AdminLoginPage />
+        </AuthProvider>
+      </div>
+    );
+  }
+
+  if (!currentUser) {
+    if (typeof window !== "undefined") {
+      window.location.href = "/admin/";
+    }
+    return null;
+  }
+
+  const navItems = [
+    { href: "/admin/productos", label: "Productos", icon: Package },
+    { href: "/admin/pedidos", label: "Pedidos", icon: ShoppingCart },
+    { href: "/admin/destacados", label: "Destacados / Ofertas", icon: Star },
+    { href: "/admin/configuracion", label: "Configuración", icon: Settings },
+  ];
+
+  const handleLogout = () => {
+    localStorage.removeItem("lbn_admin_session");
+    localStorage.removeItem("lbn_token");
+    setCurrentUser(null);
+    window.location.href = "/admin/";
+  };
+
+  const navigate = (href: string) => {
+    window.location.href = href + "/";
+    setSidebarOpen(false);
+  };
+
+  let pageContent: ReactNode = null;
+  if (p === "/admin/productos") pageContent = <ProductosPage />;
+  else if (p === "/admin/pedidos") pageContent = <PedidosPage />;
+  else if (p === "/admin/destacados") pageContent = <DestacadosPage />;
+  else if (p === "/admin/configuracion") pageContent = <ConfiguracionPage />;
+  else pageContent = <ProductosPage />;
+
+  return (
+    <AuthProvider>
+      <div className="fixed inset-0 z-[300] bg-[#0a0a0a] flex">
+        <aside
+          className={`fixed md:static inset-y-0 left-0 z-[310] w-64 bg-[#111] border-r border-[#c9a84c]/20 flex flex-col transition-transform duration-300 ${
+            sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+          }`}
+        >
+          <div className="p-4 border-b border-[#c9a84c]/20 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <img src="/logo.png" alt="Logo" className="h-10 w-auto" />
+              <span className="text-[#c9a84c] font-bold text-sm">Admin</span>
+            </div>
+            <button
+              onClick={() => setSidebarOpen(false)}
+              className="md:hidden text-[#999] hover:text-white cursor-pointer"
+            >
+              <X size={20} />
+            </button>
+          </div>
+
+          <nav className="flex-1 p-3 space-y-1">
+            {navItems.map((item) => {
+              const isActive = p === item.href;
+              return (
+                <button
+                  key={item.href}
+                  onClick={() => navigate(item.href)}
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors cursor-pointer ${
+                    isActive
+                      ? "bg-[#c9a84c]/20 text-[#c9a84c]"
+                      : "text-[#aaa] hover:bg-white/5 hover:text-white"
+                  }`}
+                >
+                  <item.icon size={18} />
+                  {item.label}
+                </button>
+              );
+            })}
+          </nav>
+
+          <div className="p-3 border-t border-[#c9a84c]/20">
+            <div className="px-3 py-2 text-xs text-[#666] mb-2">
+              {currentUser.username} ({currentUser.role})
+            </div>
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-red-400 hover:bg-red-400/10 transition-colors cursor-pointer"
+            >
+              <LogOut size={18} />
+              Cerrar sesión
+            </button>
+            <button
+              onClick={() => { window.location.href = "/"; }}
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-[#aaa] hover:bg-white/5 hover:text-white transition-colors cursor-pointer mt-1"
+            >
+              <LayoutDashboard size={18} />
+              Ir a la tienda
+            </button>
+          </div>
+        </aside>
+
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black/50 z-[305] md:hidden"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <header className="h-14 bg-[#111] border-b border-[#c9a84c]/20 flex items-center px-4 gap-3">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="md:hidden text-[#999] hover:text-white cursor-pointer"
+            >
+              <Menu size={22} />
+            </button>
+            <h1 className="text-white font-semibold text-lg">
+              {navItems.find((n) => n.href === p)?.label || "Panel de Administración"}
+            </h1>
+          </header>
+          <main className="flex-1 overflow-y-auto p-4 md:p-6">{pageContent}</main>
+        </div>
+      </div>
+    </AuthProvider>
+  );
+}
+
+export default function LayoutShell({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+  const isAdmin = pathname?.startsWith("/admin");
+
+  if (isAdmin) {
+    return <AdminPanel />;
+  }
+
+  return (
+    <>
+      <AgeVerification />
+      <Header />
+      <FloatingSidebar />
+      <main className="min-h-screen">{children}</main>
+      <Footer />
+      <PromoBanner />
+      <div className="h-10" />
+      <CartSidebar />
+      <CityModal />
+    </>
+  );
+}

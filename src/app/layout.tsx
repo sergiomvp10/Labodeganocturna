@@ -1,13 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from "./providers";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import CartSidebar from "@/components/CartSidebar";
-import CityModal from "@/components/CityModal";
-import AgeVerification from "@/components/AgeVerification";
-import PromoBanner from "@/components/PromoBanner";
-import FloatingSidebar from "@/components/FloatingSidebar";
+import LayoutShell from "@/components/LayoutShell";
 
 export const metadata: Metadata = {
   title: "La Bodega Nocturna | Licorería a Domicilio 23 Horas",
@@ -25,15 +19,7 @@ export default function RootLayout({
     <html lang="es">
       <body className="antialiased">
         <Providers>
-          <AgeVerification />
-          <Header />
-          <FloatingSidebar />
-          <main className="min-h-screen">{children}</main>
-          <Footer />
-          <PromoBanner />
-          <div className="h-10" />
-          <CartSidebar />
-          <CityModal />
+          <LayoutShell>{children}</LayoutShell>
         </Providers>
       </body>
     </html>
