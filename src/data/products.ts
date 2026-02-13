@@ -130,6 +130,7 @@ export const products: Product[] = [
     category: "Whisky",
     subcategory: "Bourbon",
     price: 110000,
+    originalPrice: 125000,
     image: "https://images.unsplash.com/photo-1609767826327-b0e52e785f91?w=300&h=400&fit=crop",
     rating: 4.6,
     reviews: 287,
@@ -138,6 +139,7 @@ export const products: Product[] = [
     description: "Tennessee whiskey con su característico sabor ahumado y suave final.",
     inStock: true,
     featured: true,
+    discount: "12% OFF",
   },
   {
     id: 4,
@@ -249,6 +251,7 @@ export const products: Product[] = [
     category: "Vino",
     subcategory: "Espumoso",
     price: 180000,
+    originalPrice: 210000,
     image: "https://images.unsplash.com/photo-1592845043437-a5dc0e013265?w=300&h=400&fit=crop",
     rating: 4.9,
     reviews: 98,
@@ -256,6 +259,7 @@ export const products: Product[] = [
     brand: "Moët & Chandon",
     description: "Champagne francés de alta calidad con burbujas finas y elegantes.",
     inStock: true,
+    discount: "14% OFF",
   },
   {
     id: 12,
@@ -321,6 +325,7 @@ export const products: Product[] = [
     category: "Especiales",
     subcategory: "Vodka",
     price: 68000,
+    originalPrice: 78000,
     image: "https://images.unsplash.com/photo-1613063065764-c7ebfd4bb8c0?w=300&h=400&fit=crop",
     rating: 4.3,
     reviews: 156,
@@ -328,6 +333,7 @@ export const products: Product[] = [
     brand: "Absolut",
     description: "Vodka sueco premium, destilado de trigo de invierno. Puro y cristalino.",
     inStock: true,
+    discount: "13% OFF",
   },
   {
     id: 17,
