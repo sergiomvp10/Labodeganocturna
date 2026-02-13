@@ -10,20 +10,7 @@ export default function Header() {
   return (
     <header className="bg-brand-dark sticky top-0 z-50">
       <div className="w-full px-4 sm:px-6 lg:px-10">
-        <div className="flex items-center justify-between py-2 border-b border-brand-gold/10">
-          <button
-            onClick={() => setIsCityModalOpen(true)}
-            className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer"
-          >
-            <MapPin size={18} className="text-brand-muted" />
-            <span className="text-sm font-semibold tracking-wide text-brand-text uppercase">
-              {selectedCity}
-            </span>
-            <ChevronDown size={16} className="text-brand-muted" />
-          </button>
-        </div>
-
-        <div className="flex items-center justify-center py-4 md:py-6">
+        <div className="relative flex items-center justify-center py-4 md:py-6">
           <Link href="/">
             <img
               src="/logo.png"
@@ -31,6 +18,17 @@ export default function Header() {
               className="h-20 md:h-28 lg:h-32 w-auto"
             />
           </Link>
+
+          <button
+            onClick={() => setIsCityModalOpen(true)}
+            className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer"
+          >
+            <MapPin size={16} className="text-brand-muted" />
+            <span className="text-sm font-semibold tracking-wide text-brand-text uppercase">
+              {selectedCity}
+            </span>
+            <ChevronDown size={14} className="text-brand-muted" />
+          </button>
         </div>
       </div>
     </header>
