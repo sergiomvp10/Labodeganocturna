@@ -41,18 +41,18 @@ export default function CityModal() {
           </button>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="grid grid-cols-3 gap-3 md:gap-5">
           {cities.map((city) => (
             <button
               key={city}
               onClick={() => handleSelect(city)}
-              className={`group relative overflow-hidden rounded-xl cursor-pointer transition-all duration-300 border-2 ${
+              className={`group relative overflow-hidden rounded-lg md:rounded-xl cursor-pointer transition-all duration-300 border-2 ${
                 selectedCity === city && hasSelectedCity
                   ? "border-brand-gold shadow-lg shadow-brand-gold/20"
                   : "border-brand-gold/10 hover:border-brand-gold/40"
               }`}
             >
-              <div className="aspect-[4/3] overflow-hidden">
+              <div className="aspect-[3/4] md:aspect-[4/3] overflow-hidden">
                 <img
                   src={cityImages[city] || `https://picsum.photos/seed/${city.toLowerCase()}/400/300`}
                   alt={city}
@@ -60,8 +60,8 @@ export default function CityModal() {
                 />
               </div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-5 text-center">
-                <h3 className="text-xl md:text-2xl font-bold text-white tracking-wider uppercase">
+              <div className="absolute bottom-0 left-0 right-0 p-2 md:p-5 text-center">
+                <h3 className="text-sm md:text-2xl font-bold text-white tracking-wider uppercase">
                   {city}
                 </h3>
               </div>
