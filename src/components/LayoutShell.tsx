@@ -27,22 +27,32 @@ import {
   LayoutDashboard,
 } from "lucide-react";
 
+type AdminPage = "productos" | "pedidos" | "destacados" | "configuracion";
+
+const PAGE_LABELS: Record<AdminPage, string> = {
+  productos: "Productos",
+  pedidos: "Pedidos",
+  destacados: "Destacados / Ofertas",
+  configuracion: "Configuración",
+};
+
 function AdminPanel() {
-  const pathname = usePathname();
   const [currentUser, setCurrentUser] = useState<{ username: string; role: string } | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [activePage, setActivePage] = useState<AdminPage>("productos");
+  const [checked, setChecked] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem("lbn_admin_session");
     if (stored) {
       setCurrentUser(JSON.parse(stored));
     }
+    setChecked(true);
   }, []);
 
-  const p = pathname?.replace(/\/$/, "") || "";
-  const isLoginPage = p === "/admin" || p === "";
+  if (!checked) return null;
 
-  if (isLoginPage && !currentUser) {
+  if (!currentUser) {
     return (
       <div className="fixed inset-0 z-[300] bg-[#0a0a0a]">
         <AuthProvider>
@@ -52,38 +62,29 @@ function AdminPanel() {
     );
   }
 
-  if (!currentUser) {
-    if (typeof window !== "undefined") {
-      window.location.href = "/admin/";
-    }
-    return null;
-  }
-
-  const navItems = [
-    { href: "/admin/productos", label: "Productos", icon: Package },
-    { href: "/admin/pedidos", label: "Pedidos", icon: ShoppingCart },
-    { href: "/admin/destacados", label: "Destacados / Ofertas", icon: Star },
-    { href: "/admin/configuracion", label: "Configuración", icon: Settings },
+  const navItems: { key: AdminPage; label: string; icon: typeof Package }[] = [
+    { key: "productos", label: "Productos", icon: Package },
+    { key: "pedidos", label: "Pedidos", icon: ShoppingCart },
+    { key: "destacados", label: "Destacados / Ofertas", icon: Star },
+    { key: "configuracion", label: "Configuración", icon: Settings },
   ];
 
   const handleLogout = () => {
     localStorage.removeItem("lbn_admin_session");
     localStorage.removeItem("lbn_token");
     setCurrentUser(null);
-    window.location.href = "/admin/";
   };
 
-  const navigate = (href: string) => {
-    window.location.href = href + "/";
+  const navigate = (key: AdminPage) => {
+    setActivePage(key);
     setSidebarOpen(false);
   };
 
   let pageContent: ReactNode = null;
-  if (p === "/admin/productos") pageContent = <ProductosPage />;
-  else if (p === "/admin/pedidos") pageContent = <PedidosPage />;
-  else if (p === "/admin/destacados") pageContent = <DestacadosPage />;
-  else if (p === "/admin/configuracion") pageContent = <ConfiguracionPage />;
-  else pageContent = <ProductosPage />;
+  if (activePage === "productos") pageContent = <ProductosPage />;
+  else if (activePage === "pedidos") pageContent = <PedidosPage />;
+  else if (activePage === "destacados") pageContent = <DestacadosPage />;
+  else if (activePage === "configuracion") pageContent = <ConfiguracionPage />;
 
   return (
     <AuthProvider>
@@ -108,11 +109,11 @@ function AdminPanel() {
 
           <nav className="flex-1 p-3 space-y-1">
             {navItems.map((item) => {
-              const isActive = p === item.href;
+              const isActive = activePage === item.key;
               return (
                 <button
-                  key={item.href}
-                  onClick={() => navigate(item.href)}
+                  key={item.key}
+                  onClick={() => navigate(item.key)}
                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors cursor-pointer ${
                     isActive
                       ? "bg-[#c9a84c]/20 text-[#c9a84c]"
@@ -163,7 +164,7 @@ function AdminPanel() {
               <Menu size={22} />
             </button>
             <h1 className="text-white font-semibold text-lg">
-              {navItems.find((n) => n.href === p)?.label || "Panel de Administración"}
+              {PAGE_LABELS[activePage]}
             </h1>
           </header>
           <main className="flex-1 overflow-y-auto p-4 md:p-6">{pageContent}</main>
