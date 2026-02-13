@@ -41,3 +41,12 @@ html {
     transform: translateX(-50%);
   }
 }
+
+@keyframes marquee-featured {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.333%);
+  }
+}
