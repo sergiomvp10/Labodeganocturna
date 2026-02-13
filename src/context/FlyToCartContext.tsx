@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback, ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useEffect, ReactNode } from "react";
 import { createPortal } from "react-dom";
 
 interface FlyItem {
@@ -20,6 +20,11 @@ let nextId = 0;
 
 export function FlyToCartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<FlyItem[]>([]);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const fly = useCallback((image: string, startX: number, startY: number) => {
     const id = nextId++;
@@ -32,7 +37,7 @@ export function FlyToCartProvider({ children }: { children: ReactNode }) {
   return (
     <FlyToCartContext.Provider value={{ fly }}>
       {children}
-      {typeof document !== "undefined" &&
+      {mounted &&
         createPortal(
           <>
             {items.map((item) => (
@@ -46,7 +51,7 @@ export function FlyToCartProvider({ children }: { children: ReactNode }) {
 }
 
 function FlyingImage({ item }: { item: FlyItem }) {
-  const cartEl = typeof document !== "undefined" ? document.getElementById("cart-icon-target") : null;
+  const cartEl = document.getElementById("cart-icon-target");
   const endX = cartEl ? cartEl.getBoundingClientRect().left + cartEl.offsetWidth / 2 : window.innerWidth - 40;
   const endY = cartEl ? cartEl.getBoundingClientRect().top + cartEl.offsetHeight / 2 : window.innerHeight / 2;
 
