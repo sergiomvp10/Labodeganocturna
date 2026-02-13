@@ -2,21 +2,37 @@
 
 import { products } from "@/data/products";
 import ProductCard from "./ProductCard";
-import { useRef } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useRef, useEffect, useCallback } from "react";
 
 export default function FeaturedProducts() {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const animRef = useRef<number | null>(null);
+  const pausedRef = useRef(false);
   const featured = products.filter((p) => p.featured).slice(0, 12);
+  const doubledFeatured = [...featured, ...featured];
 
-  const scroll = (dir: "left" | "right") => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({
-        left: dir === "left" ? -300 : 300,
-        behavior: "smooth",
-      });
+  const animate = useCallback(() => {
+    const el = scrollRef.current;
+    if (el && !pausedRef.current) {
+      el.scrollLeft += 0.5;
+      const halfScroll = el.scrollWidth / 2;
+      if (el.scrollLeft >= halfScroll) {
+        el.scrollLeft -= halfScroll;
+      }
     }
-  };
+    animRef.current = requestAnimationFrame(animate);
+  }, []);
+
+  useEffect(() => {
+    animRef.current = requestAnimationFrame(animate);
+    return () => {
+      if (animRef.current) cancelAnimationFrame(animRef.current);
+    };
+  }, [animate]);
+
+  const handleMouseDown = () => { pausedRef.current = true; };
+  const handleMouseUp = () => { pausedRef.current = false; };
+  const handleMouseLeave = () => { pausedRef.current = false; };
 
   if (featured.length === 0) return null;
 
@@ -32,28 +48,18 @@ export default function FeaturedProducts() {
           </h2>
         </div>
 
-        <div className="flex items-center justify-end gap-2 mb-4">
-          <button
-            onClick={() => scroll("left")}
-            className="bg-brand-dark2 border border-brand-gold/20 text-brand-gold p-2 rounded-full hover:bg-brand-gold hover:text-brand-black transition-colors cursor-pointer"
-          >
-            <ChevronLeft size={18} />
-          </button>
-          <button
-            onClick={() => scroll("right")}
-            className="bg-brand-dark2 border border-brand-gold/20 text-brand-gold p-2 rounded-full hover:bg-brand-gold hover:text-brand-black transition-colors cursor-pointer"
-          >
-            <ChevronRight size={18} />
-          </button>
-        </div>
-
         <div
           ref={scrollRef}
-          className="flex gap-5 overflow-x-auto pb-4"
+          className="flex gap-5 overflow-x-hidden pb-4 cursor-grab active:cursor-grabbing"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseLeave}
+          onTouchStart={handleMouseDown}
+          onTouchEnd={handleMouseUp}
         >
-          {featured.map((product) => (
-            <div key={product.id} className="flex-shrink-0 w-56 md:w-64">
+          {doubledFeatured.map((product, i) => (
+            <div key={`${product.id}-${i}`} className="flex-shrink-0 w-56 md:w-64">
               <ProductCard product={product} />
             </div>
           ))}
