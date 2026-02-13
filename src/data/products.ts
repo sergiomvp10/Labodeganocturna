@@ -57,7 +57,7 @@ export const categories = [
     name: "Minibotellas",
     slug: "minibotellas",
     subcategories: ["Whisky", "Ron", "Vodka", "Tequila"],
-    image: "https://images.unsplash.com/photo-1608270586620-248524c67de9?w=400&h=300&fit=crop",
+    image: "/images/minibotellas-category.png",
   },
   {
     name: "Especiales",
