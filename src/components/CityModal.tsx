@@ -21,11 +21,11 @@ export default function CityModal() {
   return (
     <div className="fixed inset-0 z-[150] flex items-center justify-center bg-brand-black/95 backdrop-blur-sm">
       <div className="w-full max-w-4xl mx-auto px-6 relative">
-        <div className="flex flex-col items-center text-center mb-14">
+        <div className="flex flex-col items-center text-center mb-6 md:mb-14">
           <img
             src="/logo.png"
             alt="La Bodega Nocturna 23"
-            className="h-28 md:h-36 w-auto mb-6"
+            className="h-20 md:h-36 w-auto mb-4 md:mb-6"
           />
           <h2 className="text-2xl md:text-3xl font-bold text-brand-text">
             Selecciona tu ciudad
@@ -41,7 +41,7 @@ export default function CityModal() {
           </button>
         )}
 
-        <div className="grid grid-cols-3 gap-3 md:gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-5 max-h-[60vh] md:max-h-none overflow-y-auto">
           {cities.map((city) => (
             <button
               key={city}
@@ -52,7 +52,7 @@ export default function CityModal() {
                   : "border-brand-gold/10 hover:border-brand-gold/40"
               }`}
             >
-              <div className="aspect-[3/4] md:aspect-[4/3] overflow-hidden">
+              <div className="aspect-[16/7] md:aspect-[4/3] overflow-hidden">
                 <img
                   src={cityImages[city] || `https://picsum.photos/seed/${city.toLowerCase()}/400/300`}
                   alt={city}
@@ -60,8 +60,8 @@ export default function CityModal() {
                 />
               </div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-2 md:p-5 text-center">
-                <h3 className="text-sm md:text-2xl font-bold text-white tracking-wider uppercase">
+              <div className="absolute bottom-0 left-0 right-0 p-3 md:p-5 text-center">
+                <h3 className="text-lg md:text-2xl font-bold text-white tracking-wider uppercase">
                   {city}
                 </h3>
               </div>
