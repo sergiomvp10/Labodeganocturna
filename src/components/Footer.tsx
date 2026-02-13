@@ -1,8 +1,11 @@
 "use client";
 
 import { Phone, Clock, MapPin } from "lucide-react";
+import { useSiteConfig } from "@/context/SiteConfigContext";
 
 export default function Footer() {
+  const { footerConfig } = useSiteConfig();
+
   return (
     <footer className="bg-brand-dark border-t border-brand-gold/10">
       <div className="w-full px-4 sm:px-6 lg:px-10 py-12">
@@ -13,7 +16,7 @@ export default function Footer() {
             className="h-24 md:h-32 w-auto mb-4"
           />
           <p className="text-brand-muted text-sm text-center max-w-md">
-            Tu licorería de confianza con servicio a domicilio 23 horas al día.
+            {footerConfig.description}
           </p>
         </div>
 
@@ -24,9 +27,9 @@ export default function Footer() {
               <h4 className="text-brand-gold font-bold text-sm uppercase tracking-wider">Ciudades</h4>
             </div>
             <div className="space-y-1 text-sm text-brand-muted">
-              <p>Duitama</p>
-              <p>Tunja</p>
-              <p>Sogamoso</p>
+              {footerConfig.cities.map((city) => (
+                <p key={city}>{city}</p>
+              ))}
             </div>
           </div>
 
@@ -35,8 +38,8 @@ export default function Footer() {
               <Clock size={18} className="text-brand-gold" />
               <h4 className="text-brand-gold font-bold text-sm uppercase tracking-wider">Horario</h4>
             </div>
-            <p className="text-sm text-brand-muted">Abierto 23 horas al día</p>
-            <p className="text-sm text-brand-muted">Todos los días del año</p>
+            <p className="text-sm text-brand-muted">{footerConfig.schedule}</p>
+            <p className="text-sm text-brand-muted">{footerConfig.scheduleSub}</p>
           </div>
 
           <div className="text-center">
@@ -44,7 +47,7 @@ export default function Footer() {
               <Phone size={18} className="text-brand-gold" />
               <h4 className="text-brand-gold font-bold text-sm uppercase tracking-wider">Contacto</h4>
             </div>
-            <p className="text-sm text-brand-muted">WhatsApp: +57 300 000 0000</p>
+            <p className="text-sm text-brand-muted">WhatsApp: {footerConfig.whatsapp}</p>
           </div>
         </div>
 

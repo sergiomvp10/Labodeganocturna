@@ -2,28 +2,34 @@
 
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useSiteConfig } from "@/context/SiteConfigContext";
 
-const slides = [
-  {
-    image: "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=1200&h=500&fit=crop",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=1200&h=500&fit=crop",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1535958636474-b021ee887b13?w=1200&h=500&fit=crop",
-  },
+const DEFAULT_SLIDES = [
+  { image: "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=1200&h=500&fit=crop" },
+  { image: "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=1200&h=500&fit=crop" },
+  { image: "https://images.unsplash.com/photo-1535958636474-b021ee887b13?w=1200&h=500&fit=crop" },
 ];
 
 export default function HeroBanner() {
+  const { banners } = useSiteConfig();
   const [current, setCurrent] = useState(0);
 
+  const activeBanners = banners.filter((b) => b.active);
+  const slides = activeBanners.length > 0
+    ? activeBanners.sort((a, b) => a.order - b.order).map((b) => ({ image: b.image }))
+    : DEFAULT_SLIDES;
+
   useEffect(() => {
+    if (slides.length <= 1) return;
     const timer = setInterval(() => {
       setCurrent((prev) => (prev + 1) % slides.length);
     }, 10000);
     return () => clearInterval(timer);
-  }, []);
+  }, [slides.length]);
+
+  useEffect(() => {
+    if (current >= slides.length) setCurrent(0);
+  }, [slides.length, current]);
 
   const prev = () => setCurrent((c) => (c - 1 + slides.length) % slides.length);
   const next = () => setCurrent((c) => (c + 1) % slides.length);

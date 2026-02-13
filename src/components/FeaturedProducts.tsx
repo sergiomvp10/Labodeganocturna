@@ -1,12 +1,23 @@
 "use client";
 
-import { products } from "@/data/products";
+import { products as defaultProducts, Product } from "@/data/products";
 import ProductCard from "./ProductCard";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSiteConfig } from "@/context/SiteConfigContext";
 
 export default function FeaturedProducts() {
   const [paused, setPaused] = useState(false);
-  const featured = products.filter((p) => p.featured).slice(0, 12);
+  const { featuredIds } = useSiteConfig();
+  const [allProducts, setAllProducts] = useState<Product[]>(defaultProducts);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("lbn_products");
+    if (stored) setAllProducts(JSON.parse(stored));
+  }, []);
+
+  const featured = featuredIds.length > 0
+    ? allProducts.filter((p) => featuredIds.includes(p.id)).slice(0, 12)
+    : allProducts.filter((p) => p.featured).slice(0, 12);
 
   if (featured.length === 0) return null;
 
