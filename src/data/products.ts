@@ -87,7 +87,7 @@ export const categories = [
     name: "Juegos de Mesa",
     slug: "juegos-de-mesa",
     subcategories: ["Cartas", "Dados", "Fichas", "Juegos para Beber"],
-    image: "https://images.unsplash.com/photo-1610890716171-6b1bb98ffd09?w=400&h=300&fit=crop",
+    image: "/images/juegosdemesa-category.png",
   },
 ];
 
