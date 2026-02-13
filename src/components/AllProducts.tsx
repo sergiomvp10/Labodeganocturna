@@ -12,11 +12,11 @@ export default function AllProducts() {
           if (catProducts.length === 0) return null;
           return (
             <div key={cat.slug} id={cat.slug} className="mb-14 last:mb-0 scroll-mt-32">
-              <div className="mb-6">
-                <p className="text-brand-gold text-xs uppercase tracking-[0.2em] mb-1">
+              <div className="text-center" style={{ marginBottom: "5rem" }}>
+                <p className="text-brand-gold text-sm md:text-base uppercase tracking-[0.25em] mb-3">
                   {cat.name}
                 </p>
-                <h2 className="text-xl md:text-2xl font-bold text-brand-text">
+                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-brand-text">
                   {cat.name}
                 </h2>
               </div>

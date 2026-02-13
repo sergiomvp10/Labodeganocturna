@@ -23,29 +23,28 @@ export default function OffersSection() {
   return (
     <section className="py-10 md:py-14 bg-brand-black">
       <div className="w-full px-4 sm:px-6 lg:px-10">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <p className="text-brand-gold text-xs uppercase tracking-[0.2em] mb-2">
-              Ahorra hoy
-            </p>
-            <h2 className="text-2xl md:text-3xl font-bold text-brand-text">
-              Ofertas especiales
-            </h2>
-          </div>
-          <div className="flex gap-2">
-            <button
-              onClick={() => scroll("left")}
-              className="bg-brand-dark2 border border-brand-gold/20 text-brand-gold p-2 rounded-full hover:bg-brand-gold hover:text-brand-black transition-colors cursor-pointer"
-            >
-              <ChevronLeft size={18} />
-            </button>
-            <button
-              onClick={() => scroll("right")}
-              className="bg-brand-dark2 border border-brand-gold/20 text-brand-gold p-2 rounded-full hover:bg-brand-gold hover:text-brand-black transition-colors cursor-pointer"
-            >
-              <ChevronRight size={18} />
-            </button>
-          </div>
+        <div className="text-center" style={{ marginBottom: "5rem" }}>
+          <p className="text-brand-gold text-sm md:text-base uppercase tracking-[0.25em] mb-3">
+            Ahorra hoy
+          </p>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-brand-text">
+            Ofertas especiales
+          </h2>
+        </div>
+
+        <div className="flex items-center justify-end gap-2 mb-4">
+          <button
+            onClick={() => scroll("left")}
+            className="bg-brand-dark2 border border-brand-gold/20 text-brand-gold p-2 rounded-full hover:bg-brand-gold hover:text-brand-black transition-colors cursor-pointer"
+          >
+            <ChevronLeft size={18} />
+          </button>
+          <button
+            onClick={() => scroll("right")}
+            className="bg-brand-dark2 border border-brand-gold/20 text-brand-gold p-2 rounded-full hover:bg-brand-gold hover:text-brand-black transition-colors cursor-pointer"
+          >
+            <ChevronRight size={18} />
+          </button>
         </div>
 
         <div
