@@ -1,31 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Product, products as staticProducts, formatPrice } from "@/data/products";
+import { useState } from "react";
+import { formatPrice } from "@/data/products";
 import { useCart } from "@/context/CartContext";
+import { useProducts } from "@/context/ProductsContext";
 import { Star, ShoppingCart, Minus, Plus, ArrowLeft, Truck, Clock, Shield } from "lucide-react";
 import Link from "next/link";
-import { api, ProductAPI } from "@/lib/api";
-
-function toProduct(p: ProductAPI): Product {
-  return { ...p, originalPrice: p.originalPrice ?? undefined, discount: p.discount ?? undefined };
-}
 
 export default function ProductPageClient({ id }: { id: string }) {
-  const staticProduct = staticProducts.find((p) => p.id === parseInt(id));
+  const { products: allProducts } = useProducts();
+  const product = allProducts.find((p) => p.id === parseInt(id)) || null;
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
-  const [product, setProduct] = useState<Product | null>(staticProduct || null);
-  const [allProducts, setAllProducts] = useState<Product[]>(staticProducts);
-
-  useEffect(() => {
-    api.getProducts().then((data) => {
-      const prods = data.map(toProduct);
-      setAllProducts(prods);
-      const found = prods.find((p) => p.id === parseInt(id));
-      if (found) setProduct(found);
-    }).catch(() => {});
-  }, [id]);
 
   if (!product) {
     return (
@@ -44,7 +30,7 @@ export default function ProductPageClient({ id }: { id: string }) {
   }
 
   const related = allProducts
-    .filter((p) => p.category === product.category && p.id !== product.id)
+    .filter((p) => p.category.toLowerCase() === product.category.toLowerCase() && p.id !== product.id)
     .slice(0, 4);
 
   const renderStars = (rating: number) => {
