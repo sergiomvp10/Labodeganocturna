@@ -11,6 +11,7 @@ import PromoBanner from "@/components/PromoBanner";
 import FloatingSidebar from "@/components/FloatingSidebar";
 import { AuthProvider } from "@/context/AuthContext";
 import ProductPageClient from "@/app/producto/[id]/ProductPageClient";
+import CategoryPage from "@/components/CategoryPage";
 
 import AdminLoginPage from "@/app/admin/page";
 import ProductosPage from "@/app/admin/productos/page";
@@ -182,18 +183,23 @@ export default function LayoutShell({ children }: { children: ReactNode }) {
   const productMatch = pathname?.match(/^\/producto\/(\d+)/);
   const productId = productMatch ? productMatch[1] : null;
 
+  const categoryMatch = pathname?.match(/^\/categoria\/([a-z0-9-]+)/);
+  const categorySlug = categoryMatch ? categoryMatch[1] : null;
+
   if (isAdmin) {
     return <AdminPanel />;
   }
+
+  let content: ReactNode = children;
+  if (productId) content = <ProductPageClient id={productId} />;
+  else if (categorySlug) content = <CategoryPage slug={categorySlug} />;
 
   return (
     <>
       <AgeVerification />
       <Header />
       <FloatingSidebar />
-      <main className="min-h-screen">
-        {productId ? <ProductPageClient id={productId} /> : children}
-      </main>
+      <main className="min-h-screen">{content}</main>
       <Footer />
       <PromoBanner />
       <div className="h-10" />
