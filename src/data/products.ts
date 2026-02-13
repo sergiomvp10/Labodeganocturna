@@ -39,7 +39,7 @@ export const categories = [
     name: "Ron",
     slug: "ron",
     subcategories: ["Añejo", "Blanco", "Especiado"],
-    image: "https://images.unsplash.com/photo-1598018553943-93a5e2437b29?w=400&h=300&fit=crop",
+    image: "/images/ron-category.png",
   },
   {
     name: "Vino",
