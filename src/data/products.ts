@@ -51,7 +51,7 @@ export const categories = [
     name: "Cerveza",
     slug: "cerveza",
     subcategories: ["Nacional", "Importada", "Artesanal"],
-    image: "https://images.unsplash.com/photo-1535958636474-b021ee887b13?w=400&h=300&fit=crop",
+    image: "/images/cerveza-category.png",
   },
   {
     name: "Minibotellas",
