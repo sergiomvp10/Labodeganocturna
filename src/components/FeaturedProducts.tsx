@@ -21,7 +21,7 @@ export default function FeaturedProducts() {
   if (featured.length === 0) return null;
 
   return (
-    <section className="pt-10 md:pt-14 pb-32 md:pb-40 bg-brand-dark">
+    <section className="pt-10 md:pt-14 bg-brand-dark" style={{ paddingBottom: "12rem" }}>
       <div className="w-full px-4 sm:px-6 lg:px-10">
         <div className="text-center" style={{ marginBottom: "5rem" }}>
           <p className="text-brand-gold text-sm md:text-base uppercase tracking-[0.25em] mb-3">
