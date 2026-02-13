@@ -43,22 +43,22 @@ export default function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow group relative">
+    <div className="bg-brand-dark border border-brand-gold/10 rounded-lg overflow-hidden hover:border-brand-gold/30 transition-all group relative">
       {product.discount && (
-        <div className="absolute top-2 left-2 bg-brand-red text-white text-xs font-bold px-2 py-1 rounded z-10">
+        <div className="absolute top-2 left-2 bg-brand-gold text-brand-black text-xs font-bold px-2 py-1 rounded z-10">
           {product.discount}
         </div>
       )}
 
       <Link href={`/producto/${product.id}`} className="block">
-        <div className="relative aspect-square bg-gray-50 p-4 flex items-center justify-center overflow-hidden">
+        <div className="relative aspect-square bg-brand-dark2 p-4 flex items-center justify-center overflow-hidden">
           <img
             src={product.image}
             alt={product.name}
             className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
             onError={(e) => {
               (e.target as HTMLImageElement).src =
-                "https://placehold.co/300x400/1a1a2e/d4a843?text=" +
+                "https://placehold.co/300x400/111/c9a84c?text=" +
                 encodeURIComponent(product.name);
             }}
           />
@@ -66,11 +66,11 @@ export default function ProductCard({ product }: ProductCardProps) {
       </Link>
 
       <div className="p-3 md:p-4">
-        <p className="text-xs text-brand-muted uppercase tracking-wide mb-1">
+        <p className="text-xs text-brand-muted uppercase tracking-wider mb-1">
           {product.brand}
         </p>
         <Link href={`/producto/${product.id}`}>
-          <h3 className="font-semibold text-sm md:text-base text-brand-text hover:text-brand-red transition-colors line-clamp-2 min-h-10">
+          <h3 className="font-semibold text-sm md:text-base text-brand-text hover:text-brand-gold transition-colors line-clamp-2 min-h-10">
             {product.name}
           </h3>
         </Link>
@@ -84,7 +84,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
 
         <div className="mt-3 flex items-end gap-2">
-          <span className="text-lg md:text-xl font-bold text-brand-text">
+          <span className="text-lg md:text-xl font-bold text-brand-gold">
             {formatPrice(product.price)}
           </span>
           {product.originalPrice && (
@@ -96,18 +96,18 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         <button
           onClick={() => addToCart(product)}
-          className="mt-3 w-full bg-brand-red hover:bg-red-700 text-white font-medium py-2.5 px-4 rounded-md text-sm flex items-center justify-center gap-2 transition-colors cursor-pointer"
+          className="mt-3 w-full bg-brand-gold hover:bg-brand-gold-light text-brand-black font-medium py-2.5 px-4 rounded text-sm flex items-center justify-center gap-2 transition-colors cursor-pointer"
         >
           <ShoppingCart size={16} />
           Agregar al Carrito
         </button>
 
         {product.inStock ? (
-          <p className="text-xs text-green-600 mt-2 font-medium">
-            ✓ Disponible para entrega
+          <p className="text-xs text-green-500 mt-2 font-medium">
+            Disponible para entrega
           </p>
         ) : (
-          <p className="text-xs text-red-500 mt-2 font-medium">
+          <p className="text-xs text-red-400 mt-2 font-medium">
             Agotado
           </p>
         )}

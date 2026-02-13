@@ -12,52 +12,46 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <header className="bg-brand-dark sticky top-0 z-50 shadow-lg">
-      <div className="max-w-7xl mx-auto px-4">
+    <header className="bg-brand-dark sticky top-0 z-50 border-b border-brand-gold/30">
+      <div className="max-w-7xl mx-auto px-6 md:px-10">
         <div className="flex items-center justify-between h-16 md:h-20">
-          <Link href="/" className="flex items-center gap-2 shrink-0">
-            <div className="bg-brand-red rounded-lg p-2">
-              <span className="text-white font-bold text-lg md:text-xl">LBN</span>
-            </div>
-            <div className="hidden sm:block">
-              <h1 className="text-white font-bold text-lg md:text-xl leading-tight">
-                La Bodega
-              </h1>
-              <p className="text-brand-gold text-xs md:text-sm font-medium -mt-1">
-                Nocturna
-              </p>
-            </div>
+          <Link href="/" className="shrink-0">
+            <img
+              src="/logo.jpg"
+              alt="La Bodega Nocturna 23"
+              className="h-12 md:h-16 w-auto"
+            />
           </Link>
 
-          <div className="hidden md:flex flex-1 max-w-xl mx-6">
+          <div className="hidden md:flex flex-1 max-w-lg mx-8">
             <div className="relative w-full">
               <input
                 type="text"
                 placeholder="Buscar productos, marcas..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full h-10 pl-4 pr-12 rounded-md text-sm bg-white text-brand-text focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="w-full h-10 pl-4 pr-12 rounded text-sm bg-brand-dark2 text-brand-text border border-brand-gold/30 focus:outline-none focus:border-brand-gold placeholder-brand-muted"
               />
-              <button className="absolute right-0 top-0 h-10 w-10 bg-brand-red rounded-r-md flex items-center justify-center hover:bg-red-700 transition-colors cursor-pointer">
-                <Search size={18} className="text-white" />
+              <button className="absolute right-0 top-0 h-10 w-10 bg-brand-gold rounded-r flex items-center justify-center hover:bg-brand-gold-light transition-colors cursor-pointer">
+                <Search size={16} className="text-brand-black" />
               </button>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 md:gap-5">
-            <button className="text-white hover:text-brand-gold transition-colors hidden md:flex items-center gap-1 cursor-pointer">
-              <User size={22} />
-              <span className="text-sm">Mi Cuenta</span>
+          <div className="flex items-center gap-4 md:gap-6">
+            <button className="text-brand-muted hover:text-brand-gold transition-colors hidden md:flex items-center gap-1.5 cursor-pointer">
+              <User size={20} />
+              <span className="text-xs uppercase tracking-wider">Cuenta</span>
             </button>
 
             <button
               onClick={() => setIsCartOpen(true)}
-              className="text-white hover:text-brand-gold transition-colors flex items-center gap-1 relative cursor-pointer"
+              className="text-brand-muted hover:text-brand-gold transition-colors flex items-center gap-1.5 relative cursor-pointer"
             >
-              <ShoppingCart size={22} />
-              <span className="hidden md:inline text-sm">Carrito</span>
+              <ShoppingCart size={20} />
+              <span className="hidden md:inline text-xs uppercase tracking-wider">Carrito</span>
               {totalItems > 0 && (
-                <span className="absolute -top-2 -right-2 md:-top-2 md:-right-4 bg-brand-red text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
+                <span className="absolute -top-2 -right-2 md:-top-2 md:-right-4 bg-brand-gold text-brand-black text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
                   {totalItems}
                 </span>
               )}
@@ -65,50 +59,42 @@ export default function Header() {
 
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden text-white cursor-pointer"
+              className="md:hidden text-brand-gold cursor-pointer"
             >
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
         </div>
 
-        <nav className="hidden md:block border-t border-white/10">
-          <ul className="flex items-center gap-0">
+        <nav className="hidden md:block border-t border-brand-gold/10">
+          <ul className="flex items-center justify-center gap-0">
             {categories.map((cat) => (
               <li key={cat.slug}>
                 <Link
                   href={`/#${cat.slug}`}
-                  className="block px-4 py-3 text-white text-sm font-medium hover:bg-brand-red transition-colors"
+                  className="block px-3 py-2.5 text-brand-muted text-xs uppercase tracking-wider font-medium hover:text-brand-gold hover:bg-white/5 transition-colors"
                 >
                   {cat.name}
                 </Link>
               </li>
             ))}
-            <li>
-              <Link
-                href="/#ofertas"
-                className="block px-4 py-3 text-brand-gold text-sm font-bold hover:bg-brand-red transition-colors"
-              >
-                🔥 Ofertas
-              </Link>
-            </li>
           </ul>
         </nav>
       </div>
 
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-brand-dark border-t border-white/10">
-          <div className="px-4 py-3">
+        <div className="md:hidden bg-brand-dark border-t border-brand-gold/10">
+          <div className="px-6 py-3">
             <div className="relative w-full mb-3">
               <input
                 type="text"
                 placeholder="Buscar productos..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full h-10 pl-4 pr-12 rounded-md text-sm bg-white text-brand-text focus:outline-none"
+                className="w-full h-10 pl-4 pr-12 rounded text-sm bg-brand-dark2 text-brand-text border border-brand-gold/30 focus:outline-none focus:border-brand-gold placeholder-brand-muted"
               />
-              <button className="absolute right-0 top-0 h-10 w-10 bg-brand-red rounded-r-md flex items-center justify-center cursor-pointer">
-                <Search size={18} className="text-white" />
+              <button className="absolute right-0 top-0 h-10 w-10 bg-brand-gold rounded-r flex items-center justify-center cursor-pointer">
+                <Search size={16} className="text-brand-black" />
               </button>
             </div>
           </div>
@@ -118,24 +104,15 @@ export default function Header() {
                 <Link
                   href={`/#${cat.slug}`}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block px-6 py-3 text-white text-sm hover:bg-brand-red transition-colors border-t border-white/5"
+                  className="block px-6 py-3 text-brand-muted text-sm uppercase tracking-wider hover:text-brand-gold hover:bg-white/5 transition-colors border-t border-brand-gold/5"
                 >
                   {cat.name}
                 </Link>
               </li>
             ))}
             <li>
-              <Link
-                href="/#ofertas"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="block px-6 py-3 text-brand-gold text-sm font-bold hover:bg-brand-red transition-colors border-t border-white/5"
-              >
-                🔥 Ofertas
-              </Link>
-            </li>
-            <li>
-              <button className="w-full text-left px-6 py-3 text-white text-sm hover:bg-brand-red transition-colors border-t border-white/5 cursor-pointer">
-                <User size={16} className="inline mr-2" />
+              <button className="w-full text-left px-6 py-3 text-brand-muted text-sm hover:text-brand-gold hover:bg-white/5 transition-colors border-t border-brand-gold/5 cursor-pointer">
+                <User size={14} className="inline mr-2" />
                 Mi Cuenta
               </button>
             </li>

@@ -36,12 +36,15 @@ export default function AllProducts() {
   const currentCat = categories.find((c) => c.name === selectedCategory);
 
   return (
-    <section id="catalogo" className="py-10 bg-white">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl md:text-3xl font-bold text-brand-text">
-            Todo el Catálogo
-          </h2>
+    <section id="catalogo" className="py-12 bg-brand-dark2">
+      <div className="max-w-7xl mx-auto px-6 md:px-10">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <div className="w-10 h-0.5 bg-brand-gold mb-3" />
+            <h2 className="text-2xl md:text-3xl font-bold text-brand-text">
+              Todo el Catálogo
+            </h2>
+          </div>
           <span className="text-sm text-brand-muted">
             {sortedProducts.length} productos
           </span>
@@ -50,7 +53,7 @@ export default function AllProducts() {
         <div className="flex flex-col lg:flex-row gap-6">
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="lg:hidden flex items-center gap-2 bg-brand-light px-4 py-2 rounded-md text-sm font-medium cursor-pointer"
+            className="lg:hidden flex items-center gap-2 bg-brand-dark px-4 py-2 rounded text-sm font-medium text-brand-gold border border-brand-gold/20 cursor-pointer"
           >
             <SlidersHorizontal size={16} />
             Filtros
@@ -65,8 +68,8 @@ export default function AllProducts() {
               showFilters ? "block" : "hidden lg:block"
             }`}
           >
-            <div className="bg-brand-light rounded-lg p-4 sticky top-36">
-              <h3 className="font-bold text-sm text-brand-text mb-3 uppercase tracking-wide">
+            <div className="bg-brand-dark rounded-lg p-4 sticky top-36 border border-brand-gold/10">
+              <h3 className="font-bold text-xs text-brand-gold mb-3 uppercase tracking-widest">
                 Categoría
               </h3>
               <ul className="space-y-1 mb-5">
@@ -78,8 +81,8 @@ export default function AllProducts() {
                     }}
                     className={`w-full text-left px-3 py-2 rounded text-sm transition-colors cursor-pointer ${
                       selectedCategory === "Todos"
-                        ? "bg-brand-red text-white font-medium"
-                        : "hover:bg-gray-200 text-brand-text"
+                        ? "bg-brand-gold text-brand-black font-medium"
+                        : "hover:bg-white/5 text-brand-muted"
                     }`}
                   >
                     Todos
@@ -94,8 +97,8 @@ export default function AllProducts() {
                       }}
                       className={`w-full text-left px-3 py-2 rounded text-sm transition-colors cursor-pointer ${
                         selectedCategory === cat.name
-                          ? "bg-brand-red text-white font-medium"
-                          : "hover:bg-gray-200 text-brand-text"
+                          ? "bg-brand-gold text-brand-black font-medium"
+                          : "hover:bg-white/5 text-brand-muted"
                       }`}
                     >
                       {cat.name}
@@ -106,7 +109,7 @@ export default function AllProducts() {
 
               {currentCat && (
                 <>
-                  <h3 className="font-bold text-sm text-brand-text mb-3 uppercase tracking-wide">
+                  <h3 className="font-bold text-xs text-brand-gold mb-3 uppercase tracking-widest">
                     Subcategoría
                   </h3>
                   <ul className="space-y-1 mb-5">
@@ -115,8 +118,8 @@ export default function AllProducts() {
                         onClick={() => setSelectedSubcategory("Todos")}
                         className={`w-full text-left px-3 py-2 rounded text-sm transition-colors cursor-pointer ${
                           selectedSubcategory === "Todos"
-                            ? "bg-brand-red text-white font-medium"
-                            : "hover:bg-gray-200 text-brand-text"
+                            ? "bg-brand-gold text-brand-black font-medium"
+                            : "hover:bg-white/5 text-brand-muted"
                         }`}
                       >
                         Todos
@@ -128,8 +131,8 @@ export default function AllProducts() {
                           onClick={() => setSelectedSubcategory(sub)}
                           className={`w-full text-left px-3 py-2 rounded text-sm transition-colors cursor-pointer ${
                             selectedSubcategory === sub
-                              ? "bg-brand-red text-white font-medium"
-                              : "hover:bg-gray-200 text-brand-text"
+                              ? "bg-brand-gold text-brand-black font-medium"
+                              : "hover:bg-white/5 text-brand-muted"
                           }`}
                         >
                           {sub}
@@ -140,13 +143,13 @@ export default function AllProducts() {
                 </>
               )}
 
-              <h3 className="font-bold text-sm text-brand-text mb-3 uppercase tracking-wide">
+              <h3 className="font-bold text-xs text-brand-gold mb-3 uppercase tracking-widest">
                 Ordenar por
               </h3>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="w-full border border-gray-300 rounded px-3 py-2 text-sm bg-white cursor-pointer"
+                className="w-full border border-brand-gold/20 rounded px-3 py-2 text-sm bg-brand-dark2 text-brand-text cursor-pointer"
               >
                 <option value="relevance">Relevancia</option>
                 <option value="price-asc">Precio: Menor a Mayor</option>

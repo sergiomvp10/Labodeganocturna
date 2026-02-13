@@ -5,24 +5,21 @@ import { ChevronLeft, ChevronRight, Truck, Clock, MapPin } from "lucide-react";
 
 const slides = [
   {
-    title: "Tu licorería favorita a domicilio",
-    subtitle: "Servicio 23 horas al día en Duitama, Tunja y Sogamoso",
+    title: "Tu licorería de confianza",
+    subtitle: "Servicio a domicilio 23 horas al día",
     cta: "Ver Catálogo",
-    bg: "from-brand-dark to-brand-red",
     image: "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=1200&h=500&fit=crop",
   },
   {
-    title: "Ofertas de la Semana",
-    subtitle: "Hasta 20% de descuento en whiskys y rones seleccionados",
+    title: "Ofertas Exclusivas",
+    subtitle: "Los mejores precios en whiskys y rones premium",
     cta: "Ver Ofertas",
-    bg: "from-brand-red to-brand-dark",
     image: "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=1200&h=500&fit=crop",
   },
   {
-    title: "Cervezas Bien Frías",
-    subtitle: "Las mejores marcas nacionales e importadas a tu puerta",
-    cta: "Comprar Ahora",
-    bg: "from-brand-darker to-brand-red",
+    title: "Variedad Premium",
+    subtitle: "Las mejores marcas nacionales e importadas",
+    cta: "Explorar",
     image: "https://images.unsplash.com/photo-1535958636474-b021ee887b13?w=1200&h=500&fit=crop",
   },
 ];
@@ -42,9 +39,9 @@ export default function HeroBanner() {
 
   return (
     <section>
-      <div className="relative overflow-hidden bg-brand-dark">
+      <div className="relative overflow-hidden bg-brand-black">
         <div
-          className="flex transition-transform duration-500 ease-in-out"
+          className="flex transition-transform duration-700 ease-in-out"
           style={{ transform: `translateX(-${current * 100}%)` }}
         >
           {slides.map((slide, i) => (
@@ -56,17 +53,18 @@ export default function HeroBanner() {
                 className="absolute inset-0 bg-cover bg-center"
                 style={{ backgroundImage: `url(${slide.image})` }}
               />
-              <div className="absolute inset-0 bg-black/60" />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/30" />
               <div className="relative z-10 h-full flex items-center">
-                <div className="max-w-7xl mx-auto px-4 w-full">
+                <div className="max-w-7xl mx-auto px-6 md:px-10 w-full">
                   <div className="max-w-lg">
+                    <div className="w-12 h-0.5 bg-brand-gold mb-4" />
                     <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 leading-tight">
                       {slide.title}
                     </h2>
-                    <p className="text-gray-200 text-base sm:text-lg md:text-xl mb-6">
+                    <p className="text-brand-muted text-sm sm:text-base md:text-lg mb-8 tracking-wide">
                       {slide.subtitle}
                     </p>
-                    <button className="bg-brand-red hover:bg-red-700 text-white font-bold py-3 px-8 rounded-md text-sm md:text-base transition-colors cursor-pointer">
+                    <button className="bg-brand-gold hover:bg-brand-gold-light text-brand-black font-bold py-3 px-10 text-sm uppercase tracking-widest transition-colors cursor-pointer">
                       {slide.cta}
                     </button>
                   </div>
@@ -78,15 +76,15 @@ export default function HeroBanner() {
 
         <button
           onClick={prev}
-          className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white p-2 rounded-full transition-colors cursor-pointer z-20"
+          className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-brand-gold/30 text-white p-2 rounded-full transition-colors cursor-pointer z-20 border border-white/20"
         >
-          <ChevronLeft size={24} />
+          <ChevronLeft size={20} />
         </button>
         <button
           onClick={next}
-          className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white p-2 rounded-full transition-colors cursor-pointer z-20"
+          className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-brand-gold/30 text-white p-2 rounded-full transition-colors cursor-pointer z-20 border border-white/20"
         >
-          <ChevronRight size={24} />
+          <ChevronRight size={20} />
         </button>
 
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
@@ -94,32 +92,32 @@ export default function HeroBanner() {
             <button
               key={i}
               onClick={() => setCurrent(i)}
-              className={`w-3 h-3 rounded-full transition-colors cursor-pointer ${
-                i === current ? "bg-brand-gold" : "bg-white/40"
+              className={`w-8 h-1 rounded-full transition-colors cursor-pointer ${
+                i === current ? "bg-brand-gold" : "bg-white/30"
               }`}
             />
           ))}
         </div>
       </div>
 
-      <div className="bg-brand-light border-b border-brand-gray">
-        <div className="max-w-7xl mx-auto px-4 py-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="bg-brand-dark border-b border-brand-gold/10">
+        <div className="max-w-7xl mx-auto px-6 md:px-10 py-5 grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="flex items-center gap-3 justify-center sm:justify-start">
-            <Truck size={28} className="text-brand-red shrink-0" />
+            <Truck size={24} className="text-brand-gold shrink-0" />
             <div>
               <p className="font-bold text-sm text-brand-text">Domicilio Gratis</p>
               <p className="text-xs text-brand-muted">En pedidos mayores a $50.000</p>
             </div>
           </div>
           <div className="flex items-center gap-3 justify-center">
-            <Clock size={28} className="text-brand-red shrink-0" />
+            <Clock size={24} className="text-brand-gold shrink-0" />
             <div>
               <p className="font-bold text-sm text-brand-text">23 Horas al Día</p>
               <p className="text-xs text-brand-muted">Servicio casi las 24 horas</p>
             </div>
           </div>
           <div className="flex items-center gap-3 justify-center sm:justify-end">
-            <MapPin size={28} className="text-brand-red shrink-0" />
+            <MapPin size={24} className="text-brand-gold shrink-0" />
             <div>
               <p className="font-bold text-sm text-brand-text">3 Ciudades</p>
               <p className="text-xs text-brand-muted">Duitama, Tunja y Sogamoso</p>
