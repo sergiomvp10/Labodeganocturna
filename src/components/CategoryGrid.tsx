@@ -20,7 +20,7 @@ export default function CategoryGrid() {
 
   return (
     <section className="py-10 md:py-14 bg-brand-black">
-      <div className="w-full px-4 sm:px-8 lg:px-12">
+      <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16">
         <div className="text-center mb-8">
           <p className="text-brand-gold text-xs uppercase tracking-[0.2em] mb-2">
             Nuestras categorías

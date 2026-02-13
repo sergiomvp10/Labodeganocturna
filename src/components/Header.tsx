@@ -15,7 +15,7 @@ export default function Header() {
 
   return (
     <header className="bg-brand-dark sticky top-0 z-50 border-b border-brand-gold/20">
-      <div className="w-full px-4 sm:px-8 lg:px-12">
+      <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16">
         <div className="flex items-center justify-between h-20 md:h-24">
           <div className="flex items-center gap-3">
             <button
@@ -57,9 +57,9 @@ export default function Header() {
       </div>
 
       <div className="bg-brand-dark border-t border-brand-gold/10">
-        <div className="w-full px-4 sm:px-8 lg:px-12 py-2.5">
+        <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16 py-2.5">
           <div className="relative w-full">
-            <button className="absolute left-3 top-1/2 -translate-y-1/2">
+            <button className="absolute left-4 top-1/2 -translate-y-1/2">
               <Search size={16} className="text-brand-muted" />
             </button>
             <input
@@ -67,7 +67,7 @@ export default function Header() {
               placeholder="¿Qué estás buscando?"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full h-10 pl-10 pr-4 rounded-full text-sm bg-brand-dark2 text-brand-text border border-brand-gold/20 focus:outline-none focus:border-brand-gold/50 placeholder-brand-muted"
+              className="w-full h-10 pl-12 pr-4 rounded-full text-sm bg-brand-dark2 text-brand-text border border-brand-gold/20 focus:outline-none focus:border-brand-gold/50 placeholder-brand-muted"
             />
           </div>
         </div>

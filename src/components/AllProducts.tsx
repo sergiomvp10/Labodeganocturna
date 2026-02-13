@@ -6,7 +6,7 @@ import ProductCard from "./ProductCard";
 export default function AllProducts() {
   return (
     <section className="py-10 md:py-14 bg-brand-dark">
-      <div className="w-full px-4 sm:px-8 lg:px-12">
+      <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16">
         {categories.map((cat) => {
           const catProducts = products.filter((p) => p.category === cat.name);
           if (catProducts.length === 0) return null;
