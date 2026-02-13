@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from "./providers";
-import TopBar from "@/components/TopBar";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CartSidebar from "@/components/CartSidebar";
 import CityModal from "@/components/CityModal";
 import AgeVerification from "@/components/AgeVerification";
 import PromoBanner from "@/components/PromoBanner";
+import FloatingSidebar from "@/components/FloatingSidebar";
 
 export const metadata: Metadata = {
   title: "La Bodega Nocturna | Licorería a Domicilio 23 Horas",
@@ -26,8 +26,8 @@ export default function RootLayout({
       <body className="antialiased">
         <Providers>
           <AgeVerification />
-          <TopBar />
           <Header />
+          <FloatingSidebar />
           <main className="min-h-screen">{children}</main>
           <Footer />
           <PromoBanner />
