@@ -69,7 +69,7 @@ export const categories = [
     name: "No Alcohólicas",
     slug: "no-alcoholicas",
     subcategories: ["Gaseosas", "Jugos", "Agua", "Energizantes"],
-    image: "https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?w=400&h=300&fit=crop",
+    image: "/images/noalcoholicas-category.png",
   },
   {
     name: "Cigarrillos",
