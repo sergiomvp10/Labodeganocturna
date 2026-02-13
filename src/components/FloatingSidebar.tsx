@@ -30,6 +30,7 @@ export default function FloatingSidebar() {
         </a>
 
         <button
+          id="cart-icon-target"
           onClick={() => setIsCartOpen(true)}
           className="w-12 h-12 flex items-center justify-center rounded-xl bg-brand-gold text-brand-black hover:bg-brand-gold-light transition-all cursor-pointer relative"
         >

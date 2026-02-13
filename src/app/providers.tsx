@@ -6,6 +6,7 @@ import { CityProvider } from "@/context/CityContext";
 import { CityImagesProvider } from "@/context/CityImagesContext";
 import { SiteConfigProvider } from "@/context/SiteConfigContext";
 import { ProductsProvider } from "@/context/ProductsContext";
+import { FlyToCartProvider } from "@/context/FlyToCartContext";
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
@@ -13,7 +14,9 @@ export function Providers({ children }: { children: ReactNode }) {
       <ProductsProvider>
         <CityImagesProvider>
           <CityProvider>
-            <CartProvider>{children}</CartProvider>
+            <CartProvider>
+              <FlyToCartProvider>{children}</FlyToCartProvider>
+            </CartProvider>
           </CityProvider>
         </CityImagesProvider>
       </ProductsProvider>

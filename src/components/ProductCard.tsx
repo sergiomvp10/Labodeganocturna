@@ -1,12 +1,15 @@
 "use client";
 
 import { useCart } from "@/context/CartContext";
+import { useFlyToCart } from "@/context/FlyToCartContext";
 import { Product } from "@/data/products";
 import { ShoppingCart } from "lucide-react";
 import Link from "next/link";
+import { MouseEvent } from "react";
 
 export default function ProductCard({ product }: { product: Product }) {
   const { addToCart } = useCart();
+  const { fly } = useFlyToCart();
 
   const discount = product.originalPrice
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
@@ -55,7 +58,11 @@ export default function ProductCard({ product }: { product: Product }) {
             )}
           </div>
           <button
-            onClick={() => addToCart(product)}
+            onClick={(e: MouseEvent) => {
+              const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+              fly(product.image, rect.left + rect.width / 2, rect.top);
+              addToCart(product);
+            }}
             className="bg-brand-gold text-brand-black p-2 rounded-lg hover:bg-brand-goldLight transition-colors cursor-pointer"
           >
             <ShoppingCart size={16} />
