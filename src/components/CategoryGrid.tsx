@@ -5,13 +5,13 @@ import Link from "next/link";
 
 export default function CategoryGrid() {
   return (
-    <section className="py-10 md:py-14 bg-brand-black">
+    <section className="pt-16 md:pt-20 pb-10 md:pb-14 bg-brand-black">
       <div className="w-full px-4 sm:px-6 lg:px-10">
-        <div className="text-center mb-8">
-          <p className="text-brand-gold text-xs uppercase tracking-[0.2em] mb-2">
+        <div className="text-center mb-12">
+          <p className="text-brand-gold text-sm md:text-base uppercase tracking-[0.25em] mb-3">
             Nuestras categorias
           </p>
-          <h2 className="text-2xl md:text-3xl font-bold text-brand-text">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-brand-text">
             Explora nuestra variedad
           </h2>
         </div>
