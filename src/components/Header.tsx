@@ -15,7 +15,7 @@ export default function Header() {
 
   return (
     <header className="bg-brand-dark sticky top-0 z-50 border-b border-brand-gold/20">
-      <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16">
+      <div className="w-full px-4 sm:px-6 lg:px-10">
         <div className="flex items-center justify-between h-20 md:h-24">
           <div className="flex items-center gap-3">
             <button
@@ -57,7 +57,7 @@ export default function Header() {
       </div>
 
       <div className="bg-brand-dark border-t border-brand-gold/10">
-        <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16 py-2.5">
+        <div className="w-full px-4 sm:px-6 lg:px-10 py-2.5">
           <div className="relative w-full">
             <button className="absolute left-4 top-1/2 -translate-y-1/2">
               <Search size={16} className="text-brand-muted" />

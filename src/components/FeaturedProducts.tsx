@@ -22,7 +22,7 @@ export default function FeaturedProducts() {
 
   return (
     <section className="py-10 md:py-14 bg-brand-dark">
-      <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16">
+      <div className="w-full px-4 sm:px-6 lg:px-10">
         <div className="flex items-center justify-between mb-8">
           <div>
             <p className="text-brand-gold text-xs uppercase tracking-[0.2em] mb-2">

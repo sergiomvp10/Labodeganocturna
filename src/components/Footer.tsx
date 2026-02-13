@@ -5,7 +5,7 @@ import { Phone, Clock, MapPin } from "lucide-react";
 export default function Footer() {
   return (
     <footer className="bg-brand-dark border-t border-brand-gold/10">
-      <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16 py-12">
+      <div className="w-full px-4 sm:px-6 lg:px-10 py-12">
         <div className="flex flex-col items-center mb-10">
           <img
             src="/logo.png"

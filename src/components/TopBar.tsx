@@ -8,7 +8,7 @@ export default function TopBar() {
 
   return (
     <div className="bg-brand-black border-b border-brand-gold/10">
-      <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16 py-2 flex items-center justify-between text-[11px] text-brand-muted">
+      <div className="w-full px-4 sm:px-6 lg:px-10 py-2 flex items-center justify-between text-[11px] text-brand-muted">
         <div className="flex items-center gap-4">
           <span className="flex items-center gap-1">
             <Truck size={12} className="text-brand-gold" />
