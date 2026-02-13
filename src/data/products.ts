@@ -75,7 +75,7 @@ export const categories = [
     name: "Cigarrillos",
     slug: "cigarrillos",
     subcategories: ["Nacionales", "Importados"],
-    image: "https://images.unsplash.com/photo-1527695538428-52c0eb4140e1?w=400&h=300&fit=crop",
+    image: "/images/cigarrillos-category.png",
   },
   {
     name: "Pasabocas",
