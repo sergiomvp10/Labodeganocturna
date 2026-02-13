@@ -1,7 +1,6 @@
 import HeroBanner from "@/components/HeroBanner";
 import CategoryGrid from "@/components/CategoryGrid";
 import FeaturedProducts from "@/components/FeaturedProducts";
-import AllProducts from "@/components/AllProducts";
 import OffersSection from "@/components/OffersSection";
 
 export default function Home() {
@@ -11,7 +10,6 @@ export default function Home() {
       <CategoryGrid />
       <FeaturedProducts />
       <OffersSection />
-      <AllProducts />
     </>
   );
 }
