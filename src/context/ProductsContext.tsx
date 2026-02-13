@@ -14,18 +14,18 @@ interface ProductsContextType {
 }
 
 const ProductsContext = createContext<ProductsContextType>({
-  products: staticProducts,
+  products: [],
   ready: false,
 });
 
 export function ProductsProvider({ children }: { children: ReactNode }) {
-  const [products, setProducts] = useState<Product[]>(staticProducts);
+  const [products, setProducts] = useState<Product[]>([]);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
     api.storefront.products()
       .then((data) => setProducts(data.map(toProduct)))
-      .catch(() => {})
+      .catch(() => setProducts(staticProducts))
       .finally(() => setReady(true));
   }, []);
 
