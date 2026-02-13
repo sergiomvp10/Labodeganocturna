@@ -1,23 +1,21 @@
 "use client";
 
-import { products as defaultProducts, Product } from "@/data/products";
+import { Product } from "@/data/products";
 import ProductCard from "./ProductCard";
 import { useState, useEffect } from "react";
-import { useSiteConfig } from "@/context/SiteConfigContext";
+import { api, ProductAPI } from "@/lib/api";
+
+function toProduct(p: ProductAPI): Product {
+  return { ...p, originalPrice: p.originalPrice ?? undefined, discount: p.discount ?? undefined };
+}
 
 export default function FeaturedProducts() {
   const [paused, setPaused] = useState(false);
-  const { featuredIds } = useSiteConfig();
-  const [allProducts, setAllProducts] = useState<Product[]>(defaultProducts);
+  const [featured, setFeatured] = useState<Product[]>([]);
 
   useEffect(() => {
-    const stored = localStorage.getItem("lbn_products");
-    if (stored) setAllProducts(JSON.parse(stored));
+    api.storefront.featured().then((data) => setFeatured(data.map(toProduct))).catch(() => {});
   }, []);
-
-  const featured = featuredIds.length > 0
-    ? allProducts.filter((p) => featuredIds.includes(p.id)).slice(0, 12)
-    : allProducts.filter((p) => p.featured).slice(0, 12);
 
   if (featured.length === 0) return null;
 

@@ -3,21 +3,10 @@
 import { useState, useEffect } from "react";
 import { Product, categories } from "@/data/products";
 import { Plus, Pencil, Trash2, Search, X, Upload, ChevronDown } from "lucide-react";
+import { api, ProductAPI } from "@/lib/api";
 
-function getStoredProducts(): Product[] {
-  if (typeof window === "undefined") return [];
-  const stored = localStorage.getItem("lbn_products");
-  if (stored) return JSON.parse(stored);
-  return [];
-}
-
-function saveProducts(products: Product[]) {
-  localStorage.setItem("lbn_products", JSON.stringify(products));
-}
-
-function getDefaultProducts(): Product[] {
-  const { products } = require("@/data/products");
-  return products;
+function toProduct(p: ProductAPI): Product {
+  return { ...p, originalPrice: p.originalPrice ?? undefined, discount: p.discount ?? undefined };
 }
 
 export default function ProductosPage() {
@@ -28,14 +17,16 @@ export default function ProductosPage() {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [loaded, setLoaded] = useState(false);
 
-  useEffect(() => {
-    let stored = getStoredProducts();
-    if (stored.length === 0) {
-      stored = getDefaultProducts();
-      saveProducts(stored);
-    }
-    setProducts(stored);
+  const loadProducts = async () => {
+    try {
+      const data = await api.getProducts();
+      setProducts(data.map(toProduct));
+    } catch {}
     setLoaded(true);
+  };
+
+  useEffect(() => {
+    loadProducts();
   }, []);
 
   const filtered = products.filter((p) => {
@@ -46,24 +37,40 @@ export default function ProductosPage() {
     return matchSearch && matchCategory;
   });
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: number) => {
     if (!confirm("¿Eliminar este producto?")) return;
-    const updated = products.filter((p) => p.id !== id);
-    setProducts(updated);
-    saveProducts(updated);
+    try {
+      await api.deleteProduct(id);
+      setProducts(products.filter((p) => p.id !== id));
+    } catch {}
   };
 
-  const handleSave = (product: Product) => {
-    let updated: Product[];
-    if (editingProduct) {
-      updated = products.map((p) => (p.id === product.id ? product : p));
-    } else {
-      const maxId = products.reduce((max, p) => Math.max(max, p.id), 0);
-      product.id = maxId + 1;
-      updated = [...products, product];
-    }
-    setProducts(updated);
-    saveProducts(updated);
+  const handleSave = async (product: Product) => {
+    try {
+      const payload: ProductAPI = {
+        id: product.id,
+        name: product.name,
+        category: product.category,
+        subcategory: product.subcategory,
+        price: product.price,
+        originalPrice: product.originalPrice || null,
+        image: product.image,
+        rating: product.rating,
+        reviews: product.reviews,
+        volume: product.volume,
+        brand: product.brand,
+        description: product.description,
+        inStock: product.inStock,
+        featured: product.featured || false,
+        discount: product.discount || null,
+      };
+      if (editingProduct) {
+        await api.updateProduct(product.id, payload);
+      } else {
+        await api.createProduct(payload);
+      }
+      await loadProducts();
+    } catch {}
     setShowForm(false);
     setEditingProduct(null);
   };

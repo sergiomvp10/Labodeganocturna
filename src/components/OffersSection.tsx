@@ -1,24 +1,22 @@
 "use client";
 
-import { products as defaultProducts, Product } from "@/data/products";
+import { Product } from "@/data/products";
 import ProductCard from "./ProductCard";
 import { useRef, useEffect, useState } from "react";
-import { useSiteConfig } from "@/context/SiteConfigContext";
+import { api, ProductAPI } from "@/lib/api";
+
+function toProduct(p: ProductAPI): Product {
+  return { ...p, originalPrice: p.originalPrice ?? undefined, discount: p.discount ?? undefined };
+}
 
 export default function OffersSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
-  const { offerIds } = useSiteConfig();
-  const [allProducts, setAllProducts] = useState<Product[]>(defaultProducts);
+  const [offers, setOffers] = useState<Product[]>([]);
 
   useEffect(() => {
-    const stored = localStorage.getItem("lbn_products");
-    if (stored) setAllProducts(JSON.parse(stored));
+    api.storefront.offers().then((data) => setOffers(data.map(toProduct))).catch(() => {});
   }, []);
-
-  const offers = offerIds.length > 0
-    ? allProducts.filter((p) => offerIds.includes(p.id)).slice(0, 12)
-    : allProducts.filter((p) => p.originalPrice).slice(0, 12);
 
   useEffect(() => {
     const handleScroll = () => {

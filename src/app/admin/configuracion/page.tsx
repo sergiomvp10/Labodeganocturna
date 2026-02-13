@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useSiteConfig, BannerItem } from "@/context/SiteConfigContext";
 import { useAuth, AdminUser } from "@/context/AuthContext";
 import { Upload, Trash2, GripVertical, Eye, EyeOff, Plus, X, Save, UserPlus, Pencil, Image, Users, FileText } from "lucide-react";
+import { api } from "@/lib/api";
 
 type Tab = "banners" | "users" | "footer";
 
@@ -43,52 +44,58 @@ export default function ConfiguracionPage() {
 }
 
 function BannersTab() {
-  const { banners, setBanners } = useSiteConfig();
+  const { banners, setBanners, refreshBanners } = useSiteConfig();
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = () => {
-      const newBanner: BannerItem = {
-        id: Date.now().toString(),
-        image: reader.result as string,
-        active: true,
-        order: banners.length,
-      };
-      setBanners([...banners, newBanner]);
+    reader.onload = async () => {
+      try {
+        await api.createBanner(reader.result as string, true, banners.length);
+        await refreshBanners();
+      } catch {}
     };
     reader.readAsDataURL(file);
     e.target.value = "";
   };
 
-  const handleUrlAdd = () => {
+  const handleUrlAdd = async () => {
     const url = prompt("Ingresa la URL de la imagen del banner:");
     if (!url) return;
-    const newBanner: BannerItem = {
-      id: Date.now().toString(),
-      image: url,
-      active: true,
-      order: banners.length,
-    };
-    setBanners([...banners, newBanner]);
+    try {
+      await api.createBanner(url, true, banners.length);
+      await refreshBanners();
+    } catch {}
   };
 
-  const toggleBanner = (id: string) => {
-    setBanners(banners.map((b) => (b.id === id ? { ...b, active: !b.active } : b)));
+  const toggleBanner = async (id: string) => {
+    const banner = banners.find((b) => b.id === id);
+    if (!banner) return;
+    try {
+      await api.updateBanner(Number(id), { active: !banner.active });
+      setBanners(banners.map((b) => (b.id === id ? { ...b, active: !b.active } : b)));
+    } catch {}
   };
 
-  const deleteBanner = (id: string) => {
+  const deleteBanner = async (id: string) => {
     if (!confirm("¿Eliminar este banner?")) return;
-    setBanners(banners.filter((b) => b.id !== id));
+    try {
+      await api.deleteBanner(Number(id));
+      setBanners(banners.filter((b) => b.id !== id));
+    } catch {}
   };
 
-  const moveBanner = (index: number, direction: -1 | 1) => {
+  const moveBanner = async (index: number, direction: -1 | 1) => {
     const newIndex = index + direction;
     if (newIndex < 0 || newIndex >= banners.length) return;
     const updated = [...banners];
     [updated[index], updated[newIndex]] = [updated[newIndex], updated[index]];
-    setBanners(updated.map((b, i) => ({ ...b, order: i })));
+    const reordered = updated.map((b, i) => ({ ...b, order: i }));
+    setBanners(reordered);
+    for (const b of reordered) {
+      await api.updateBanner(Number(b.id), { order: b.order }).catch(() => {});
+    }
   };
 
   return (
@@ -288,13 +295,13 @@ function UsersTab() {
   const [newRole, setNewRole] = useState<"admin" | "editor">("editor");
   const [error, setError] = useState("");
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     setError("");
     if (!newUsername || !newPassword) {
       setError("Completa todos los campos");
       return;
     }
-    const success = addUser(newUsername, newPassword, newRole);
+    const success = await addUser(newUsername, newPassword, newRole);
     if (!success) {
       setError("El nombre de usuario ya existe");
       return;
@@ -305,13 +312,13 @@ function UsersTab() {
     setShowForm(false);
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     if (!editingUser) return;
-    const data: Partial<AdminUser> = {};
+    const data: Partial<AdminUser> & { password?: string } = {};
     if (newUsername) data.username = newUsername;
     if (newPassword) data.password = newPassword;
     data.role = newRole;
-    updateUser(editingUser.id, data);
+    await updateUser(editingUser.id, data);
     setEditingUser(null);
     setNewUsername("");
     setNewPassword("");
