@@ -13,10 +13,10 @@ export default function Header() {
         <div className="relative flex items-center justify-center py-4 md:py-6">
           <button
             onClick={() => setIsCityModalOpen(true)}
-            className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center gap-2.5 hover:opacity-80 transition-opacity cursor-pointer"
+            className="absolute left-4 md:left-8 lg:left-12 top-1/2 -translate-y-1/2 flex items-center gap-2.5 hover:opacity-80 transition-opacity cursor-pointer"
           >
-            <MapPin size={18} className="text-brand-muted" />
-            <span className="text-sm font-bold tracking-widest text-brand-text uppercase">
+            <MapPin size={20} className="text-brand-muted" />
+            <span className="text-base md:text-lg font-bold tracking-widest text-brand-text uppercase">
               {selectedCity}
             </span>
           </button>
