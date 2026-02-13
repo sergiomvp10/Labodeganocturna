@@ -40,7 +40,6 @@ export default function CategoryPage({ slug }: { slug: string }) {
 
         <div className="text-center mb-10">
           <h1 className="text-3xl md:text-4xl font-bold text-brand-text">{categoryName}</h1>
-          <p className="text-brand-muted mt-2">{products.length} productos</p>
         </div>
 
         {products.length === 0 ? (
