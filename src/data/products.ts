@@ -45,7 +45,7 @@ export const categories = [
     name: "Vino",
     slug: "vino",
     subcategories: ["Tinto", "Blanco", "Rosado", "Espumoso"],
-    image: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=400&h=300&fit=crop",
+    image: "/images/vino-category.png",
   },
   {
     name: "Cerveza",
