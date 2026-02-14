@@ -92,8 +92,7 @@ export default function ProductPageClient({ id }: { id: string }) {
             <img
               src={product.image}
               alt={product.name}
-              style={{ maxHeight: "100%", maxWidth: "100%" }}
-              className="object-contain"
+              className="w-full h-full object-contain"
               onError={(e) => {
                 (e.target as HTMLImageElement).src =
                   "https://placehold.co/500x500/111/c9a84c?text=" +
