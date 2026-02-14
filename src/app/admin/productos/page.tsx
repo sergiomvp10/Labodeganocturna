@@ -69,7 +69,11 @@ export default function ProductosPage() {
         discount: product.discount || null,
       };
       if (editingProduct) {
-        await api.updateProduct(product.id, payload);
+        const updatePayload: Partial<ProductAPI> = { ...payload };
+        if (payload.image && payload.image.startsWith("http")) {
+          delete updatePayload.image;
+        }
+        await api.updateProduct(product.id, updatePayload);
       } else {
         await api.createProduct(payload);
       }
