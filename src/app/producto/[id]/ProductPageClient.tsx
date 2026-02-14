@@ -83,16 +83,17 @@ export default function ProductPageClient({ id }: { id: string }) {
         </Link>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-          <div className="bg-brand-dark rounded-xl p-8 flex items-center justify-center aspect-square relative border border-brand-gold/10">
+          <div className="bg-brand-dark rounded-xl p-4 md:p-8 flex items-center justify-center h-[250px] md:h-auto md:aspect-square relative border border-brand-gold/10 overflow-hidden">
             {product.discount && (
-              <div className="absolute top-4 left-4 bg-brand-gold text-brand-black text-sm font-bold px-3 py-1 rounded">
+              <div className="absolute top-4 left-4 bg-brand-gold text-brand-black text-sm font-bold px-3 py-1 rounded z-10">
                 {product.discount}
               </div>
             )}
             <img
               src={product.image}
               alt={product.name}
-              className="max-h-full max-w-full object-contain"
+              style={{ maxHeight: "100%", maxWidth: "100%" }}
+              className="object-contain"
               onError={(e) => {
                 (e.target as HTMLImageElement).src =
                   "https://placehold.co/500x500/111/c9a84c?text=" +
@@ -203,7 +204,7 @@ export default function ProductPageClient({ id }: { id: string }) {
                     <img
                       src={p.image}
                       alt={p.name}
-                      className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
                       onError={(e) => {
                         (e.target as HTMLImageElement).src =
                           "https://placehold.co/300x300/111/c9a84c?text=Img";
