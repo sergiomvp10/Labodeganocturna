@@ -133,12 +133,31 @@ export const api = {
       body: JSON.stringify({ ids }),
     }),
 
+  getCategories: () =>
+    request<CategoryAPI[]>("/api/categories"),
+
+  createCategory: (data: { name: string; slug: string; subcategories: string[]; image: string }) =>
+    request<{ id: number; ok: boolean }>("/api/categories", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+
+  updateCategory: (id: number, data: Partial<CategoryAPI>) =>
+    request<{ ok: boolean }>(`/api/categories/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    }),
+
+  deleteCategory: (id: number) =>
+    request<{ ok: boolean }>(`/api/categories/${id}`, { method: "DELETE" }),
+
   storefront: {
     products: () => request<ProductAPI[]>("/api/storefront/products"),
     featured: () => request<ProductAPI[]>("/api/storefront/featured"),
     offers: () => request<ProductAPI[]>("/api/storefront/offers"),
     banners: () => request<BannerAPI[]>("/api/storefront/banners"),
     footer: () => request<FooterAPI>("/api/storefront/footer"),
+    categories: () => request<CategoryAPI[]>("/api/storefront/categories"),
   },
 };
 
@@ -205,4 +224,12 @@ export interface FooterAPI {
   scheduleSub: string;
   whatsapp: string;
   description: string;
+}
+
+export interface CategoryAPI {
+  id: number;
+  name: string;
+  slug: string;
+  subcategories: string[];
+  image: string;
 }

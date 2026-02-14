@@ -1,12 +1,13 @@
 "use client";
 
-import { categories } from "@/data/products";
+import { useCategories } from "@/context/CategoriesContext";
 import { useProducts } from "@/context/ProductsContext";
 import ProductCard from "./ProductCard";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
 export default function CategoryPage({ slug }: { slug: string }) {
+  const { categories } = useCategories();
   const category = categories.find((c) => c.slug === slug);
   const categoryName = category?.name || slug;
   const { products: allProducts } = useProducts();

@@ -6,11 +6,13 @@ import { CityProvider } from "@/context/CityContext";
 import { CityImagesProvider } from "@/context/CityImagesContext";
 import { SiteConfigProvider } from "@/context/SiteConfigContext";
 import { ProductsProvider } from "@/context/ProductsContext";
+import { CategoriesProvider } from "@/context/CategoriesContext";
 import { FlyToCartProvider } from "@/context/FlyToCartContext";
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
     <SiteConfigProvider>
+      <CategoriesProvider>
       <ProductsProvider>
         <CityImagesProvider>
           <CityProvider>
@@ -20,6 +22,7 @@ export function Providers({ children }: { children: ReactNode }) {
           </CityProvider>
         </CityImagesProvider>
       </ProductsProvider>
+      </CategoriesProvider>
     </SiteConfigProvider>
   );
 }
