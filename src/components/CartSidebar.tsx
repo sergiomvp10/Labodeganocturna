@@ -85,15 +85,20 @@ export default function CartSidebar() {
       <div className="fixed right-0 top-0 bottom-0 w-full max-w-md bg-brand-dark border-l border-brand-gold/10 z-[101] flex flex-col">
         {step === "cart" && (
           <>
-            <div className="flex items-center justify-between p-5 border-b border-brand-gold/10">
-              <div className="flex items-center gap-2">
-                <ShoppingBag size={20} className="text-brand-gold" />
-                <h2 className="text-lg font-bold text-brand-text">
-                  Tu carrito ({totalItems})
-                </h2>
+            <div className="flex items-center justify-between px-5 py-4 border-b border-brand-gold/20 bg-gradient-to-r from-brand-dark to-brand-dark2">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-brand-gold/10 flex items-center justify-center">
+                  <ShoppingBag size={18} className="text-brand-gold" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-brand-text tracking-wide">
+                    Mi Carrito
+                  </h2>
+                  <p className="text-xs text-brand-muted">{totalItems} {totalItems === 1 ? 'producto' : 'productos'}</p>
+                </div>
               </div>
-              <button onClick={handleClose} className="text-brand-muted hover:text-brand-gold cursor-pointer">
-                <X size={22} />
+              <button onClick={handleClose} className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-brand-muted hover:text-brand-gold hover:bg-brand-gold/10 transition-colors cursor-pointer">
+                <X size={18} />
               </button>
             </div>
 
@@ -155,21 +160,21 @@ export default function CartSidebar() {
             </div>
 
             {items.length > 0 && (
-              <div className="p-5 border-t border-brand-gold/10 space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-brand-muted text-sm">Total</span>
-                  <span className="text-xl font-bold text-brand-gold">
-                    ${totalPrice.toLocaleString()}
-                  </span>
-                </div>
+              <div className="p-5 border-t border-brand-gold/20 bg-gradient-to-t from-brand-dark2 to-brand-dark space-y-3">
                 {totalPrice < 150000 && (
                   <p className="text-xs text-brand-muted text-center">
                     Agrega ${(150000 - totalPrice).toLocaleString()} más para envío gratis
                   </p>
                 )}
+                <div className="flex items-center justify-between px-1">
+                  <span className="text-sm text-brand-muted">Total</span>
+                  <span className="text-2xl font-bold text-brand-gold">
+                    ${totalPrice.toLocaleString()}
+                  </span>
+                </div>
                 <button
                   onClick={handleCheckout}
-                  className="w-full py-3.5 bg-brand-gold text-brand-black font-bold rounded-xl hover:bg-brand-goldLight transition-colors cursor-pointer text-sm"
+                  className="w-full py-4 bg-gradient-to-r from-brand-gold to-yellow-500 text-brand-black font-bold rounded-2xl hover:from-yellow-500 hover:to-brand-gold transition-all cursor-pointer text-base tracking-wide shadow-lg shadow-brand-gold/20 active:scale-[0.98]"
                 >
                   Hacer pedido
                 </button>
