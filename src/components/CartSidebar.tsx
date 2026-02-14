@@ -288,7 +288,11 @@ export default function CartSidebar() {
                 <p className="text-red-400 text-sm text-center font-medium">{error}</p>
               )}
 
-              <div className="mt-6 mb-2">
+              <div style={{ marginTop: "24px", marginBottom: "24px" }} className="flex justify-center">
+                <img src="/divider-gold.png" alt="" style={{ width: "70%", height: "auto", opacity: 0.85 }} />
+              </div>
+
+              <div style={{ marginBottom: "8px" }}>
                 <button
                   onClick={handleSubmit}
                   disabled={submitting}
