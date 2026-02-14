@@ -83,7 +83,7 @@ export default function ProductPageClient({ id }: { id: string }) {
         </Link>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-          <div className="bg-brand-dark rounded-xl p-6 md:p-8 flex items-center justify-center aspect-[4/3] md:aspect-square max-h-[50vh] md:max-h-none relative border border-brand-gold/10">
+          <div className="bg-brand-dark rounded-xl p-4 md:p-8 flex items-center justify-center h-[250px] md:h-auto md:aspect-square relative border border-brand-gold/10">
             {product.discount && (
               <div className="absolute top-4 left-4 bg-brand-gold text-brand-black text-sm font-bold px-3 py-1 rounded">
                 {product.discount}
