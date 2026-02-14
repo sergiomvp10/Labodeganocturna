@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Product, categories } from "@/data/products";
+import { Product } from "@/data/products";
+import { useCategories } from "@/context/CategoriesContext";
 import { Plus, Pencil, Trash2, Search, X, Upload, ChevronDown, Loader2 } from "lucide-react";
 import { api, ProductAPI } from "@/lib/api";
 
@@ -10,6 +11,7 @@ function toProduct(p: ProductAPI): Product {
 }
 
 export default function ProductosPage() {
+  const { categories } = useCategories();
   const [products, setProducts] = useState<Product[]>([]);
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
@@ -69,7 +71,11 @@ export default function ProductosPage() {
         discount: product.discount || null,
       };
       if (editingProduct) {
-        await api.updateProduct(product.id, payload);
+        const updatePayload: Partial<ProductAPI> = { ...payload };
+        if (payload.image && payload.image.startsWith("http")) {
+          delete updatePayload.image;
+        }
+        await api.updateProduct(product.id, updatePayload);
       } else {
         await api.createProduct(payload);
       }
@@ -222,12 +228,13 @@ function ProductForm({
   onSave: (p: Product) => void;
   onClose: () => void;
 }) {
+  const { categories } = useCategories();
   const [form, setForm] = useState<Product>(
     product || {
       id: 0,
       name: "",
-      category: categories[0].name,
-      subcategory: categories[0].subcategories[0],
+      category: categories[0]?.name || "",
+      subcategory: categories[0]?.subcategories[0] || "",
       price: 0,
       image: "",
       rating: 4.0,

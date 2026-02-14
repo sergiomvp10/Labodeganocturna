@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode, useCallback } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from "react";
 import { Product } from "@/data/products";
 
 export interface CartItem {
@@ -20,11 +20,51 @@ interface CartContextType {
   setIsCartOpen: (open: boolean) => void;
 }
 
+const CART_KEY = "lbn_cart";
+const CART_TS_KEY = "lbn_cart_ts";
+const CART_EXPIRY_MS = 20 * 60 * 1000;
+
+function loadCart(): CartItem[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const ts = localStorage.getItem(CART_TS_KEY);
+    if (ts && Date.now() - Number(ts) > CART_EXPIRY_MS) {
+      localStorage.removeItem(CART_KEY);
+      localStorage.removeItem(CART_TS_KEY);
+      return [];
+    }
+    const raw = localStorage.getItem(CART_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  return [];
+}
+
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const [items, setItems] = useState<CartItem[]>(loadCart);
   const [isCartOpen, setIsCartOpen] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem(CART_KEY, JSON.stringify(items));
+    if (items.length > 0) {
+      localStorage.setItem(CART_TS_KEY, String(Date.now()));
+    } else {
+      localStorage.removeItem(CART_TS_KEY);
+    }
+  }, [items]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const ts = localStorage.getItem(CART_TS_KEY);
+      if (ts && Date.now() - Number(ts) > CART_EXPIRY_MS) {
+        setItems([]);
+        localStorage.removeItem(CART_KEY);
+        localStorage.removeItem(CART_TS_KEY);
+      }
+    }, 60_000);
+    return () => clearInterval(interval);
+  }, []);
 
   const addToCart = useCallback((product: Product) => {
     setItems((prev) => {

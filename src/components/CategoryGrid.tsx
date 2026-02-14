@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { categories } from "@/data/products";
+import { useCategories } from "@/context/CategoriesContext";
+import { CategoryAPI } from "@/lib/api";
 import Link from "next/link";
 
-function CategoryCard({ cat, index }: { cat: (typeof categories)[number]; index: number }) {
+function CategoryCard({ cat, index }: { cat: CategoryAPI; index: number }) {
   const ref = useRef<HTMLAnchorElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -55,6 +56,8 @@ function CategoryCard({ cat, index }: { cat: (typeof categories)[number]; index:
 }
 
 export default function CategoryGrid() {
+  const { categories } = useCategories();
+
   return (
     <section className="pt-16 md:pt-20 bg-brand-black" style={{ paddingBottom: "12rem" }}>
       <div className="w-full flex flex-col items-center">

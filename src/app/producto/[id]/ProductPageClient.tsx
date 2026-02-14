@@ -83,7 +83,7 @@ export default function ProductPageClient({ id }: { id: string }) {
         </Link>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-          <div className="bg-brand-dark rounded-xl p-4 md:p-8 flex items-center justify-center h-[250px] md:h-auto md:aspect-square relative border border-brand-gold/10 overflow-hidden">
+          <div className="bg-brand-dark rounded-xl p-4 md:p-8 flex items-center justify-center h-[55vw] max-h-[350px] md:h-auto md:max-h-none md:aspect-square relative border border-brand-gold/10 overflow-hidden">
             {product.discount && (
               <div className="absolute top-4 left-4 bg-brand-gold text-brand-black text-sm font-bold px-3 py-1 rounded z-10">
                 {product.discount}
@@ -92,8 +92,7 @@ export default function ProductPageClient({ id }: { id: string }) {
             <img
               src={product.image}
               alt={product.name}
-              style={{ maxHeight: "100%", maxWidth: "100%" }}
-              className="object-contain"
+              className="w-full h-full object-contain"
               onError={(e) => {
                 (e.target as HTMLImageElement).src =
                   "https://placehold.co/500x500/111/c9a84c?text=" +

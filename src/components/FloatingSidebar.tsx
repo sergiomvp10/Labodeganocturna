@@ -3,11 +3,12 @@
 import { Menu, Phone, ShoppingCart, Search, User } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useState } from "react";
-import { categories } from "@/data/products";
+import { useCategories } from "@/context/CategoriesContext";
 import Link from "next/link";
 
 export default function FloatingSidebar() {
   const { totalItems, setIsCartOpen } = useCart();
+  const { categories } = useCategories();
   const [showMenu, setShowMenu] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
