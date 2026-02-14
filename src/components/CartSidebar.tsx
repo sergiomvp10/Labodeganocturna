@@ -287,28 +287,28 @@ export default function CartSidebar() {
               {error && (
                 <p className="text-red-400 text-sm text-center font-medium">{error}</p>
               )}
-            </div>
 
-            <div className="px-6 py-4 border-t border-brand-gold/20 bg-gradient-to-t from-brand-dark2 to-brand-dark">
-              <button
-                onClick={handleSubmit}
-                disabled={submitting}
-                className="relative w-full py-4 bg-gradient-to-r from-brand-gold to-yellow-500 text-brand-black font-bold rounded-2xl hover:from-yellow-500 hover:to-brand-gold transition-all cursor-pointer text-base tracking-wide shadow-lg shadow-brand-gold/20 active:scale-[0.98] overflow-hidden flex items-center justify-center gap-2 disabled:opacity-50"
-              >
-                {submitting ? (
-                  <>
-                    <Loader2 size={18} className="animate-spin" />
-                    <span className="relative">Enviando...</span>
-                  </>
-                ) : (
-                  <>
-                    <span className="absolute inset-0 overflow-hidden rounded-2xl">
-                      <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent" style={{ animation: "shimmer 2.5s ease-in-out infinite" }} />
-                    </span>
-                    <span className="relative">{`Confirmar pedido · $${totalPrice.toLocaleString()}`}</span>
-                  </>
-                )}
-              </button>
+              <div className="mt-6 mb-2">
+                <button
+                  onClick={handleSubmit}
+                  disabled={submitting}
+                  className="relative w-full py-4 bg-gradient-to-r from-brand-gold to-yellow-500 text-brand-black font-bold rounded-2xl hover:from-yellow-500 hover:to-brand-gold transition-all cursor-pointer text-base tracking-wide shadow-lg shadow-brand-gold/20 active:scale-[0.98] overflow-hidden flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  {submitting ? (
+                    <>
+                      <Loader2 size={18} className="animate-spin" />
+                      <span className="relative">Enviando...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="absolute inset-0 overflow-hidden rounded-2xl">
+                        <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent" style={{ animation: "shimmer 2.5s ease-in-out infinite" }} />
+                      </span>
+                      <span className="relative">{`Confirmar pedido · $${totalPrice.toLocaleString()}`}</span>
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </>
         )}
