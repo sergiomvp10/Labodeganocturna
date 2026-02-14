@@ -188,17 +188,17 @@ export default function CartSidebar() {
 
         {step === "checkout" && (
           <>
-            <div className="flex items-center gap-3 px-5 py-4 border-b border-brand-gold/20 bg-gradient-to-r from-brand-dark to-brand-dark2">
-              <button onClick={() => setStep("cart")} className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-brand-muted hover:text-brand-gold hover:bg-brand-gold/10 transition-colors cursor-pointer">
+            <div className="relative flex items-center justify-center px-6 py-4 border-b border-brand-gold/20 bg-gradient-to-r from-brand-dark to-brand-dark2">
+              <button onClick={() => setStep("cart")} className="absolute left-4 w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-brand-muted hover:text-brand-gold hover:bg-brand-gold/10 transition-colors cursor-pointer">
                 <ArrowLeft size={18} />
               </button>
               <h2 className="text-lg font-bold text-brand-text tracking-wide">Completar pedido</h2>
-              <button onClick={handleClose} className="ml-auto w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-brand-muted hover:text-brand-gold hover:bg-brand-gold/10 transition-colors cursor-pointer">
+              <button onClick={handleClose} className="absolute right-4 w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-brand-muted hover:text-brand-gold hover:bg-brand-gold/10 transition-colors cursor-pointer">
                 <X size={18} />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-5 space-y-5">
+            <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
               <div className="bg-brand-dark2 rounded-2xl border border-brand-gold/15 p-5 space-y-3">
                 <h3 className="text-xs font-bold text-brand-gold uppercase tracking-widest mb-2">Resumen</h3>
                 {items.map((item) => (
@@ -288,6 +288,7 @@ export default function CartSidebar() {
                 <p className="text-red-400 text-sm text-center font-medium">{error}</p>
               )}
 
+              <div className="pt-4">
               <button
                 onClick={handleSubmit}
                 disabled={submitting}
@@ -303,10 +304,11 @@ export default function CartSidebar() {
                     <span className="absolute inset-0 overflow-hidden rounded-2xl">
                       <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent" style={{ animation: "shimmer 2.5s ease-in-out infinite" }} />
                     </span>
-                    <span className="relative">Confirmar pedido · ${totalPrice.toLocaleString()}</span>
+                    <span className="relative">{`Confirmar pedido · $${totalPrice.toLocaleString()}`}</span> 
                   </>
                 )}
               </button>
+              </div>
             </div>
           </>
         )}
