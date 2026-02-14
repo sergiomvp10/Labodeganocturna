@@ -172,9 +172,12 @@ export default function CartSidebar() {
                     </div>
                     <button
                       onClick={handleCheckout}
-                      className="w-full py-4 bg-gradient-to-r from-brand-gold to-yellow-500 text-brand-black font-bold rounded-2xl hover:from-yellow-500 hover:to-brand-gold transition-all cursor-pointer text-base tracking-wide shadow-lg shadow-brand-gold/20 active:scale-[0.98]"
+                      className="relative w-full py-4 bg-gradient-to-r from-brand-gold to-yellow-500 text-brand-black font-bold rounded-2xl hover:from-yellow-500 hover:to-brand-gold transition-all cursor-pointer text-base tracking-wide shadow-lg shadow-brand-gold/20 active:scale-[0.98] overflow-hidden"
                     >
-                      Hacer pedido
+                      <span className="absolute inset-0 overflow-hidden rounded-2xl">
+                        <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent" style={{ animation: "shimmer 2.5s ease-in-out infinite" }} />
+                      </span>
+                      <span className="relative">Hacer pedido</span>
                     </button>
                   </div>
                 </>
