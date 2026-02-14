@@ -1,13 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { products, formatPrice } from "@/data/products";
+import { formatPrice } from "@/data/products";
 import { useCart } from "@/context/CartContext";
+import { useProducts } from "@/context/ProductsContext";
 import { Star, ShoppingCart, Minus, Plus, ArrowLeft, Truck, Clock, Shield } from "lucide-react";
 import Link from "next/link";
 
 export default function ProductPageClient({ id }: { id: string }) {
-  const product = products.find((p) => p.id === parseInt(id));
+  const { products: allProducts } = useProducts();
+  const product = allProducts.find((p) => p.id === parseInt(id)) || null;
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
 
@@ -27,8 +29,8 @@ export default function ProductPageClient({ id }: { id: string }) {
     );
   }
 
-  const related = products
-    .filter((p) => p.category === product.category && p.id !== product.id)
+  const related = allProducts
+    .filter((p) => p.category.toLowerCase() === product.category.toLowerCase() && p.id !== product.id)
     .slice(0, 4);
 
   const renderStars = (rating: number) => {

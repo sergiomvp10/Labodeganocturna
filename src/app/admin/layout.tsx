@@ -21,7 +21,7 @@ function AdminLayoutInner({ children }: { children: ReactNode }) {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const isLoginPage = pathname === "/admin";
+  const isLoginPage = pathname === "/admin" || pathname === "/admin/";
 
   useEffect(() => {
     if (!currentUser && !isLoginPage) {

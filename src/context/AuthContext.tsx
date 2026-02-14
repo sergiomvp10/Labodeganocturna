@@ -1,11 +1,11 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
+import { api } from "@/lib/api";
 
 export interface AdminUser {
   id: string;
   username: string;
-  password: string;
   role: "admin" | "editor";
   createdAt: string;
 }
@@ -13,94 +13,93 @@ export interface AdminUser {
 interface AuthContextType {
   currentUser: AdminUser | null;
   users: AdminUser[];
-  login: (username: string, password: string) => boolean;
+  login: (username: string, password: string) => Promise<boolean>;
   logout: () => void;
-  addUser: (username: string, password: string, role: "admin" | "editor") => boolean;
-  updateUser: (id: string, data: Partial<AdminUser>) => void;
-  deleteUser: (id: string) => void;
+  addUser: (username: string, password: string, role: "admin" | "editor") => Promise<boolean>;
+  updateUser: (id: string, data: Partial<AdminUser> & { password?: string }) => Promise<void>;
+  deleteUser: (id: string) => Promise<void>;
+  refreshUsers: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const DEFAULT_ADMIN: AdminUser = {
-  id: "1",
-  username: "admin",
-  password: "admin123",
-  role: "admin",
-  createdAt: new Date().toISOString(),
-};
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [currentUser, setCurrentUser] = useState<AdminUser | null>(null);
   const [users, setUsers] = useState<AdminUser[]>([]);
-  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    const storedUsers = localStorage.getItem("lbn_admin_users");
     const storedSession = localStorage.getItem("lbn_admin_session");
-
-    if (storedUsers) {
-      setUsers(JSON.parse(storedUsers));
-    } else {
-      setUsers([DEFAULT_ADMIN]);
-      localStorage.setItem("lbn_admin_users", JSON.stringify([DEFAULT_ADMIN]));
-    }
-
     if (storedSession) {
       setCurrentUser(JSON.parse(storedSession));
     }
-    setLoaded(true);
+  }, []);
+
+  const refreshUsers = useCallback(async () => {
+    try {
+      const data = await api.getUsers();
+      setUsers(data.map((u) => ({ id: String(u.id), username: u.username, role: u.role as "admin" | "editor", createdAt: u.createdAt })));
+    } catch {}
   }, []);
 
   useEffect(() => {
-    if (loaded && users.length > 0) {
-      localStorage.setItem("lbn_admin_users", JSON.stringify(users));
-    }
-  }, [users, loaded]);
+    if (currentUser) refreshUsers();
+  }, [currentUser, refreshUsers]);
 
-  const login = (username: string, password: string): boolean => {
-    const user = users.find(
-      (u) => u.username === username && u.password === password
-    );
-    if (user) {
+  const login = async (username: string, password: string): Promise<boolean> => {
+    try {
+      const data = await api.login(username, password);
+      const user: AdminUser = {
+        id: String(data.user.id),
+        username: data.user.username,
+        role: data.user.role as "admin" | "editor",
+        createdAt: new Date().toISOString(),
+      };
       setCurrentUser(user);
       localStorage.setItem("lbn_admin_session", JSON.stringify(user));
+      localStorage.setItem("lbn_token", data.token);
       return true;
+    } catch {
+      return false;
     }
-    return false;
   };
 
   const logout = () => {
     setCurrentUser(null);
     localStorage.removeItem("lbn_admin_session");
+    localStorage.removeItem("lbn_token");
   };
 
-  const addUser = (username: string, password: string, role: "admin" | "editor"): boolean => {
-    if (users.some((u) => u.username === username)) return false;
-    const newUser: AdminUser = {
-      id: Date.now().toString(),
-      username,
-      password,
-      role,
-      createdAt: new Date().toISOString(),
-    };
-    setUsers((prev) => [...prev, newUser]);
-    return true;
+  const addUser = async (username: string, password: string, role: "admin" | "editor"): Promise<boolean> => {
+    try {
+      await api.createUser(username, password, role);
+      await refreshUsers();
+      return true;
+    } catch {
+      return false;
+    }
   };
 
-  const updateUser = (id: string, data: Partial<AdminUser>) => {
-    setUsers((prev) =>
-      prev.map((u) => (u.id === id ? { ...u, ...data } : u))
-    );
+  const updateUser = async (id: string, data: Partial<AdminUser> & { password?: string }) => {
+    try {
+      const payload: { username?: string; password?: string; role?: string } = {};
+      if (data.username) payload.username = data.username;
+      if (data.password) payload.password = data.password;
+      if (data.role) payload.role = data.role;
+      await api.updateUser(Number(id), payload);
+      await refreshUsers();
+    } catch {}
   };
 
-  const deleteUser = (id: string) => {
-    setUsers((prev) => prev.filter((u) => u.id !== id));
+  const deleteUser = async (id: string) => {
+    try {
+      await api.deleteUser(Number(id));
+      await refreshUsers();
+    } catch {}
   };
 
   return (
     <AuthContext.Provider
-      value={{ currentUser, users, login, logout, addUser, updateUser, deleteUser }}
+      value={{ currentUser, users, login, logout, addUser, updateUser, deleteUser, refreshUsers }}
     >
       {children}
     </AuthContext.Provider>

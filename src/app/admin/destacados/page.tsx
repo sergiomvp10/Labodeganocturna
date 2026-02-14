@@ -4,17 +4,10 @@ import { useState, useEffect } from "react";
 import { useSiteConfig } from "@/context/SiteConfigContext";
 import { Product } from "@/data/products";
 import { Star, Tag, Search, Check } from "lucide-react";
+import { api, ProductAPI } from "@/lib/api";
 
-function getStoredProducts(): Product[] {
-  if (typeof window === "undefined") return [];
-  const stored = localStorage.getItem("lbn_products");
-  if (stored) return JSON.parse(stored);
-  return [];
-}
-
-function getDefaultProducts(): Product[] {
-  const { products } = require("@/data/products");
-  return products;
+function toProduct(p: ProductAPI): Product {
+  return { ...p, originalPrice: p.originalPrice ?? undefined, discount: p.discount ?? undefined };
 }
 
 type Tab = "featured" | "offers";
@@ -26,20 +19,19 @@ export default function DestacadosPage() {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    let stored = getStoredProducts();
-    if (stored.length === 0) {
-      stored = getDefaultProducts();
-    }
-    setProducts(stored);
+    api.getProducts().then((data) => {
+      const prods = data.map(toProduct);
+      setProducts(prods);
 
-    if (featuredIds.length === 0) {
-      const defaultFeatured = stored.filter((p) => p.featured).map((p) => p.id);
-      setFeaturedIds(defaultFeatured);
-    }
-    if (offerIds.length === 0) {
-      const defaultOffers = stored.filter((p) => p.discount).map((p) => p.id);
-      setOfferIds(defaultOffers);
-    }
+      if (featuredIds.length === 0) {
+        const defaultFeatured = prods.filter((p) => p.featured).map((p) => p.id);
+        setFeaturedIds(defaultFeatured);
+      }
+      if (offerIds.length === 0) {
+        const defaultOffers = prods.filter((p) => p.discount).map((p) => p.id);
+        setOfferIds(defaultOffers);
+      }
+    }).catch(() => {});
   }, []);
 
   const filtered = products.filter(
