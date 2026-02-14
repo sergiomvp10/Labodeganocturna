@@ -203,7 +203,7 @@ export default function ProductPageClient({ id }: { id: string }) {
                     <img
                       src={p.image}
                       alt={p.name}
-                      className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
                       onError={(e) => {
                         (e.target as HTMLImageElement).src =
                           "https://placehold.co/300x300/111/c9a84c?text=Img";
