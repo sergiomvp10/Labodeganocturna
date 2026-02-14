@@ -109,77 +109,77 @@ export default function CartSidebar() {
                   <p className="text-brand-muted text-sm">Tu carrito está vacío</p>
                 </div>
               ) : (
-                <div className="space-y-4">
-                  {items.map((item) => (
-                    <div
-                      key={item.product.id}
-                      className="flex gap-4 p-3 bg-brand-dark2 rounded-xl border border-brand-gold/10"
-                    >
-                      <div className="w-16 h-16 flex-shrink-0 bg-brand-dark rounded-lg overflow-hidden flex items-center justify-center">
-                        <img
-                          src={item.product.image}
-                          alt={item.product.name}
-                          className="w-full h-full object-contain"
-                        />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-sm text-brand-text font-medium truncate">
-                          {item.product.name}
-                        </h4>
-                        <p className="text-brand-gold font-bold text-sm mt-1">
-                          ${item.product.price.toLocaleString()}
-                        </p>
-                        <div className="flex items-center gap-3 mt-2">
-                          <button
-                            onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
-                            className="w-7 h-7 rounded-md bg-brand-dark border border-brand-gold/20 flex items-center justify-center text-brand-gold hover:bg-brand-gold hover:text-brand-black transition-colors cursor-pointer"
-                          >
-                            <Minus size={12} />
-                          </button>
-                          <span className="text-sm text-brand-text font-medium w-6 text-center">
-                            {item.quantity}
-                          </span>
-                          <button
-                            onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
-                            className="w-7 h-7 rounded-md bg-brand-dark border border-brand-gold/20 flex items-center justify-center text-brand-gold hover:bg-brand-gold hover:text-brand-black transition-colors cursor-pointer"
-                          >
-                            <Plus size={12} />
-                          </button>
-                          <button
-                            onClick={() => removeFromCart(item.product.id)}
-                            className="ml-auto text-brand-muted hover:text-red-400 cursor-pointer"
-                          >
-                            <Trash2 size={14} />
-                          </button>
+                <>
+                  <div className="space-y-4">
+                    {items.map((item) => (
+                      <div
+                        key={item.product.id}
+                        className="flex gap-4 p-3 bg-brand-dark2 rounded-xl border border-brand-gold/10"
+                      >
+                        <div className="w-16 h-16 flex-shrink-0 bg-brand-dark rounded-lg overflow-hidden flex items-center justify-center">
+                          <img
+                            src={item.product.image}
+                            alt={item.product.name}
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-sm text-brand-text font-medium truncate">
+                            {item.product.name}
+                          </h4>
+                          <p className="text-brand-gold font-bold text-sm mt-1">
+                            ${item.product.price.toLocaleString()}
+                          </p>
+                          <div className="flex items-center gap-3 mt-2">
+                            <button
+                              onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
+                              className="w-7 h-7 rounded-md bg-brand-dark border border-brand-gold/20 flex items-center justify-center text-brand-gold hover:bg-brand-gold hover:text-brand-black transition-colors cursor-pointer"
+                            >
+                              <Minus size={12} />
+                            </button>
+                            <span className="text-sm text-brand-text font-medium w-6 text-center">
+                              {item.quantity}
+                            </span>
+                            <button
+                              onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
+                              className="w-7 h-7 rounded-md bg-brand-dark border border-brand-gold/20 flex items-center justify-center text-brand-gold hover:bg-brand-gold hover:text-brand-black transition-colors cursor-pointer"
+                            >
+                              <Plus size={12} />
+                            </button>
+                            <button
+                              onClick={() => removeFromCart(item.product.id)}
+                              className="ml-auto text-brand-muted hover:text-red-400 cursor-pointer"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
                         </div>
                       </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-6 pt-5 border-t border-brand-gold/20 space-y-3">
+                    {totalPrice < 150000 && (
+                      <p className="text-xs text-brand-muted text-center">
+                        Agrega ${(150000 - totalPrice).toLocaleString()} más para envío gratis
+                      </p>
+                    )}
+                    <div className="flex items-center justify-between px-1">
+                      <span className="text-sm text-brand-muted">Total</span>
+                      <span className="text-2xl font-bold text-brand-gold">
+                        ${totalPrice.toLocaleString()}
+                      </span>
                     </div>
-                  ))}
-                </div>
+                    <button
+                      onClick={handleCheckout}
+                      className="w-full py-4 bg-gradient-to-r from-brand-gold to-yellow-500 text-brand-black font-bold rounded-2xl hover:from-yellow-500 hover:to-brand-gold transition-all cursor-pointer text-base tracking-wide shadow-lg shadow-brand-gold/20 active:scale-[0.98]"
+                    >
+                      Hacer pedido
+                    </button>
+                  </div>
+                </>
               )}
             </div>
-
-            {items.length > 0 && (
-              <div className="p-5 border-t border-brand-gold/20 bg-gradient-to-t from-brand-dark2 to-brand-dark space-y-3">
-                {totalPrice < 150000 && (
-                  <p className="text-xs text-brand-muted text-center">
-                    Agrega ${(150000 - totalPrice).toLocaleString()} más para envío gratis
-                  </p>
-                )}
-                <div className="flex items-center justify-between px-1">
-                  <span className="text-sm text-brand-muted">Total</span>
-                  <span className="text-2xl font-bold text-brand-gold">
-                    ${totalPrice.toLocaleString()}
-                  </span>
-                </div>
-                <button
-                  onClick={handleCheckout}
-                  className="w-full py-4 bg-gradient-to-r from-brand-gold to-yellow-500 text-brand-black font-bold rounded-2xl hover:from-yellow-500 hover:to-brand-gold transition-all cursor-pointer text-base tracking-wide shadow-lg shadow-brand-gold/20 active:scale-[0.98]"
-                >
-                  Hacer pedido
-                </button>
-              </div>
-            )}
           </>
         )}
 
