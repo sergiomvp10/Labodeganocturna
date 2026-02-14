@@ -288,7 +288,7 @@ export default function CartSidebar() {
                 <p className="text-red-400 text-sm text-center font-medium">{error}</p>
               )}
 
-              <div className="pt-4">
+              <div className="pt-8 pb-4">
               <button
                 onClick={handleSubmit}
                 disabled={submitting}
