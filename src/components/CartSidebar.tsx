@@ -288,8 +288,12 @@ export default function CartSidebar() {
                 <p className="text-red-400 text-sm text-center font-medium">{error}</p>
               )}
 
-              <div style={{ marginTop: "24px", marginBottom: "24px" }} className="flex justify-center">
+              <div style={{ marginTop: "24px", marginBottom: "12px" }} className="flex flex-col items-center gap-2">
                 <img src="/divider-gold.png" alt="" style={{ width: "70%", height: "auto", opacity: 0.85 }} />
+                {totalPrice >= 150000 && (
+                  <p className="text-green-400 text-sm font-bold tracking-wide">🚚 ¡Envío Gratis!</p>
+                )}
+                <p className="text-brand-muted text-xs">🕐 Entrega estimada: 30-45 min</p>
               </div>
 
               <div style={{ marginBottom: "8px" }}>
