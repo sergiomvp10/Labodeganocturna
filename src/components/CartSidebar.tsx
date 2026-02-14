@@ -287,8 +287,9 @@ export default function CartSidebar() {
               {error && (
                 <p className="text-red-400 text-sm text-center font-medium">{error}</p>
               )}
+            </div>
 
-              <div className="pt-8 pb-4">
+            <div className="px-6 py-4 border-t border-brand-gold/20 bg-gradient-to-t from-brand-dark2 to-brand-dark">
               <button
                 onClick={handleSubmit}
                 disabled={submitting}
@@ -304,11 +305,10 @@ export default function CartSidebar() {
                     <span className="absolute inset-0 overflow-hidden rounded-2xl">
                       <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent" style={{ animation: "shimmer 2.5s ease-in-out infinite" }} />
                     </span>
-                    <span className="relative">{`Confirmar pedido · $${totalPrice.toLocaleString()}`}</span> 
+                    <span className="relative">{`Confirmar pedido · $${totalPrice.toLocaleString()}`}</span>
                   </>
                 )}
               </button>
-              </div>
             </div>
           </>
         )}
