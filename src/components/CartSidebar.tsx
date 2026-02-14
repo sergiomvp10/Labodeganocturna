@@ -211,10 +211,22 @@ export default function CartSidebar() {
                     </span>
                   </div>
                 ))}
-                <div className="border-t border-brand-gold/15 pt-3 mt-1 flex justify-between items-center">
-                  <span className="text-sm font-bold text-brand-text">Total</span>
-                  <span className="text-xl font-bold text-brand-gold">${totalPrice.toLocaleString()}</span>
-                </div>
+                <div className="border-t border-brand-gold/15 pt-3 mt-1 space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-brand-muted">Subtotal</span>
+                    <span className="text-sm text-brand-text font-medium">${totalPrice.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-brand-muted">Envío</span>
+                    <span className={`text-sm font-medium ${totalPrice >= 150000 ? "text-green-400" : "text-brand-text"}`}>
+                      {totalPrice >= 150000 ? "Gratis" : "$6,000"}
+                    </span>
+                  </div>
+                  <div className="border-t border-brand-gold/15 pt-2 flex justify-between items-center">
+                    <span className="text-sm font-bold text-brand-text">Total</span>
+                    <span className="text-xl font-bold text-brand-gold">${(totalPrice >= 150000 ? totalPrice :                totalPrice + 6000).toLocaleString()}</span>
+                                  </div>
+                                </div>
               </div>
 
               <div className="space-y-4">
@@ -312,7 +324,7 @@ export default function CartSidebar() {
                       <span className="absolute inset-0 overflow-hidden rounded-2xl">
                         <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent" style={{ animation: "shimmer 2.5s ease-in-out infinite" }} />
                       </span>
-                      <span className="relative">{`Confirmar pedido · $${totalPrice.toLocaleString()}`}</span>
+                      <span className="relative">{`Confirmar pedido · $${(totalPrice >= 150000 ? totalPrice : totalPrice + 6000).toLocaleString()}`}</span>
                     </>
                   )}
                 </button>
