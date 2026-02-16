@@ -2,8 +2,9 @@
 
 import { Product, products as staticProducts } from "@/data/products";
 import ProductCard from "./ProductCard";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { api, ProductAPI } from "@/lib/api";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 function toProduct(p: ProductAPI): Product {
   return { ...p, originalPrice: p.originalPrice ?? undefined, discount: p.discount ?? undefined };
@@ -12,14 +13,90 @@ function toProduct(p: ProductAPI): Product {
 const staticFeatured = staticProducts.filter((p) => p.featured);
 
 export default function FeaturedProducts() {
-  const [paused, setPaused] = useState(false);
   const [featured, setFeatured] = useState<Product[]>(staticFeatured);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeftPos, setScrollLeftPos] = useState(0);
+  const autoScrollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const pauseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     api.storefront.featured().then((data) => {
       if (data.length > 0) setFeatured(data.map(toProduct));
     }).catch(() => {});
   }, []);
+
+  const startAutoScroll = useCallback(() => {
+    if (autoScrollRef.current) clearInterval(autoScrollRef.current);
+    autoScrollRef.current = setInterval(() => {
+      const el = scrollRef.current;
+      if (!el) return;
+      const maxScroll = el.scrollWidth - el.clientWidth;
+      if (el.scrollLeft >= maxScroll - 2) {
+        el.scrollLeft = 0;
+      } else {
+        el.scrollLeft += 1;
+      }
+    }, 30);
+  }, []);
+
+  const pauseAutoScroll = useCallback(() => {
+    if (autoScrollRef.current) {
+      clearInterval(autoScrollRef.current);
+      autoScrollRef.current = null;
+    }
+    if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current);
+    pauseTimeoutRef.current = setTimeout(() => {
+      startAutoScroll();
+    }, 4000);
+  }, [startAutoScroll]);
+
+  useEffect(() => {
+    startAutoScroll();
+    return () => {
+      if (autoScrollRef.current) clearInterval(autoScrollRef.current);
+      if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current);
+    };
+  }, [startAutoScroll]);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(true);
+    setStartX(e.pageX - (scrollRef.current?.offsetLeft || 0));
+    setScrollLeftPos(scrollRef.current?.scrollLeft || 0);
+    pauseAutoScroll();
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || !scrollRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - (scrollRef.current.offsetLeft || 0);
+    const walk = (x - startX) * 1.5;
+    scrollRef.current.scrollLeft = scrollLeftPos - walk;
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setStartX(e.touches[0].pageX - (scrollRef.current?.offsetLeft || 0));
+    setScrollLeftPos(scrollRef.current?.scrollLeft || 0);
+    pauseAutoScroll();
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!scrollRef.current) return;
+    const x = e.touches[0].pageX - (scrollRef.current.offsetLeft || 0);
+    const walk = (x - startX) * 1.5;
+    scrollRef.current.scrollLeft = scrollLeftPos - walk;
+  };
+
+  const scrollByAmount = (direction: number) => {
+    if (!scrollRef.current) return;
+    scrollRef.current.scrollBy({ left: direction * 280, behavior: "smooth" });
+    pauseAutoScroll();
+  };
 
   if (featured.length === 0) return null;
 
@@ -35,25 +112,38 @@ export default function FeaturedProducts() {
           </h2>
         </div>
 
-        <div className="overflow-hidden">
+        <div className="relative group">
+          <button
+            onClick={() => scrollByAmount(-1)}
+            className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-brand-dark/90 border border-brand-gold/30 items-center justify-center text-brand-gold hover:bg-brand-gold hover:text-brand-black transition-all cursor-pointer opacity-0 group-hover:opacity-100"
+          >
+            <ChevronLeft size={22} />
+          </button>
+
           <div
-            className="flex gap-5 w-max"
-            style={{
-              animation: "marquee-featured 40s linear infinite",
-              animationPlayState: paused ? "paused" : "running",
-            }}
-            onMouseDown={() => setPaused(true)}
-            onMouseUp={() => setPaused(false)}
-            onMouseLeave={() => setPaused(false)}
-            onTouchStart={() => setPaused(true)}
-            onTouchEnd={() => setPaused(false)}
+            ref={scrollRef}
+            className="flex gap-5 overflow-x-auto px-4 sm:px-6 lg:px-10 scroll-smooth"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none", WebkitOverflowScrolling: "touch", cursor: isDragging ? "grabbing" : "grab" }}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
           >
             {[...featured, ...featured, ...featured].map((product, i) => (
-              <div key={`${product.id}-${i}`} className="flex-shrink-0 w-56 md:w-64">
+              <div key={`${product.id}-${i}`} className="flex-shrink-0 w-56 md:w-64" style={{ userSelect: "none" }}>
                 <ProductCard product={product} />
               </div>
             ))}
           </div>
+
+          <button
+            onClick={() => scrollByAmount(1)}
+            className="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-brand-dark/90 border border-brand-gold/30 items-center justify-center text-brand-gold hover:bg-brand-gold hover:text-brand-black transition-all cursor-pointer opacity-0 group-hover:opacity-100"
+          >
+            <ChevronRight size={22} />
+          </button>
         </div>
       </div>
     </section>
