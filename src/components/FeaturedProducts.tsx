@@ -18,8 +18,9 @@ export default function FeaturedProducts() {
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeftPos, setScrollLeftPos] = useState(0);
-  const autoScrollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const rafRef = useRef<number | null>(null);
   const pauseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isPausedRef = useRef(false);
 
   useEffect(() => {
     api.storefront.featured().then((data) => {
@@ -27,38 +28,34 @@ export default function FeaturedProducts() {
     }).catch(() => {});
   }, []);
 
-  const startAutoScroll = useCallback(() => {
-    if (autoScrollRef.current) clearInterval(autoScrollRef.current);
-    autoScrollRef.current = setInterval(() => {
-      const el = scrollRef.current;
-      if (!el) return;
+  const animate = useCallback(() => {
+    const el = scrollRef.current;
+    if (el && !isPausedRef.current) {
       const maxScroll = el.scrollWidth - el.clientWidth;
       if (el.scrollLeft >= maxScroll - 2) {
         el.scrollLeft = 0;
       } else {
-        el.scrollLeft += 1;
+        el.scrollLeft += 0.8;
       }
-    }, 30);
+    }
+    rafRef.current = requestAnimationFrame(animate);
   }, []);
 
   const pauseAutoScroll = useCallback(() => {
-    if (autoScrollRef.current) {
-      clearInterval(autoScrollRef.current);
-      autoScrollRef.current = null;
-    }
+    isPausedRef.current = true;
     if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current);
     pauseTimeoutRef.current = setTimeout(() => {
-      startAutoScroll();
+      isPausedRef.current = false;
     }, 4000);
-  }, [startAutoScroll]);
+  }, []);
 
   useEffect(() => {
-    startAutoScroll();
+    rafRef.current = requestAnimationFrame(animate);
     return () => {
-      if (autoScrollRef.current) clearInterval(autoScrollRef.current);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
       if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current);
     };
-  }, [startAutoScroll]);
+  }, [animate]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     setIsDragging(true);
