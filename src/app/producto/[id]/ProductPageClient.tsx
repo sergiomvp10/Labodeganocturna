@@ -92,6 +92,11 @@ export default function ProductPageClient({ id }: { id: string }) {
             <img
               src={product.image}
               alt={product.name}
+              loading="eager"
+              decoding="async"
+              fetchPriority="high"
+              width={500}
+              height={500}
               className="w-full h-full object-contain"
               onError={(e) => {
                 (e.target as HTMLImageElement).src =
@@ -203,6 +208,10 @@ export default function ProductPageClient({ id }: { id: string }) {
                     <img
                       src={p.image}
                       alt={p.name}
+                      loading="lazy"
+                      decoding="async"
+                      width={300}
+                      height={300}
                       className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
                       onError={(e) => {
                         (e.target as HTMLImageElement).src =

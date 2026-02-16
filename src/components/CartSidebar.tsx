@@ -120,6 +120,10 @@ export default function CartSidebar() {
                           <img
                             src={item.product.image}
                             alt={item.product.name}
+                            loading="lazy"
+                            decoding="async"
+                            width={64}
+                            height={64}
                             className="w-full h-full object-contain"
                           />
                         </div>

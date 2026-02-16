@@ -158,6 +158,10 @@ export default function FloatingSidebar() {
                         <img
                           src={product.image}
                           alt={product.name}
+                          loading="lazy"
+                          decoding="async"
+                          width={48}
+                          height={48}
                           className="w-full h-full object-contain"
                         />
                       </div>
