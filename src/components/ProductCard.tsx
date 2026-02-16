@@ -67,9 +67,9 @@ export default function ProductCard({ product }: { product: Product }) {
               fly(product.image, rect.left + rect.width / 2, rect.top);
               addToCart(product);
             }}
-            className="bg-brand-gold text-brand-black p-2 rounded-lg hover:bg-brand-goldLight transition-colors cursor-pointer"
+            className="bg-brand-gold text-brand-black p-2.5 rounded-full hover:bg-brand-goldLight hover:scale-110 transition-all duration-200 cursor-pointer shadow-lg shadow-brand-gold/20"
           >
-            <ShoppingCart size={16} />
+            <ShoppingCart size={18} strokeWidth={2.5} />
           </button>
         </div>
       </div>
