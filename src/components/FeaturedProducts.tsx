@@ -14,13 +14,10 @@ const staticFeatured = staticProducts.filter((p) => p.featured);
 
 export default function FeaturedProducts() {
   const [featured, setFeatured] = useState<Product[]>(staticFeatured);
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeftPos, setScrollLeftPos] = useState(0);
-  const rafRef = useRef<number | null>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
+  const [animPaused, setAnimPaused] = useState(false);
+  const dragRef = useRef({ isDragging: false, startX: 0, startOffset: 0 });
   const pauseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const isPausedRef = useRef(false);
 
   useEffect(() => {
     api.storefront.featured().then((data) => {
@@ -28,71 +25,73 @@ export default function FeaturedProducts() {
     }).catch(() => {});
   }, []);
 
-  const animate = useCallback(() => {
-    const el = scrollRef.current;
-    if (el && !isPausedRef.current) {
-      const maxScroll = el.scrollWidth - el.clientWidth;
-      if (el.scrollLeft >= maxScroll - 2) {
-        el.scrollLeft = 0;
-      } else {
-        el.scrollLeft += 0.8;
-      }
-    }
-    rafRef.current = requestAnimationFrame(animate);
-  }, []);
-
-  const pauseAutoScroll = useCallback(() => {
-    isPausedRef.current = true;
-    if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current);
-    pauseTimeoutRef.current = setTimeout(() => {
-      isPausedRef.current = false;
-    }, 4000);
-  }, []);
-
   useEffect(() => {
-    rafRef.current = requestAnimationFrame(animate);
     return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
       if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current);
     };
-  }, [animate]);
+  }, []);
 
-  const handleMouseDown = (e: React.MouseEvent) => {
-    setIsDragging(true);
-    setStartX(e.pageX - (scrollRef.current?.offsetLeft || 0));
-    setScrollLeftPos(scrollRef.current?.scrollLeft || 0);
-    pauseAutoScroll();
+  const getCurrentTranslateX = (): number => {
+    if (!innerRef.current) return 0;
+    const computed = window.getComputedStyle(innerRef.current);
+    const t = computed.transform;
+    if (t === "none") return 0;
+    const match = t.match(/matrix.*\((.+)\)/);
+    if (match) {
+      const values = match[1].split(", ");
+      return parseFloat(values[4]) || 0;
+    }
+    return 0;
   };
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging || !scrollRef.current) return;
-    e.preventDefault();
-    const x = e.pageX - (scrollRef.current.offsetLeft || 0);
-    const walk = (x - startX) * 1.5;
-    scrollRef.current.scrollLeft = scrollLeftPos - walk;
+  const startDrag = (clientX: number) => {
+    const currentX = getCurrentTranslateX();
+    dragRef.current = { isDragging: true, startX: clientX, startOffset: currentX };
+    setAnimPaused(true);
+    if (innerRef.current) {
+      innerRef.current.style.transform = `translateX(${currentX}px)`;
+    }
+    if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current);
   };
 
-  const handleMouseUp = () => {
-    setIsDragging(false);
+  const moveDrag = (clientX: number) => {
+    if (!dragRef.current.isDragging || !innerRef.current) return;
+    const delta = clientX - dragRef.current.startX;
+    innerRef.current.style.transform = `translateX(${dragRef.current.startOffset + delta}px)`;
   };
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setStartX(e.touches[0].pageX - (scrollRef.current?.offsetLeft || 0));
-    setScrollLeftPos(scrollRef.current?.scrollLeft || 0);
-    pauseAutoScroll();
+  const endDrag = () => {
+    dragRef.current.isDragging = false;
+    if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current);
+    pauseTimeoutRef.current = setTimeout(() => {
+      if (innerRef.current) {
+        innerRef.current.style.transform = "";
+      }
+      setAnimPaused(false);
+    }, 3000);
   };
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!scrollRef.current) return;
-    const x = e.touches[0].pageX - (scrollRef.current.offsetLeft || 0);
-    const walk = (x - startX) * 1.5;
-    scrollRef.current.scrollLeft = scrollLeftPos - walk;
-  };
+  const handleMouseDown = (e: React.MouseEvent) => { startDrag(e.clientX); };
+  const handleMouseMove = (e: React.MouseEvent) => { if (dragRef.current.isDragging) e.preventDefault(); moveDrag(e.clientX); };
+  const handleMouseUp = () => { endDrag(); };
+
+  const handleTouchStart = (e: React.TouchEvent) => { startDrag(e.touches[0].clientX); };
+  const handleTouchMove = (e: React.TouchEvent) => { moveDrag(e.touches[0].clientX); };
+  const handleTouchEnd = () => { endDrag(); };
 
   const scrollByAmount = (direction: number) => {
-    if (!scrollRef.current) return;
-    scrollRef.current.scrollBy({ left: direction * 280, behavior: "smooth" });
-    pauseAutoScroll();
+    const currentX = getCurrentTranslateX();
+    setAnimPaused(true);
+    if (innerRef.current) {
+      innerRef.current.style.transform = `translateX(${currentX + direction * -280}px)`;
+    }
+    if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current);
+    pauseTimeoutRef.current = setTimeout(() => {
+      if (innerRef.current) {
+        innerRef.current.style.transform = "";
+      }
+      setAnimPaused(false);
+    }, 3000);
   };
 
   if (featured.length === 0) return null;
@@ -117,22 +116,28 @@ export default function FeaturedProducts() {
             <ChevronLeft size={22} />
           </button>
 
-          <div
-            ref={scrollRef}
-            className="flex gap-5 overflow-x-auto px-4 sm:px-6 lg:px-10 scroll-smooth"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none", WebkitOverflowScrolling: "touch", cursor: isDragging ? "grabbing" : "grab" }}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-          >
-            {[...featured, ...featured, ...featured].map((product, i) => (
-              <div key={`${product.id}-${i}`} className="flex-shrink-0 w-56 md:w-64" style={{ userSelect: "none" }}>
-                <ProductCard product={product} />
-              </div>
-            ))}
+          <div className="overflow-hidden">
+            <div
+              ref={innerRef}
+              className="flex gap-5 w-max"
+              style={{
+                animation: animPaused ? "none" : "marquee-featured 40s linear infinite",
+                cursor: dragRef.current.isDragging ? "grabbing" : "grab",
+              }}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+            >
+              {[...featured, ...featured, ...featured].map((product, i) => (
+                <div key={`${product.id}-${i}`} className="flex-shrink-0 w-56 md:w-64" style={{ userSelect: "none" }}>
+                  <ProductCard product={product} />
+                </div>
+              ))}
+            </div>
           </div>
 
           <button
