@@ -151,6 +151,15 @@ export const api = {
   deleteCategory: (id: number) =>
     request<{ ok: boolean }>(`/api/categories/${id}`, { method: "DELETE" }),
 
+  getCoupons: () =>
+    request<CouponAPI[]>("/api/config/coupons"),
+
+  setCoupons: (coupons: CouponAPI[]) =>
+    request<{ ok: boolean }>("/api/config/coupons", {
+      method: "PUT",
+      body: JSON.stringify({ coupons }),
+    }),
+
   storefront: {
     products: () => request<ProductAPI[]>("/api/storefront/products"),
     featured: () => request<ProductAPI[]>("/api/storefront/featured"),
@@ -158,6 +167,11 @@ export const api = {
     banners: () => request<BannerAPI[]>("/api/storefront/banners"),
     footer: () => request<FooterAPI>("/api/storefront/footer"),
     categories: () => request<CategoryAPI[]>("/api/storefront/categories"),
+    validateCoupon: (code: string) =>
+      request<{ valid: boolean; discount: number; code: string }>("/api/storefront/validate-coupon", {
+        method: "POST",
+        body: JSON.stringify({ code }),
+      }),
   },
 };
 
@@ -232,4 +246,10 @@ export interface CategoryAPI {
   slug: string;
   subcategories: string[];
   image: string;
+}
+
+export interface CouponAPI {
+  code: string;
+  discount: number;
+  active: boolean;
 }

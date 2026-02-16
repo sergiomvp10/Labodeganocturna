@@ -3,11 +3,11 @@
 import { useState } from "react";
 import { useSiteConfig, BannerItem } from "@/context/SiteConfigContext";
 import { useAuth, AdminUser } from "@/context/AuthContext";
-import { Upload, Trash2, GripVertical, Eye, EyeOff, Plus, X, Save, UserPlus, Pencil, Image, Users, FileText, FolderTree } from "lucide-react";
-import { api, CategoryAPI } from "@/lib/api";
+import { Upload, Trash2, GripVertical, Eye, EyeOff, Plus, X, Save, UserPlus, Pencil, Image, Users, FileText, FolderTree, Ticket } from "lucide-react";
+import { api, CategoryAPI, CouponAPI } from "@/lib/api";
 import { useCategories } from "@/context/CategoriesContext";
 
-type Tab = "banners" | "users" | "footer" | "categories";
+type Tab = "banners" | "users" | "footer" | "categories" | "coupons";
 
 export default function ConfiguracionPage() {
   const [activeTab, setActiveTab] = useState<Tab>("banners");
@@ -17,6 +17,7 @@ export default function ConfiguracionPage() {
     { id: "categories", label: "Categor\u00edas", icon: FolderTree },
     { id: "footer", label: "Info del sitio", icon: FileText },
     { id: "users", label: "Usuarios", icon: Users },
+    { id: "coupons", label: "Cupones", icon: Ticket },
   ];
 
   return (
@@ -42,6 +43,7 @@ export default function ConfiguracionPage() {
       {activeTab === "categories" && <CategoriesTab />}
       {activeTab === "footer" && <FooterTab />}
       {activeTab === "users" && <UsersTab />}
+      {activeTab === "coupons" && <CouponsTab />}
     </div>
   );
 }
@@ -694,6 +696,205 @@ function CategoriesTab() {
                   {saving ? "Guardando..." : editing ? "Guardar" : "Crear"}
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function CouponsTab() {
+  const [coupons, setCoupons] = useState<CouponAPI[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [editIndex, setEditIndex] = useState<number | null>(null);
+  const [code, setCode] = useState("");
+  const [discount, setDiscount] = useState("");
+  const [formError, setFormError] = useState("");
+
+  const loadCoupons = async () => {
+    try {
+      const data = await api.getCoupons();
+      setCoupons(data);
+    } catch {}
+    setLoading(false);
+  };
+
+  useState(() => { loadCoupons(); });
+
+  const handleSaveCoupon = async () => {
+    const trimmedCode = code.trim().toUpperCase();
+    if (!trimmedCode) { setFormError("Ingresa un código"); return; }
+    const pct = parseInt(discount);
+    if (!pct || pct < 1 || pct > 100) { setFormError("El descuento debe ser entre 1% y 100%"); return; }
+    const dup = coupons.findIndex((c, i) => c.code.toUpperCase() === trimmedCode && i !== editIndex);
+    if (dup >= 0) { setFormError("Ya existe un cupón con ese código"); return; }
+
+    setFormError("");
+    setSaving(true);
+    const updated = [...coupons];
+    if (editIndex !== null) {
+      updated[editIndex] = { ...updated[editIndex], code: trimmedCode, discount: pct };
+    } else {
+      updated.push({ code: trimmedCode, discount: pct, active: true });
+    }
+    try {
+      await api.setCoupons(updated);
+      setCoupons(updated);
+      setShowForm(false);
+      setEditIndex(null);
+      setCode("");
+      setDiscount("");
+    } catch { setFormError("Error al guardar"); }
+    setSaving(false);
+  };
+
+  const toggleCoupon = async (index: number) => {
+    const updated = [...coupons];
+    updated[index] = { ...updated[index], active: !updated[index].active };
+    try {
+      await api.setCoupons(updated);
+      setCoupons(updated);
+    } catch {}
+  };
+
+  const deleteCoupon = async (index: number) => {
+    if (!confirm(`¿Eliminar el cupón "${coupons[index].code}"?`)) return;
+    const updated = coupons.filter((_, i) => i !== index);
+    try {
+      await api.setCoupons(updated);
+      setCoupons(updated);
+    } catch {}
+  };
+
+  const openEditCoupon = (index: number) => {
+    setEditIndex(index);
+    setCode(coupons[index].code);
+    setDiscount(String(coupons[index].discount));
+    setFormError("");
+    setShowForm(true);
+  };
+
+  const openCreateCoupon = () => {
+    setEditIndex(null);
+    setCode("");
+    setDiscount("");
+    setFormError("");
+    setShowForm(true);
+  };
+
+  if (loading) return <div className="text-center text-[#888] py-12">Cargando cupones...</div>;
+
+  return (
+    <div className="space-y-4 max-w-lg">
+      <div className="flex items-center justify-between">
+        <span className="text-sm text-[#888]">{coupons.length} cupón(es)</span>
+        <button
+          onClick={openCreateCoupon}
+          className="flex items-center gap-2 bg-[#c9a84c] hover:bg-[#dfc070] text-black font-bold px-4 py-2 rounded-lg text-sm cursor-pointer transition-colors"
+        >
+          <Plus size={16} />
+          Nuevo cupón
+        </button>
+      </div>
+
+      <div className="space-y-2">
+        {coupons.map((coupon, index) => (
+          <div
+            key={index}
+            className={`bg-[#111] border rounded-xl p-3 flex items-center justify-between transition-colors ${
+              coupon.active ? "border-[#222]" : "border-[#222] opacity-50"
+            }`}
+          >
+            <div>
+              <div className="text-white font-mono font-bold text-sm tracking-wider">{coupon.code}</div>
+              <div className="text-xs text-[#c9a84c] font-medium">{coupon.discount}% de descuento</div>
+            </div>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => toggleCoupon(index)}
+                className={`p-2 rounded-lg transition-colors cursor-pointer ${
+                  coupon.active ? "text-green-400 hover:bg-green-400/10" : "text-[#666] hover:bg-white/10"
+                }`}
+              >
+                {coupon.active ? <Eye size={16} /> : <EyeOff size={16} />}
+              </button>
+              <button
+                onClick={() => openEditCoupon(index)}
+                className="p-2 rounded-lg text-[#666] hover:text-[#c9a84c] hover:bg-white/5 cursor-pointer transition-colors"
+              >
+                <Pencil size={15} />
+              </button>
+              <button
+                onClick={() => deleteCoupon(index)}
+                className="p-2 rounded-lg text-[#666] hover:text-red-400 hover:bg-red-400/10 transition-colors cursor-pointer"
+              >
+                <Trash2 size={15} />
+              </button>
+            </div>
+          </div>
+        ))}
+
+        {coupons.length === 0 && (
+          <div className="text-center text-[#666] py-12">No hay cupones. Crea uno para empezar.</div>
+        )}
+      </div>
+
+      {showForm && (
+        <div className="fixed inset-0 z-[320] flex items-center justify-center bg-black/70">
+          <div className="bg-[#111] border border-[#c9a84c]/20 rounded-xl w-full max-w-sm mx-4 p-4 space-y-3">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-white font-bold">{editIndex !== null ? "Editar cupón" : "Nuevo cupón"}</h3>
+              <button onClick={() => setShowForm(false)} className="text-[#666] hover:text-white cursor-pointer">
+                <X size={20} />
+              </button>
+            </div>
+
+            <div>
+              <label className="block text-xs text-[#888] mb-1">Código del cupón</label>
+              <input
+                type="text"
+                value={code}
+                onChange={(e) => setCode(e.target.value.toUpperCase())}
+                placeholder="Ej: DESCUENTO10"
+                className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-3 py-2 text-white text-sm font-mono tracking-wider focus:outline-none focus:border-[#c9a84c] uppercase"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs text-[#888] mb-1">Descuento (%)</label>
+              <div className="relative">
+                <input
+                  type="number"
+                  min={1}
+                  max={100}
+                  value={discount}
+                  onChange={(e) => setDiscount(e.target.value)}
+                  placeholder="10"
+                  className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-3 py-2 pr-8 text-white text-sm focus:outline-none focus:border-[#c9a84c]"
+                />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#666] text-sm">%</span>
+              </div>
+            </div>
+
+            {formError && <p className="text-red-400 text-sm">{formError}</p>}
+
+            <div className="flex gap-3 pt-2">
+              <button
+                onClick={() => setShowForm(false)}
+                className="flex-1 bg-[#222] hover:bg-[#333] text-white py-2.5 rounded-lg text-sm cursor-pointer transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleSaveCoupon}
+                disabled={saving}
+                className="flex-1 bg-[#c9a84c] hover:bg-[#dfc070] text-black font-bold py-2.5 rounded-lg text-sm cursor-pointer transition-colors disabled:opacity-50"
+              >
+                {saving ? "Guardando..." : editIndex !== null ? "Guardar" : "Crear"}
+              </button>
             </div>
           </div>
         </div>
