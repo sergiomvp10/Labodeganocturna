@@ -3,7 +3,7 @@
 import { useCart } from "@/context/CartContext";
 import { useCity } from "@/context/CityContext";
 import { api } from "@/lib/api";
-import { X, Plus, Minus, Trash2, ShoppingBag, ArrowLeft, CheckCircle, Loader2 } from "lucide-react";
+import { X, Plus, Minus, Trash2, ShoppingBag, ArrowLeft, CheckCircle, Loader2, Ticket } from "lucide-react";
 import { useState } from "react";
 
 type Step = "cart" | "checkout" | "confirmation";
@@ -23,6 +23,45 @@ export default function CartSidebar() {
   const [orderId, setOrderId] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [couponCode, setCouponCode] = useState("");
+  const [couponDiscount, setCouponDiscount] = useState(0);
+  const [couponApplied, setCouponApplied] = useState("");
+  const [couponError, setCouponError] = useState("");
+  const [validatingCoupon, setValidatingCoupon] = useState(false);
+
+  const discountAmount = Math.round(totalPrice * couponDiscount / 100);
+  const priceAfterCoupon = totalPrice - discountAmount;
+  const shipping = priceAfterCoupon >= 150000 ? 0 : 6000;
+  const finalTotal = priceAfterCoupon + shipping;
+
+  const handleValidateCoupon = async () => {
+    const code = couponCode.trim();
+    if (!code) return;
+    setCouponError("");
+    setValidatingCoupon(true);
+    try {
+      const res = await api.storefront.validateCoupon(code);
+      if (res.valid) {
+        setCouponDiscount(res.discount);
+        setCouponApplied(res.code);
+        setCouponError("");
+      } else {
+        setCouponDiscount(0);
+        setCouponApplied("");
+        setCouponError("Cupón no válido");
+      }
+    } catch {
+      setCouponError("Error al validar");
+    }
+    setValidatingCoupon(false);
+  };
+
+  const removeCoupon = () => {
+    setCouponCode("");
+    setCouponDiscount(0);
+    setCouponApplied("");
+    setCouponError("");
+  };
 
   if (!isCartOpen) return null;
 
@@ -57,8 +96,8 @@ export default function CartSidebar() {
         city: city.trim(),
         address: address.trim(),
         paymentMethod: payment,
-        total: totalPrice,
-        notes: "",
+        total: finalTotal,
+        notes: couponApplied ? `Cupón: ${couponApplied} (-${couponDiscount}%)` : "",
         items: items.map((i) => ({
           productId: i.product.id,
           name: i.product.name,
@@ -120,6 +159,10 @@ export default function CartSidebar() {
                           <img
                             src={item.product.image}
                             alt={item.product.name}
+                            loading="lazy"
+                            decoding="async"
+                            width={64}
+                            height={64}
                             className="w-full h-full object-contain"
                           />
                         </div>
@@ -216,17 +259,26 @@ export default function CartSidebar() {
                     <span className="text-sm text-brand-muted">Subtotal</span>
                     <span className="text-sm text-brand-text font-medium">${totalPrice.toLocaleString()}</span>
                   </div>
+                  {couponApplied && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-green-400 flex items-center gap-1">
+                        <Ticket size={14} />
+                        {couponApplied} (-{couponDiscount}%)
+                      </span>
+                      <span className="text-sm text-green-400 font-medium">-${discountAmount.toLocaleString()}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-brand-muted">Envío</span>
-                    <span className={`text-sm font-medium ${totalPrice >= 150000 ? "text-green-400" : "text-brand-text"}`}>
-                      {totalPrice >= 150000 ? "Gratis" : "$6,000"}
+                    <span className={`text-sm font-medium ${shipping === 0 ? "text-green-400" : "text-brand-text"}`}>
+                      {shipping === 0 ? "Gratis" : "$6,000"}
                     </span>
                   </div>
                   <div className="border-t border-brand-gold/15 pt-2 flex justify-between items-center">
                     <span className="text-sm font-bold text-brand-text">Total</span>
-                    <span className="text-xl font-bold text-brand-gold">${(totalPrice >= 150000 ? totalPrice :                totalPrice + 6000).toLocaleString()}</span>
-                                  </div>
-                                </div>
+                    <span className="text-xl font-bold text-brand-gold">${finalTotal.toLocaleString()}</span>
+                  </div>
+                </div>
               </div>
 
               <div className="space-y-4">
@@ -296,13 +348,48 @@ export default function CartSidebar() {
                 </div>
               </div>
 
+              <div className="bg-brand-dark2 rounded-2xl border border-brand-gold/15 p-4">
+                <label className="block text-xs font-semibold text-brand-gold/70 uppercase tracking-wider mb-2">Cupón de descuento</label>
+                {couponApplied ? (
+                  <div className="flex items-center justify-between bg-green-500/10 border border-green-500/20 rounded-xl px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      <Ticket size={16} className="text-green-400" />
+                      <span className="text-green-400 font-mono font-bold text-sm">{couponApplied}</span>
+                      <span className="text-green-400/70 text-xs">(-{couponDiscount}%)</span>
+                    </div>
+                    <button onClick={removeCoupon} className="text-green-400/50 hover:text-red-400 cursor-pointer transition-colors">
+                      <X size={16} />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={couponCode}
+                      onChange={(e) => { setCouponCode(e.target.value.toUpperCase()); setCouponError(""); }}
+                      onKeyDown={(e) => { if (e.key === "Enter") handleValidateCoupon(); }}
+                      placeholder="Código del cupón"
+                      className="flex-1 h-11 px-4 rounded-xl text-sm font-mono tracking-wider bg-brand-dark text-brand-text border border-brand-gold/20 focus:outline-none focus:border-brand-gold/60 placeholder-brand-muted/50 uppercase"
+                    />
+                    <button
+                      onClick={handleValidateCoupon}
+                      disabled={validatingCoupon || !couponCode.trim()}
+                      className="px-4 h-11 rounded-xl bg-brand-gold/20 text-brand-gold font-bold text-sm hover:bg-brand-gold/30 transition-colors cursor-pointer disabled:opacity-40"
+                    >
+                      {validatingCoupon ? <Loader2 size={16} className="animate-spin" /> : "Aplicar"}
+                    </button>
+                  </div>
+                )}
+                {couponError && <p className="text-red-400 text-xs mt-2">{couponError}</p>}
+              </div>
+
               {error && (
                 <p className="text-red-400 text-sm text-center font-medium">{error}</p>
               )}
 
               <div style={{ marginTop: "24px", marginBottom: "12px" }} className="flex flex-col items-center gap-2">
                 <img src="/divider-gold.png" alt="" style={{ width: "70%", height: "auto", opacity: 0.85 }} />
-                {totalPrice >= 150000 && (
+                {shipping === 0 && (
                   <p className="text-green-400 text-sm font-bold tracking-wide">🚚 ¡Envío Gratis!</p>
                 )}
                 <p className="text-brand-muted text-xs">🕐 Entrega estimada: 30-45 min</p>
@@ -324,7 +411,7 @@ export default function CartSidebar() {
                       <span className="absolute inset-0 overflow-hidden rounded-2xl">
                         <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent" style={{ animation: "shimmer 2.5s ease-in-out infinite" }} />
                       </span>
-                      <span className="relative">{`Confirmar pedido · $${(totalPrice >= 150000 ? totalPrice : totalPrice + 6000).toLocaleString()}`}</span>
+                      <span className="relative">{`Confirmar pedido · $${finalTotal.toLocaleString()}`}</span>
                     </>
                   )}
                 </button>

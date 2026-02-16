@@ -41,6 +41,10 @@ function CategoryCard({ cat, index }: { cat: CategoryAPI; index: number }) {
         <img
           src={cat.image}
           alt={cat.name}
+          loading="lazy"
+          decoding="async"
+          width={400}
+          height={400}
           className="w-full h-full object-contain p-2 transition-transform duration-500"
           onError={(e) => {
             (e.target as HTMLImageElement).src =

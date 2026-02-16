@@ -27,6 +27,10 @@ export default function ProductCard({ product }: { product: Product }) {
           <img
             src={product.image}
             alt={product.name}
+            loading="lazy"
+            decoding="async"
+            width={300}
+            height={300}
             className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
             onError={(e) => {
               (e.target as HTMLImageElement).src =

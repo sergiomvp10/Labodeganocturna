@@ -2,8 +2,9 @@
 
 import { Product, products as staticProducts } from "@/data/products";
 import ProductCard from "./ProductCard";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { api, ProductAPI } from "@/lib/api";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 function toProduct(p: ProductAPI): Product {
   return { ...p, originalPrice: p.originalPrice ?? undefined, discount: p.discount ?? undefined };
@@ -12,14 +13,86 @@ function toProduct(p: ProductAPI): Product {
 const staticFeatured = staticProducts.filter((p) => p.featured);
 
 export default function FeaturedProducts() {
-  const [paused, setPaused] = useState(false);
   const [featured, setFeatured] = useState<Product[]>(staticFeatured);
+  const innerRef = useRef<HTMLDivElement>(null);
+  const [animPaused, setAnimPaused] = useState(false);
+  const dragRef = useRef({ isDragging: false, startX: 0, startOffset: 0 });
+  const pauseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     api.storefront.featured().then((data) => {
       if (data.length > 0) setFeatured(data.map(toProduct));
     }).catch(() => {});
   }, []);
+
+  useEffect(() => {
+    return () => {
+      if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current);
+    };
+  }, []);
+
+  const getCurrentTranslateX = (): number => {
+    if (!innerRef.current) return 0;
+    const computed = window.getComputedStyle(innerRef.current);
+    const t = computed.transform;
+    if (t === "none") return 0;
+    const match = t.match(/matrix.*\((.+)\)/);
+    if (match) {
+      const values = match[1].split(", ");
+      return parseFloat(values[4]) || 0;
+    }
+    return 0;
+  };
+
+  const startDrag = (clientX: number) => {
+    const currentX = getCurrentTranslateX();
+    dragRef.current = { isDragging: true, startX: clientX, startOffset: currentX };
+    setAnimPaused(true);
+    if (innerRef.current) {
+      innerRef.current.style.transform = `translateX(${currentX}px)`;
+    }
+    if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current);
+  };
+
+  const moveDrag = (clientX: number) => {
+    if (!dragRef.current.isDragging || !innerRef.current) return;
+    const delta = clientX - dragRef.current.startX;
+    innerRef.current.style.transform = `translateX(${dragRef.current.startOffset + delta}px)`;
+  };
+
+  const endDrag = () => {
+    dragRef.current.isDragging = false;
+    if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current);
+    pauseTimeoutRef.current = setTimeout(() => {
+      if (innerRef.current) {
+        innerRef.current.style.transform = "";
+      }
+      setAnimPaused(false);
+    }, 3000);
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => { startDrag(e.clientX); };
+  const handleMouseMove = (e: React.MouseEvent) => { if (dragRef.current.isDragging) e.preventDefault(); moveDrag(e.clientX); };
+  const handleMouseUp = () => { endDrag(); };
+
+  const handleTouchStart = (e: React.TouchEvent) => { startDrag(e.touches[0].clientX); };
+  const handleTouchMove = (e: React.TouchEvent) => { moveDrag(e.touches[0].clientX); };
+  const handleTouchEnd = () => { endDrag(); };
+
+  const scrollByAmount = (direction: number) => {
+    const currentX = getCurrentTranslateX();
+    setAnimPaused(true);
+    if (innerRef.current) {
+      innerRef.current.style.transform = `translateX(${currentX + direction * -280}px)`;
+    }
+    if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current);
+    pauseTimeoutRef.current = setTimeout(() => {
+      if (innerRef.current) {
+        innerRef.current.style.transform = "";
+      }
+      setAnimPaused(false);
+    }, 3000);
+  };
 
   if (featured.length === 0) return null;
 
@@ -35,25 +108,44 @@ export default function FeaturedProducts() {
           </h2>
         </div>
 
-        <div className="overflow-hidden">
-          <div
-            className="flex gap-5 w-max"
-            style={{
-              animation: "marquee-featured 40s linear infinite",
-              animationPlayState: paused ? "paused" : "running",
-            }}
-            onMouseDown={() => setPaused(true)}
-            onMouseUp={() => setPaused(false)}
-            onMouseLeave={() => setPaused(false)}
-            onTouchStart={() => setPaused(true)}
-            onTouchEnd={() => setPaused(false)}
+        <div className="relative group">
+          <button
+            onClick={() => scrollByAmount(-1)}
+            className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-brand-dark/90 border border-brand-gold/30 items-center justify-center text-brand-gold hover:bg-brand-gold hover:text-brand-black transition-all cursor-pointer opacity-0 group-hover:opacity-100"
           >
-            {[...featured, ...featured, ...featured].map((product, i) => (
-              <div key={`${product.id}-${i}`} className="flex-shrink-0 w-56 md:w-64">
-                <ProductCard product={product} />
-              </div>
-            ))}
+            <ChevronLeft size={22} />
+          </button>
+
+          <div className="overflow-hidden">
+            <div
+              ref={innerRef}
+              className="flex gap-5 w-max"
+              style={{
+                animation: animPaused ? "none" : "marquee-featured 40s linear infinite",
+                cursor: dragRef.current.isDragging ? "grabbing" : "grab",
+              }}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+            >
+              {[...featured, ...featured, ...featured].map((product, i) => (
+                <div key={`${product.id}-${i}`} className="flex-shrink-0 w-56 md:w-64" style={{ userSelect: "none" }}>
+                  <ProductCard product={product} />
+                </div>
+              ))}
+            </div>
           </div>
+
+          <button
+            onClick={() => scrollByAmount(1)}
+            className="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-brand-dark/90 border border-brand-gold/30 items-center justify-center text-brand-gold hover:bg-brand-gold hover:text-brand-black transition-all cursor-pointer opacity-0 group-hover:opacity-100"
+          >
+            <ChevronRight size={22} />
+          </button>
         </div>
       </div>
     </section>
