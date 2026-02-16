@@ -122,6 +122,7 @@ export default function FloatingSidebar() {
           <div className="fixed inset-x-4 top-[10vh] z-[90] max-w-lg mx-auto">
             <div className="bg-brand-dark border border-brand-gold/30 rounded-2xl shadow-2xl overflow-hidden">
               <div className="flex items-center gap-3 px-4 py-3 border-b border-brand-gold/15">
+                <Search size={20} className="text-brand-gold flex-shrink-0" />
                 <input
                   ref={inputRef}
                   type="text"
@@ -138,11 +139,6 @@ export default function FloatingSidebar() {
                 </button>
               </div>
 
-              {searchQuery.trim().length < 2 && (
-                <div className="px-4 py-4 text-center">
-                  <p className="text-brand-muted text-sm">Escribe al menos 2 caracteres para buscar</p>
-                </div>
-              )}
 
               {searchQuery.trim().length >= 2 && filteredProducts.length === 0 && (
                 <div className="px-5 py-8 text-center">
