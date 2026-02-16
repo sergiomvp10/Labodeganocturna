@@ -5,6 +5,7 @@ import { useCity } from "@/context/CityContext";
 import { api } from "@/lib/api";
 import { X, Plus, Minus, Trash2, ShoppingBag, ArrowLeft, CheckCircle, Loader2, Ticket } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 type Step = "cart" | "checkout" | "confirmation";
 
@@ -13,6 +14,7 @@ const PAYMENT_METHODS = ["Efectivo", "Nequi", "Bre-b"];
 export default function CartSidebar() {
   const { items, removeFromCart, updateQuantity, totalPrice, totalItems, isCartOpen, setIsCartOpen, clearCart } = useCart();
   const { selectedCity } = useCity();
+  const router = useRouter();
 
   const [step, setStep] = useState<Step>("cart");
   const [name, setName] = useState("");
@@ -107,7 +109,8 @@ export default function CartSidebar() {
       });
       setOrderId(res.id);
       clearCart();
-      setStep("confirmation");
+      setIsCartOpen(false);
+      router.push(`/gracias?pedido=${res.id}`);
     } catch {
       setError("Error al enviar el pedido. Intenta de nuevo.");
     } finally {
