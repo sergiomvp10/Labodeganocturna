@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { formatPrice } from "@/data/products";
 import { useCart } from "@/context/CartContext";
 import { useProducts } from "@/context/ProductsContext";
@@ -12,6 +12,10 @@ export default function ProductPageClient({ id }: { id: string }) {
   const product = allProducts.find((p) => p.id === parseInt(id)) || null;
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
+
+  useEffect(() => {
+    setQuantity(1);
+  }, [id]);
 
   if (!product) {
     return (
