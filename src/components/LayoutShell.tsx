@@ -190,7 +190,7 @@ export default function LayoutShell({ children }: { children: ReactNode }) {
     return <AdminPanel />;
   }
 
-  const isGracias = pathname === "/gracias";
+  const isGracias = pathname === "/gracias" || pathname === "/gracias/";
 
   if (isGracias) {
     return <>{children}</>;
