@@ -33,7 +33,7 @@ export default function CartSidebar() {
 
   const discountAmount = Math.round(totalPrice * couponDiscount / 100);
   const priceAfterCoupon = totalPrice - discountAmount;
-  const shipping = priceAfterCoupon >= 150000 ? 0 : 6000;
+  const shipping = priceAfterCoupon >= 200000 ? 0 : 6000;
   const finalTotal = priceAfterCoupon + shipping;
 
   const handleValidateCoupon = async () => {
@@ -205,9 +205,9 @@ export default function CartSidebar() {
                   </div>
 
                   <div className="mt-6 pt-5 border-t border-brand-gold/20 space-y-3">
-                    {totalPrice < 150000 && (
+                    {totalPrice < 200000 && (
                       <p className="text-xs text-brand-muted text-center">
-                        Agrega ${(150000 - totalPrice).toLocaleString()} más para envío gratis
+                        Agrega ${(200000 - totalPrice).toLocaleString()} más para envío gratis
                       </p>
                     )}
                     <div className="flex items-center justify-between px-1">
