@@ -4,11 +4,13 @@ import { useState, useEffect } from "react";
 import { formatPrice } from "@/data/products";
 import { useCart } from "@/context/CartContext";
 import { useProducts } from "@/context/ProductsContext";
+import { useCategories } from "@/context/CategoriesContext";
 import { Star, ShoppingCart, Minus, Plus, ArrowLeft, Truck, Clock, Shield } from "lucide-react";
 import Link from "next/link";
 
 export default function ProductPageClient({ id }: { id: string }) {
   const { products: allProducts } = useProducts();
+  const { categories } = useCategories();
   const product = allProducts.find((p) => p.id === parseInt(id)) || null;
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
@@ -69,9 +71,13 @@ export default function ProductPageClient({ id }: { id: string }) {
               Inicio
             </Link>
             <span className="text-brand-gold/30">/</span>
-            <span>{product.category}</span>
+            <Link href={`/categoria/${categories.find(c => c.name.toLowerCase() === product.category.toLowerCase())?.slug || product.category.toLowerCase()}`} className="hover:text-brand-gold transition-colors">
+              {product.category}
+            </Link>
             <span className="text-brand-gold/30">/</span>
-            <span>{product.subcategory}</span>
+            <Link href={`/categoria/${categories.find(c => c.name.toLowerCase() === product.category.toLowerCase())?.slug || product.category.toLowerCase()}`} className="hover:text-brand-gold transition-colors">
+              {product.subcategory}
+            </Link>
             <span className="text-brand-gold/30">/</span>
             <span className="text-brand-text font-medium">{product.name}</span>
           </div>
