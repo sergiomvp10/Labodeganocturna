@@ -186,7 +186,7 @@ export default function ProductPageClient({ id }: { id: string }) {
               </div>
               <div className="flex items-center gap-3 text-sm text-brand-muted">
                 <Clock size={18} className="text-brand-gold shrink-0" />
-                <span>Entrega en 30-60 minutos aprox.</span>
+                <span>Entrega en 30-45 minutos aprox.</span>
               </div>
               <div className="flex items-center gap-3 text-sm text-brand-muted">
                 <Shield size={18} className="text-brand-gold shrink-0" />
