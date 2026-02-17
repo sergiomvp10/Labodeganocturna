@@ -190,6 +190,12 @@ export default function LayoutShell({ children }: { children: ReactNode }) {
     return <AdminPanel />;
   }
 
+  const isGracias = pathname === "/gracias";
+
+  if (isGracias) {
+    return <>{children}</>;
+  }
+
   let content: ReactNode = children;
   if (productId) content = <ProductPageClient id={productId} />;
   else if (categorySlug) content = <CategoryPage slug={categorySlug} />;

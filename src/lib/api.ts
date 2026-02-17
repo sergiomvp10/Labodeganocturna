@@ -88,6 +88,9 @@ export const api = {
       body: JSON.stringify({ status }),
     }),
 
+  deleteOrder: (id: string) =>
+    request<{ ok: boolean }>(`/api/orders/${id}`, { method: "DELETE" }),
+
   getBanners: () =>
     request<BannerAPI[]>("/api/banners"),
 

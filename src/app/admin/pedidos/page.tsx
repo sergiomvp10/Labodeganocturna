@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useSiteConfig, Order } from "@/context/SiteConfigContext";
-import { Search, ChevronDown, Eye, X, Phone, MapPin, CreditCard, Package } from "lucide-react";
+import { Search, ChevronDown, Eye, X, Phone, MapPin, CreditCard, Package, Trash2 } from "lucide-react";
 
 const STATUS_LABELS: Record<Order["status"], string> = {
   pending: "Pendiente",
@@ -24,7 +24,7 @@ const formatPrice = (price: number) =>
   new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(price);
 
 export default function PedidosPage() {
-  const { orders, updateOrderStatus } = useSiteConfig();
+  const { orders, updateOrderStatus, deleteOrder } = useSiteConfig();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -113,6 +113,12 @@ export default function PedidosPage() {
                 >
                   <Eye size={18} />
                 </button>
+                <button
+                  onClick={() => { if (confirm("¿Eliminar este pedido?")) deleteOrder(order.id); }}
+                  className="p-2 rounded-lg hover:bg-red-500/10 text-[#aaa] hover:text-red-400 transition-colors cursor-pointer"
+                >
+                  <Trash2 size={18} />
+                </button>
               </div>
             </div>
           </div>
@@ -131,6 +137,10 @@ export default function PedidosPage() {
             updateOrderStatus(selectedOrder.id, status);
             setSelectedOrder({ ...selectedOrder, status });
           }}
+          onDelete={() => {
+            deleteOrder(selectedOrder.id);
+            setSelectedOrder(null);
+          }}
         />
       )}
     </div>
@@ -141,10 +151,12 @@ function OrderDetailModal({
   order,
   onClose,
   onStatusChange,
+  onDelete,
 }: {
   order: Order;
   onClose: () => void;
   onStatusChange: (status: Order["status"]) => void;
+  onDelete: () => void;
 }) {
   return (
     <div className="fixed inset-0 z-[320] flex items-center justify-center bg-black/70">
@@ -215,6 +227,14 @@ function OrderDetailModal({
               ))}
             </div>
           </div>
+
+          <button
+            onClick={() => { if (confirm("¿Eliminar este pedido permanentemente?")) onDelete(); }}
+            className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-red-400 bg-red-500/10 hover:bg-red-500/20 transition-colors cursor-pointer"
+          >
+            <Trash2 size={16} />
+            Eliminar pedido
+          </button>
         </div>
       </div>
     </div>

@@ -48,6 +48,7 @@ interface SiteConfigContextType {
   refreshOrders: () => Promise<void>;
   addOrder: (o: Order) => void;
   updateOrderStatus: (id: string, status: Order["status"]) => void;
+  deleteOrder: (id: string) => void;
   footerConfig: FooterConfig;
   setFooterConfig: (f: FooterConfig) => void;
   refreshFooter: () => Promise<void>;
@@ -144,6 +145,12 @@ export function SiteConfigProvider({ children }: { children: ReactNode }) {
     setOrders(updated);
   };
 
+  const deleteOrder = (id: string) => {
+    api.deleteOrder(id).catch(() => {});
+    const updated = orders.filter((o) => o.id !== id);
+    setOrders(updated);
+  };
+
   const setFooterConfig = (f: FooterConfig) => {
     setFooterConfigState(f);
     api.updateFooter(f as FooterAPI).catch(() => {});
@@ -172,6 +179,7 @@ export function SiteConfigProvider({ children }: { children: ReactNode }) {
         refreshOrders,
         addOrder,
         updateOrderStatus,
+        deleteOrder,
         footerConfig,
         setFooterConfig,
         refreshFooter,
