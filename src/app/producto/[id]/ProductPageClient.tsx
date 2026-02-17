@@ -15,6 +15,7 @@ export default function ProductPageClient({ id }: { id: string }) {
 
   useEffect(() => {
     setQuantity(1);
+    window.scrollTo(0, 0);
   }, [id]);
 
   if (!product) {
@@ -181,7 +182,7 @@ export default function ProductPageClient({ id }: { id: string }) {
             <div className="border-t border-brand-gold/10 pt-6 space-y-3">
               <div className="flex items-center gap-3 text-sm text-brand-muted">
                 <Truck size={18} className="text-brand-gold shrink-0" />
-                <span>Domicilio gratis en pedidos mayores a $50.000</span>
+                <span>Domicilio gratis en pedidos mayores a $200.000</span>
               </div>
               <div className="flex items-center gap-3 text-sm text-brand-muted">
                 <Clock size={18} className="text-brand-gold shrink-0" />
