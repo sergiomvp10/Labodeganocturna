@@ -40,7 +40,7 @@ function GraciasContent() {
           </Link>
 
           <a
-            href="https://wa.me/57"
+            href="https://wa.me/573112260769"
             target="_blank"
             rel="noopener noreferrer"
             style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", width: "100%", padding: "14px 0", backgroundColor: "#1a1a1a", color: "#f5f5f5", fontWeight: "bold", borderRadius: "16px", border: "1px solid rgba(201,168,76,0.2)", fontSize: "14px", textDecoration: "none" }}

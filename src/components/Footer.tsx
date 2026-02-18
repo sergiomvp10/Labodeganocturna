@@ -1,6 +1,6 @@
 "use client";
 
-import { Phone, Clock, MapPin } from "lucide-react";
+import { Phone, Clock, MapPin, Instagram, Facebook } from "lucide-react";
 import { useSiteConfig } from "@/context/SiteConfigContext";
 
 export default function Footer() {
@@ -49,6 +49,25 @@ export default function Footer() {
             </div>
             <p className="text-sm text-brand-muted">WhatsApp: {footerConfig.whatsapp}</p>
           </div>
+        </div>
+
+        <div className="flex items-center justify-center gap-4 mb-6">
+          <a
+            href="https://www.instagram.com/labodega23.col?igsh=NGx4bDJ3MWRmbjVm"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-brand-gold/10 border border-brand-gold/20 text-brand-gold hover:bg-brand-gold/20 transition-colors"
+          >
+            <Instagram size={20} />
+          </a>
+          <a
+            href="https://www.facebook.com/share/17yxhCYN2C/?mibextid=wwXIfr"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-brand-gold/10 border border-brand-gold/20 text-brand-gold hover:bg-brand-gold/20 transition-colors"
+          >
+            <Facebook size={20} />
+          </a>
         </div>
 
         <div className="border-t border-brand-gold/10 pt-6 text-center">

@@ -64,7 +64,7 @@ const DEFAULT_FOOTER: FooterConfig = {
   cities: ["Duitama", "Tunja", "Sogamoso"],
   schedule: "Abierto 23 horas al día",
   scheduleSub: "Todos los días del año",
-  whatsapp: "+57 300 000 0000",
+  whatsapp: "+57 311 226 0769",
   description: "Tu licorería de confianza con servicio a domicilio 23 horas al día.",
 };
 

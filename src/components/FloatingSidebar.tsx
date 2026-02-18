@@ -57,7 +57,7 @@ export default function FloatingSidebar() {
         </button>
 
         <a
-          href="tel:+573000000000"
+          href="tel:+573112260769"
           className="w-12 h-12 flex items-center justify-center rounded-xl text-brand-muted hover:text-brand-gold hover:bg-brand-gold/10 transition-all"
         >
           <Phone size={22} />

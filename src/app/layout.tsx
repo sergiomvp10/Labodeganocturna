@@ -84,7 +84,7 @@ export default function RootLayout({
     name: "La Bodega Nocturna 23",
     url: "https://www.labodega23.co",
     description: "Licorería a domicilio 23 horas en Duitama, Tunja, Sogamoso, Paipa y Nobsa. Whisky, tequila, aguardiente, ron, vinos, cervezas, cigarrillos y más.",
-    telephone: "+57",
+    telephone: "+573112260769",
     areaServed: cities.map((c) => ({
       "@type": "City",
       name: c,
@@ -107,7 +107,7 @@ export default function RootLayout({
         ...extras.map((e) => ({ "@type": "Offer", itemOffered: { "@type": "Product", name: e.charAt(0).toUpperCase() + e.slice(1) } })),
       ],
     },
-    sameAs: [],
+    sameAs: ["https://www.instagram.com/labodega23.col", "https://www.facebook.com/share/17yxhCYN2C/"],
   };
 
   return (
