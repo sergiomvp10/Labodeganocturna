@@ -10,7 +10,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const { id } = await params;
   const product = products.find((p) => p.id === parseInt(id));
   if (!product) return {};
-  const allCities = ["Duitama", "Tunja", "Sogamoso", "Paipa", "Nobsa"];
+  const allCities = ["Duitama", "Tunja", "Sogamoso"];
   const cityList = allCities.join(", ");
   const productKeywords = [
     product.name, product.brand,

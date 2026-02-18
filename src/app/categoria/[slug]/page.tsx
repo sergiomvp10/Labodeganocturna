@@ -10,7 +10,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const category = categories.find((c) => c.slug === slug);
   if (!category) return {};
-  const allCities = ["Duitama", "Tunja", "Sogamoso", "Paipa", "Nobsa"];
+  const allCities = ["Duitama", "Tunja", "Sogamoso"];
   const cityList = allCities.join(", ");
   const count = products.filter((p) => p.category.toLowerCase() === category.name.toLowerCase()).length;
   return {

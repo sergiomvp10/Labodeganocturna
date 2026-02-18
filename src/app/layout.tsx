@@ -3,7 +3,7 @@ import "./globals.css";
 import { Providers } from "./providers";
 import LayoutShell from "@/components/LayoutShell";
 
-const cities = ["Duitama", "Tunja", "Sogamoso", "Paipa", "Nobsa"];
+const cities = ["Duitama", "Tunja", "Sogamoso"];
 const drinks = ["whisky", "ron", "aguardiente", "tequila", "vino", "cerveza", "vodka"];
 const extras = ["cigarrillos", "pasabocas", "minibotellas"];
 
@@ -24,7 +24,6 @@ const drinkKeywords = drinks.flatMap((d) => [
   `${d} a domicilio Duitama`,
   `${d} a domicilio Tunja`,
   `${d} a domicilio Sogamoso`,
-  `${d} a domicilio Paipa`,
   `${d} barato Boyacá`,
 ]);
 
@@ -52,13 +51,13 @@ const generalKeywords = [
 ];
 
 export const metadata: Metadata = {
-  title: "La Bodega Nocturna 23 | Licorería a Domicilio en Duitama, Tunja, Sogamoso, Paipa y Nobsa",
+  title: "La Bodega Nocturna 23 | Licorería a Domicilio en Duitama, Tunja y Sogamoso",
   description:
-    "Licorería a domicilio 23 horas en Duitama, Tunja, Sogamoso, Paipa y Nobsa. Whisky, tequila, aguardiente, ron, vinos, cervezas, cigarrillos y más. Old Parr, Buchanan's, Jack Daniel's, Don Julio. Entrega rápida, productos 100% originales. Pide ahora por WhatsApp. Los mejores precios de Boyacá.",
+    "Licorería a domicilio 23 horas en Duitama, Tunja y Sogamoso. Whisky, tequila, aguardiente, ron, vinos, cervezas, cigarrillos y más. Old Parr, Buchanan's, Jack Daniel's, Don Julio. Entrega rápida, productos 100% originales. Pide ahora por WhatsApp. Los mejores precios de Boyacá.",
   keywords: [...cityKeywords, ...drinkKeywords, ...extraKeywords, ...brandKeywords, ...generalKeywords].join(", "),
   openGraph: {
     title: "La Bodega Nocturna 23 | Licorería a Domicilio 23 Horas en Boyacá",
-    description: "Licorería a domicilio en Duitama, Tunja, Sogamoso, Paipa y Nobsa. Whisky, tequila, aguardiente, ron, vinos, cervezas y cigarrillos. Entrega rápida 23 horas. Los mejores precios.",
+    description: "Licorería a domicilio en Duitama, Tunja y Sogamoso. Whisky, tequila, aguardiente, ron, vinos, cervezas y cigarrillos. Entrega rápida 23 horas. Los mejores precios.",
     url: "https://www.labodega23.co",
     siteName: "La Bodega Nocturna 23",
     locale: "es_CO",
@@ -83,7 +82,7 @@ export default function RootLayout({
     "@type": "LiquorStore",
     name: "La Bodega Nocturna 23",
     url: "https://www.labodega23.co",
-    description: "Licorería a domicilio 23 horas en Duitama, Tunja, Sogamoso, Paipa y Nobsa. Whisky, tequila, aguardiente, ron, vinos, cervezas, cigarrillos y más.",
+    description: "Licorería a domicilio 23 horas en Duitama, Tunja y Sogamoso. Whisky, tequila, aguardiente, ron, vinos, cervezas, cigarrillos y más.",
     telephone: "+573112260769",
     areaServed: cities.map((c) => ({
       "@type": "City",
