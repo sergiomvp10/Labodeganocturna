@@ -36,5 +36,40 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  return <ProductPageClient id={id} />;
+  const product = products.find((p) => p.id === parseInt(id));
+  const jsonLd = product ? {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.description,
+    image: `https://app-xeknkpjv.fly.dev/api/img/${product.id}`,
+    brand: { "@type": "Brand", name: product.brand },
+    sku: String(product.id),
+    offers: {
+      "@type": "Offer",
+      url: `https://www.labodega23.co/producto/${product.id}`,
+      priceCurrency: "COP",
+      price: product.price,
+      availability: product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      seller: { "@type": "Organization", name: "La Bodega Nocturna 23" },
+    },
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: product.rating,
+      reviewCount: product.reviews,
+      bestRating: 5,
+      worstRating: 1,
+    },
+  } : null;
+  return (
+    <>
+      {jsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      )}
+      <ProductPageClient id={id} />
+    </>
+  );
 }
