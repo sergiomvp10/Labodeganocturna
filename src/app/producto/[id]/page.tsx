@@ -2,61 +2,114 @@ import { products } from "@/data/products";
 import ProductPageClient from "./ProductPageClient";
 import type { Metadata } from "next";
 
-export function generateStaticParams() {
-  return products.map((p) => ({ id: String(p.id) }));
+const API = "https://app-xeknkpjv.fly.dev";
+
+interface APIProduct {
+  id: number;
+  name: string;
+  category: string;
+  subcategory: string;
+  price: number;
+  volume: string;
+  brand: string;
+  description: string;
+  in_stock: boolean;
+  rating: number;
+  reviews: number;
+}
+
+async function fetchAllProductIds(): Promise<number[]> {
+  try {
+    const res = await fetch(`${API}/api/products/lite`);
+    const data: { id: number }[] = await res.json();
+    return data.map((p) => p.id);
+  } catch {
+    return products.map((p) => p.id);
+  }
+}
+
+async function fetchProduct(id: number): Promise<APIProduct | null> {
+  try {
+    const res = await fetch(`${API}/api/products/${id}`);
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+export async function generateStaticParams() {
+  const ids = await fetchAllProductIds();
+  return ids.map((id) => ({ id: String(id) }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
-  const product = products.find((p) => p.id === parseInt(id));
-  if (!product) return {};
+  const numId = parseInt(id);
+  const staticProduct = products.find((p) => p.id === numId);
+  const apiProduct = !staticProduct ? await fetchProduct(numId) : null;
+  const name = staticProduct?.name ?? apiProduct?.name;
+  const brand = staticProduct?.brand ?? apiProduct?.brand;
+  const category = staticProduct?.category ?? apiProduct?.category;
+  const volume = staticProduct?.volume ?? apiProduct?.volume;
+  const price = staticProduct?.price ?? apiProduct?.price;
+  if (!name) return {};
   const allCities = ["Duitama", "Tunja", "Sogamoso"];
   const cityList = allCities.join(", ");
   const productKeywords = [
-    product.name, product.brand,
-    ...allCities.map((c) => `${product.name} ${c}`),
-    ...allCities.map((c) => `${product.category} a domicilio ${c}`),
-    `comprar ${product.name} online`,
-    `${product.brand} precio Colombia`,
-    `${product.category} a domicilio Boyacá`,
+    name, brand,
+    ...allCities.map((c) => `${name} ${c}`),
+    ...allCities.map((c) => `${category} a domicilio ${c}`),
+    `comprar ${name} online`,
+    `${brand} precio Colombia`,
+    `${category} a domicilio Boyacá`,
     "La Bodega Nocturna 23",
   ].join(", ");
   return {
-    title: `${product.name} ${product.volume} | Domicilio en ${cityList} - La Bodega Nocturna 23`,
-    description: `Compra ${product.name} de ${product.brand} a domicilio en ${cityList}. ${product.volume}. Precio: $${product.price.toLocaleString()} COP. Entrega rápida 23 horas. Productos 100% originales. Pide por WhatsApp.`,
+    title: `${name} ${volume} | Domicilio en ${cityList} - La Bodega Nocturna 23`,
+    description: `Compra ${name} de ${brand} a domicilio en ${cityList}. ${volume}. Precio: $${price?.toLocaleString()} COP. Entrega rápida 23 horas. Productos 100% originales. Pide por WhatsApp.`,
     keywords: productKeywords,
     openGraph: {
-      title: `${product.name} - $${product.price.toLocaleString()} | La Bodega Nocturna 23`,
-      description: `${product.name} de ${product.brand}. ${product.volume}. Domicilio 23 horas en ${cityList}. Productos originales.`,
-      url: `https://www.labodega23.co/producto/${product.id}`,
-      images: [product.image],
+      title: `${name} - $${price?.toLocaleString()} | La Bodega Nocturna 23`,
+      description: `${name} de ${brand}. ${volume}. Domicilio 23 horas en ${cityList}. Productos originales.`,
+      url: `https://www.labodega23.co/producto/${id}`,
+      images: [`${API}/api/img/${id}`],
     },
   };
 }
 
 export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const product = products.find((p) => p.id === parseInt(id));
-  const jsonLd = product ? {
+  const numId = parseInt(id);
+  const staticProduct = products.find((p) => p.id === numId);
+  const apiProduct = !staticProduct ? await fetchProduct(numId) : null;
+  const name = staticProduct?.name ?? apiProduct?.name;
+  const brand = staticProduct?.brand ?? apiProduct?.brand;
+  const description = staticProduct?.description ?? apiProduct?.description;
+  const price = staticProduct?.price ?? apiProduct?.price;
+  const rating = staticProduct?.rating ?? apiProduct?.rating;
+  const reviews = staticProduct?.reviews ?? apiProduct?.reviews;
+  const inStock = staticProduct?.inStock ?? apiProduct?.in_stock;
+  const jsonLd = name ? {
     "@context": "https://schema.org",
     "@type": "Product",
-    name: product.name,
-    description: product.description,
-    image: `https://app-xeknkpjv.fly.dev/api/img/${product.id}`,
-    brand: { "@type": "Brand", name: product.brand },
-    sku: String(product.id),
+    name,
+    description,
+    image: `${API}/api/img/${id}`,
+    brand: { "@type": "Brand", name: brand },
+    sku: id,
     offers: {
       "@type": "Offer",
-      url: `https://www.labodega23.co/producto/${product.id}`,
+      url: `https://www.labodega23.co/producto/${id}`,
       priceCurrency: "COP",
-      price: product.price,
-      availability: product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      price,
+      availability: inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
       seller: { "@type": "Organization", name: "La Bodega Nocturna 23" },
     },
     aggregateRating: {
       "@type": "AggregateRating",
-      ratingValue: product.rating,
-      reviewCount: product.reviews,
+      ratingValue: rating,
+      reviewCount: reviews,
       bestRating: 5,
       worstRating: 1,
     },
