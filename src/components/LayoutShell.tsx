@@ -10,8 +10,6 @@ import AgeVerification from "@/components/AgeVerification";
 import PromoBanner from "@/components/PromoBanner";
 import FloatingSidebar from "@/components/FloatingSidebar";
 import { AuthProvider } from "@/context/AuthContext";
-import ProductPageClient from "@/app/producto/[id]/ProductPageClient";
-import CategoryPage from "@/components/CategoryPage";
 
 import AdminLoginPage from "@/app/admin/page";
 import ProductosPage from "@/app/admin/productos/page";
@@ -180,11 +178,6 @@ export default function LayoutShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith("/admin");
 
-  const productMatch = pathname?.match(/^\/producto\/(\d+)/);
-  const productId = productMatch ? productMatch[1] : null;
-
-  const categoryMatch = pathname?.match(/^\/categoria\/([a-z0-9-]+)/);
-  const categorySlug = categoryMatch ? categoryMatch[1] : null;
 
   if (isAdmin) {
     return <AdminPanel />;
@@ -196,9 +189,7 @@ export default function LayoutShell({ children }: { children: ReactNode }) {
     return <>{children}</>;
   }
 
-  let content: ReactNode = children;
-  if (productId) content = <ProductPageClient id={productId} />;
-  else if (categorySlug) content = <CategoryPage slug={categorySlug} />;
+  const content: ReactNode = children;
 
   return (
     <>
