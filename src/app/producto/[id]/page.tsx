@@ -69,10 +69,13 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     title: `${name} ${volume} | Domicilio en ${cityList} - La Bodega Nocturna 23`,
     description: `Compra ${name} de ${brand} a domicilio en ${cityList}. ${volume}. Precio: $${price?.toLocaleString()} COP. Entrega rápida 23 horas. Productos 100% originales. Pide por WhatsApp.`,
     keywords: productKeywords,
+    alternates: {
+      canonical: `https://www.labodega23.co/producto/${id}/`,
+    },
     openGraph: {
       title: `${name} - $${price?.toLocaleString()} | La Bodega Nocturna 23`,
       description: `${name} de ${brand}. ${volume}. Domicilio 23 horas en ${cityList}. Productos originales.`,
-      url: `https://www.labodega23.co/producto/${id}`,
+      url: `https://www.labodega23.co/producto/${id}/`,
       images: [`${API}/api/img/${id}`],
     },
   };

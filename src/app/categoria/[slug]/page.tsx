@@ -23,10 +23,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       `comprar ${category.name} online Colombia`,
       "La Bodega Nocturna 23",
     ].join(", "),
+    alternates: {
+      canonical: `https://www.labodega23.co/categoria/${slug}/`,
+    },
     openGraph: {
       title: `${category.name} | La Bodega Nocturna 23`,
       description: `${count} productos de ${category.name} con domicilio en ${cityList}. Entrega rápida 23 horas.`,
-      url: `https://www.labodega23.co/categoria/${slug}`,
+      url: `https://www.labodega23.co/categoria/${slug}/`,
     },
   };
 }

@@ -67,9 +67,6 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
-  alternates: {
-    canonical: "https://www.labodega23.co",
-  },
 };
 
 export default function RootLayout({
