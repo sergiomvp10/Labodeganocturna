@@ -71,11 +71,11 @@ export default function ProductPageClient({ id }: { id: string }) {
               Inicio
             </Link>
             <span className="text-brand-gold/30">/</span>
-            <Link href={`/categoria/${categories.find(c => c.name.toLowerCase() === product.category.toLowerCase())?.slug || product.category.toLowerCase()}`} className="hover:text-brand-gold transition-colors">
+            <Link href={`/categoria/${categories.find(c => c.name.toLowerCase() === product.category.toLowerCase())?.slug || product.category.toLowerCase()}/`} className="hover:text-brand-gold transition-colors">
               {product.category}
             </Link>
             <span className="text-brand-gold/30">/</span>
-            <Link href={`/categoria/${categories.find(c => c.name.toLowerCase() === product.category.toLowerCase())?.slug || product.category.toLowerCase()}`} className="hover:text-brand-gold transition-colors">
+            <Link href={`/categoria/${categories.find(c => c.name.toLowerCase() === product.category.toLowerCase())?.slug || product.category.toLowerCase()}/`} className="hover:text-brand-gold transition-colors">
               {product.subcategory}
             </Link>
             <span className="text-brand-gold/30">/</span>
@@ -212,7 +212,7 @@ export default function ProductPageClient({ id }: { id: string }) {
               {related.map((p) => (
                 <Link
                   key={p.id}
-                  href={`/producto/${p.id}`}
+                  href={`/producto/${p.id}/`}
                   className="bg-brand-dark border border-brand-gold/10 rounded-lg overflow-hidden hover:border-brand-gold/30 transition-all group"
                 >
                   <div className="aspect-square bg-brand-dark2 p-4 flex items-center justify-center overflow-hidden">

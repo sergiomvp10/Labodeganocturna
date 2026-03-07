@@ -29,7 +29,7 @@ function CategoryCard({ cat, index }: { cat: CategoryAPI; index: number }) {
     <Link
       ref={ref}
       key={cat.slug}
-      href={`/categoria/${cat.slug}`}
+      href={`/categoria/${cat.slug}/`}
       className="group flex flex-col items-center transition-all duration-700 ease-out"
       style={{
         opacity: visible ? 1 : 0,

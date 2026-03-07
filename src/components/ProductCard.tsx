@@ -17,7 +17,7 @@ export default function ProductCard({ product }: { product: Product }) {
 
   return (
     <div className="bg-brand-dark2 rounded-xl border border-brand-gold/10 overflow-hidden group hover:border-brand-gold/30 transition-all duration-300">
-      <Link href={`/producto/${product.id}`} className="block">
+      <Link href={`/producto/${product.id}/`} className="block">
         <div className="relative aspect-square bg-brand-dark p-4 flex items-center justify-center">
           {discount > 0 && (
             <span className="absolute top-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
@@ -44,7 +44,7 @@ export default function ProductCard({ product }: { product: Product }) {
         <p className="text-brand-gold/60 text-[10px] uppercase tracking-wider mb-1">
           {product.category}
         </p>
-        <Link href={`/producto/${product.id}`}>
+        <Link href={`/producto/${product.id}/`}>
           <h3 className="text-sm text-brand-text font-medium leading-tight mb-3 line-clamp-2 hover:text-brand-gold transition-colors min-h-[2.5rem]">
             {product.name}
           </h3>
