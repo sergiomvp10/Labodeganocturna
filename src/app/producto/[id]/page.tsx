@@ -117,6 +117,10 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
       worstRating: 1,
     },
   } : null;
+  const volume = staticProduct?.volume ?? apiProduct?.volume;
+  const category = staticProduct?.category ?? apiProduct?.category;
+  const allCities = ["Duitama", "Tunja", "Sogamoso"];
+  const cityList = allCities.join(", ");
   return (
     <>
       {jsonLd && (
@@ -124,6 +128,19 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+      )}
+      {name && (
+        <div data-nosnippet="" style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0,0,0,0)" }}>
+          <h1>{name} {volume} - La Bodega Nocturna 23</h1>
+          <p>Marca: {brand}</p>
+          <p>Categoría: {category}</p>
+          <p>Volumen: {volume}</p>
+          <p>Precio: ${price?.toLocaleString()} COP</p>
+          <p>{description}</p>
+          <p>{inStock ? "Disponible para entrega inmediata" : "Agotado"}</p>
+          <p>Domicilio a {cityList}. Entrega rápida 23 horas. Productos 100% originales.</p>
+          <p>Compra {name} de {brand} a domicilio en {cityList}. Pide por WhatsApp al +57 311 226 0769.</p>
+        </div>
       )}
       <ProductPageClient id={id} />
     </>

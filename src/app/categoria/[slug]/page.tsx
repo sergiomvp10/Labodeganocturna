@@ -36,5 +36,25 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function CategoriaPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  return <CategoryPage slug={slug} />;
+  const category = categories.find((c) => c.slug === slug);
+  const categoryProducts = products.filter((p) => p.category.toLowerCase() === category?.name.toLowerCase());
+  const allCities = ["Duitama", "Tunja", "Sogamoso"];
+  const cityList = allCities.join(", ");
+  return (
+    <>
+      {category && (
+        <div style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0,0,0,0)" }}>
+          <h1>{category.name} a Domicilio en {cityList} - La Bodega Nocturna 23</h1>
+          <p>Compra {category.name} a domicilio en {cityList}. {categoryProducts.length} productos disponibles. Entrega rápida 23 horas.</p>
+          <ul>
+            {categoryProducts.map((p) => (
+              <li key={p.id}><a href={`/producto/${p.id}/`}>{p.name} - {p.brand} - ${p.price.toLocaleString()} COP</a></li>
+            ))}
+          </ul>
+          <p>Licorería a domicilio en {cityList}. Productos 100% originales. Pide por WhatsApp al +57 311 226 0769.</p>
+        </div>
+      )}
+      <CategoryPage slug={slug} />
+    </>
+  );
 }
