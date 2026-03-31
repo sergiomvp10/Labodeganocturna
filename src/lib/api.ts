@@ -1,4 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://app-xeknkpjv.fly.dev";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://app-debikeyl.fly.dev";
 
 function getToken(): string | null {
   if (typeof window === "undefined") return null;
