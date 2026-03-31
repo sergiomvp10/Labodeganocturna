@@ -19,12 +19,15 @@ interface APIProduct {
 }
 
 async function fetchAllProductIds(): Promise<number[]> {
+  const staticIds = products.map((p) => p.id);
   try {
     const res = await fetch(`${API}/api/products/lite`);
     const data: { id: number }[] = await res.json();
-    return data.map((p) => p.id);
+    const apiIds = data.map((p) => p.id);
+    const merged = new Set([...staticIds, ...apiIds]);
+    return Array.from(merged);
   } catch {
-    return products.map((p) => p.id);
+    return staticIds;
   }
 }
 
