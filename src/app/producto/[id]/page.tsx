@@ -2,7 +2,7 @@ import { products } from "@/data/products";
 import ProductPageClient from "./ProductPageClient";
 import type { Metadata } from "next";
 
-const API = "https://app-debikeyl.fly.dev";
+const API = "https://labodega-nocturna-backend.fly.dev";
 
 interface APIProduct {
   id: number;
