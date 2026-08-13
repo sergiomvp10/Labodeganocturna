@@ -1,4 +1,5 @@
-import { categories, products } from "@/data/products";
+import { categories } from "@/data/products";
+import { fetchSeoProducts } from "@/lib/seo";
 import CategoryPage from "@/components/CategoryPage";
 import type { Metadata } from "next";
 
@@ -12,6 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!category) return {};
   const allCities = ["Duitama", "Tunja", "Sogamoso"];
   const cityList = allCities.join(", ");
+  const products = await fetchSeoProducts();
   const count = products.filter((p) => p.category.toLowerCase() === category.name.toLowerCase()).length;
   return {
     title: `${category.name} a Domicilio en ${cityList} | La Bodega Nocturna 23`,
@@ -37,6 +39,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function CategoriaPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const category = categories.find((c) => c.slug === slug);
+  const products = await fetchSeoProducts();
   const categoryProducts = products.filter((p) => p.category.toLowerCase() === category?.name.toLowerCase());
   const allCities = ["Duitama", "Tunja", "Sogamoso"];
   const cityList = allCities.join(", ");

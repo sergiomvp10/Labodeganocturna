@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { Product, products as staticProducts } from "@/data/products";
+import { Product } from "@/data/products";
 import { api, ProductAPI } from "@/lib/api";
 
 const CACHE_KEY = "lbn_products_cache";
@@ -13,7 +13,7 @@ function toProduct(p: ProductAPI): Product {
 function getCached(): Product[] | null {
   if (typeof window === "undefined") return null;
   try {
-    const raw = sessionStorage.getItem(CACHE_KEY);
+    const raw = localStorage.getItem(CACHE_KEY);
     if (!raw) return null;
     return JSON.parse(raw) as Product[];
   } catch {
@@ -23,7 +23,7 @@ function getCached(): Product[] | null {
 
 function setCache(products: Product[]) {
   try {
-    sessionStorage.setItem(CACHE_KEY, JSON.stringify(products));
+    localStorage.setItem(CACHE_KEY, JSON.stringify(products));
   } catch {}
 }
 
@@ -38,8 +38,8 @@ const ProductsContext = createContext<ProductsContextType>({
 });
 
 export function ProductsProvider({ children }: { children: ReactNode }) {
-  const [products, setProducts] = useState<Product[]>(staticProducts);
-  const [ready, setReady] = useState(true);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const cached = getCached();

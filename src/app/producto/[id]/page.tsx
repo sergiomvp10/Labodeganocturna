@@ -2,7 +2,8 @@ import { products } from "@/data/products";
 import ProductPageClient from "./ProductPageClient";
 import type { Metadata } from "next";
 
-const API = "https://labodega-nocturna-backend.fly.dev";
+const API = process.env.NEXT_PUBLIC_API_URL || "https://labodega-nocturna-backend.fly.dev";
+const SITE = "https://www.labodega23.co";
 
 interface APIProduct {
   id: number;
@@ -20,16 +21,12 @@ interface APIProduct {
 }
 
 async function fetchAllProductIds(): Promise<number[]> {
-  const staticIds = products.map((p) => p.id);
   try {
     const res = await fetch(`${API}/api/products/lite`);
     const data: { id: number }[] = await res.json();
-    const apiIds = data.map((p) => p.id);
-    const merged = new Set([...staticIds, ...apiIds]);
-    return Array.from(merged);
-  } catch {
-    return staticIds;
-  }
+    if (data.length > 0) return data.map((p) => p.id);
+  } catch {}
+  return products.map((p) => p.id);
 }
 
 async function fetchProduct(id: number): Promise<APIProduct | null> {
@@ -42,9 +39,9 @@ async function fetchProduct(id: number): Promise<APIProduct | null> {
   }
 }
 
-function imageUrl(image: string | undefined, id: string): string {
-  if (image?.startsWith("http")) return image;
-  return `${API}/api/img/${id}`;
+function imageUrl(image: string | undefined): string | undefined {
+  if (!image || image.startsWith("data:")) return undefined;
+  return image.startsWith("http") ? image : `${SITE}${image}`;
 }
 
 export async function generateStaticParams() {
@@ -85,7 +82,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       title: `${name} - $${price?.toLocaleString()} | La Bodega Nocturna 23`,
       description: `${name} de ${brand}. ${volume}. Domicilio 23 horas en ${cityList}. Productos originales.`,
       url: `https://www.labodega23.co/producto/${id}/`,
-      images: [imageUrl(apiProduct?.image, id)],
+      images: [imageUrl(apiProduct?.image ?? staticProduct?.image)].filter(Boolean) as string[],
     },
   };
 }
@@ -107,7 +104,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
     "@type": "Product",
     name,
     description,
-    image: imageUrl(apiProduct?.image, id),
+    image: imageUrl(apiProduct?.image ?? staticProduct?.image),
     brand: { "@type": "Brand", name: brand },
     sku: id,
     offers: {

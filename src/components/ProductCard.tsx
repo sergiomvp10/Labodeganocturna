@@ -7,6 +7,19 @@ import { ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { MouseEvent } from "react";
 
+export function ProductCardSkeleton() {
+  return (
+    <div className="bg-brand-dark2 rounded-xl border border-brand-gold/10 overflow-hidden animate-pulse">
+      <div className="aspect-square bg-brand-dark" />
+      <div className="p-3 space-y-2">
+        <div className="h-2 w-1/3 bg-brand-gold/10 rounded" />
+        <div className="h-3 w-4/5 bg-brand-gold/10 rounded" />
+        <div className="h-4 w-1/2 bg-brand-gold/10 rounded" />
+      </div>
+    </div>
+  );
+}
+
 export default function ProductCard({ product }: { product: Product }) {
   const { addToCart } = useCart();
   const { fly } = useFlyToCart();
