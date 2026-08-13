@@ -2,7 +2,8 @@ import HeroBanner from "@/components/HeroBanner";
 import CategoryGrid from "@/components/CategoryGrid";
 import FeaturedProducts from "@/components/FeaturedProducts";
 import OffersSection from "@/components/OffersSection";
-import { categories, products } from "@/data/products";
+import { categories } from "@/data/products";
+import { fetchSeoProducts } from "@/lib/seo";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -11,9 +12,10 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Home() {
+export default async function Home() {
   const allCities = ["Duitama", "Tunja", "Sogamoso"];
   const cityList = allCities.join(", ");
+  const products = await fetchSeoProducts();
   return (
     <>
       <div style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0,0,0,0)" }}>

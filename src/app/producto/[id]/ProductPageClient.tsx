@@ -9,7 +9,7 @@ import { Star, ShoppingCart, Minus, Plus, ArrowLeft, Truck, Clock, Shield } from
 import Link from "next/link";
 
 export default function ProductPageClient({ id }: { id: string }) {
-  const { products: allProducts } = useProducts();
+  const { products: allProducts, ready } = useProducts();
   const { categories } = useCategories();
   const product = allProducts.find((p) => p.id === parseInt(id)) || null;
   const { addToCart } = useCart();
@@ -19,6 +19,22 @@ export default function ProductPageClient({ id }: { id: string }) {
     setQuantity(1);
     window.scrollTo(0, 0);
   }, [id]);
+
+  if (!product && !ready) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-20">
+        <div className="animate-pulse grid md:grid-cols-2 gap-10">
+          <div className="aspect-square rounded-xl bg-brand-dark2" />
+          <div className="space-y-4">
+            <div className="h-4 w-1/4 bg-brand-dark2 rounded" />
+            <div className="h-8 w-3/4 bg-brand-dark2 rounded" />
+            <div className="h-6 w-1/3 bg-brand-dark2 rounded" />
+            <div className="h-24 w-full bg-brand-dark2 rounded" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!product) {
     return (

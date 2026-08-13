@@ -1,7 +1,7 @@
 "use client";
 
-import { Product, products as staticProducts } from "@/data/products";
-import ProductCard from "./ProductCard";
+import { Product } from "@/data/products";
+import ProductCard, { ProductCardSkeleton } from "./ProductCard";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { api, ProductAPI } from "@/lib/api";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -10,19 +10,19 @@ function toProduct(p: ProductAPI): Product {
   return { ...p, originalPrice: p.originalPrice ?? undefined, discount: p.discount ?? undefined };
 }
 
-const staticFeatured = staticProducts.filter((p) => p.featured);
-
 export default function FeaturedProducts() {
-  const [featured, setFeatured] = useState<Product[]>(staticFeatured);
+  const [featured, setFeatured] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const innerRef = useRef<HTMLDivElement>(null);
   const [animPaused, setAnimPaused] = useState(false);
   const dragRef = useRef({ isDragging: false, startX: 0, startOffset: 0 });
   const pauseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    api.storefront.featured().then((data) => {
-      if (data.length > 0) setFeatured(data.map(toProduct));
-    }).catch(() => {});
+    api.storefront.featured()
+      .then((data) => setFeatured(data.map(toProduct)))
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
@@ -94,7 +94,7 @@ export default function FeaturedProducts() {
     }, 3000);
   };
 
-  if (featured.length === 0) return null;
+  if (featured.length === 0 && !loading) return null;
 
   return (
     <section className="pt-10 md:pt-14 bg-brand-dark" style={{ paddingBottom: "12rem" }}>
@@ -132,11 +132,17 @@ export default function FeaturedProducts() {
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
             >
-              {[...featured, ...featured, ...featured].map((product, i) => (
-                <div key={`${product.id}-${i}`} className="flex-shrink-0 w-56 md:w-64" style={{ userSelect: "none" }}>
-                  <ProductCard product={product} />
-                </div>
-              ))}
+              {featured.length === 0
+                ? Array.from({ length: 8 }).map((_, i) => (
+                    <div key={`skeleton-${i}`} className="flex-shrink-0 w-56 md:w-64">
+                      <ProductCardSkeleton />
+                    </div>
+                  ))
+                : [...featured, ...featured, ...featured].map((product, i) => (
+                    <div key={`${product.id}-${i}`} className="flex-shrink-0 w-56 md:w-64" style={{ userSelect: "none" }}>
+                      <ProductCard product={product} />
+                    </div>
+                  ))}
             </div>
           </div>
 
