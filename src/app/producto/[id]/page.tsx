@@ -13,7 +13,8 @@ interface APIProduct {
   volume: string;
   brand: string;
   description: string;
-  in_stock: boolean;
+  image: string;
+  inStock: boolean;
   rating: number;
   reviews: number;
 }
@@ -41,6 +42,11 @@ async function fetchProduct(id: number): Promise<APIProduct | null> {
   }
 }
 
+function imageUrl(image: string | undefined, id: string): string {
+  if (image?.startsWith("http")) return image;
+  return `${API}/api/img/${id}`;
+}
+
 export async function generateStaticParams() {
   const ids = await fetchAllProductIds();
   return ids.map((id) => ({ id: String(id) }));
@@ -49,13 +55,13 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
   const numId = parseInt(id);
+  const apiProduct = await fetchProduct(numId);
   const staticProduct = products.find((p) => p.id === numId);
-  const apiProduct = !staticProduct ? await fetchProduct(numId) : null;
-  const name = staticProduct?.name ?? apiProduct?.name;
-  const brand = staticProduct?.brand ?? apiProduct?.brand;
-  const category = staticProduct?.category ?? apiProduct?.category;
-  const volume = staticProduct?.volume ?? apiProduct?.volume;
-  const price = staticProduct?.price ?? apiProduct?.price;
+  const name = apiProduct?.name ?? staticProduct?.name;
+  const brand = apiProduct?.brand ?? staticProduct?.brand;
+  const category = apiProduct?.category ?? staticProduct?.category;
+  const volume = apiProduct?.volume ?? staticProduct?.volume;
+  const price = apiProduct?.price ?? staticProduct?.price;
   if (!name) return {};
   const allCities = ["Duitama", "Tunja", "Sogamoso"];
   const cityList = allCities.join(", ");
@@ -79,7 +85,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       title: `${name} - $${price?.toLocaleString()} | La Bodega Nocturna 23`,
       description: `${name} de ${brand}. ${volume}. Domicilio 23 horas en ${cityList}. Productos originales.`,
       url: `https://www.labodega23.co/producto/${id}/`,
-      images: [`${API}/api/img/${id}`],
+      images: [imageUrl(apiProduct?.image, id)],
     },
   };
 }
@@ -87,21 +93,21 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const numId = parseInt(id);
+  const apiProduct = await fetchProduct(numId);
   const staticProduct = products.find((p) => p.id === numId);
-  const apiProduct = !staticProduct ? await fetchProduct(numId) : null;
-  const name = staticProduct?.name ?? apiProduct?.name;
-  const brand = staticProduct?.brand ?? apiProduct?.brand;
-  const description = staticProduct?.description ?? apiProduct?.description;
-  const price = staticProduct?.price ?? apiProduct?.price;
-  const rating = staticProduct?.rating ?? apiProduct?.rating;
-  const reviews = staticProduct?.reviews ?? apiProduct?.reviews;
-  const inStock = staticProduct?.inStock ?? apiProduct?.in_stock;
+  const name = apiProduct?.name ?? staticProduct?.name;
+  const brand = apiProduct?.brand ?? staticProduct?.brand;
+  const description = apiProduct?.description ?? staticProduct?.description;
+  const price = apiProduct?.price ?? staticProduct?.price;
+  const rating = apiProduct?.rating ?? staticProduct?.rating;
+  const reviews = apiProduct?.reviews ?? staticProduct?.reviews;
+  const inStock = apiProduct?.inStock ?? staticProduct?.inStock;
   const jsonLd = name ? {
     "@context": "https://schema.org",
     "@type": "Product",
     name,
     description,
-    image: `${API}/api/img/${id}`,
+    image: imageUrl(apiProduct?.image, id),
     brand: { "@type": "Brand", name: brand },
     sku: id,
     offers: {
@@ -120,8 +126,8 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
       worstRating: 1,
     },
   } : null;
-  const volume = staticProduct?.volume ?? apiProduct?.volume;
-  const category = staticProduct?.category ?? apiProduct?.category;
+  const volume = apiProduct?.volume ?? staticProduct?.volume;
+  const category = apiProduct?.category ?? staticProduct?.category;
   const allCities = ["Duitama", "Tunja", "Sogamoso"];
   const cityList = allCities.join(", ");
   return (
