@@ -51,6 +51,7 @@ const generalKeywords = [
 ];
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.labodega23.co"),
   title: "La Bodega Nocturna 23 | Licorería a Domicilio en Duitama, Tunja y Sogamoso",
   description:
     "Licorería a domicilio 23 horas en Duitama, Tunja y Sogamoso. Whisky, tequila, aguardiente, ron, vinos, cervezas, cigarrillos y más. Old Parr, Buchanan's, Jack Daniel's, Don Julio. Entrega rápida, productos 100% originales. Pide ahora por WhatsApp. Los mejores precios de Boyacá.",

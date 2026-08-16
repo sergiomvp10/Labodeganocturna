@@ -1,0 +1,15 @@
+{
+  "redirects": [
+    {
+      "source": "/:path(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "labodega23.co"
+        }
+      ],
+      "destination": "https://www.labodega23.co/:path",
+      "permanent": true
+    }
+  ]
+}
