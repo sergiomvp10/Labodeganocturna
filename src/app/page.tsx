@@ -30,7 +30,7 @@ export default async function Home() {
         <h2>Productos Destacados</h2>
         <ul>
           {products.slice(0, 20).map((p) => (
-            <li key={p.id}><a href={`/producto/${p.id}/`}>{p.name} - {p.brand} - ${p.price.toLocaleString()} COP</a></li>
+            <li key={p.id}><a href={`/producto/${p.id}/`}>{p.name} - {p.brand} - ${p.price.toLocaleString("es-CO")} COP</a></li>
           ))}
         </ul>
         <p>Pide por WhatsApp al +57 311 226 0769. Domicilio en {cityList}.</p>
