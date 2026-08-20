@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { cities } from "@/data/products";
+import { enabledCities, isCityEnabled } from "@/data/products";
 
 interface CityContextType {
   selectedCity: string;
@@ -14,14 +14,14 @@ interface CityContextType {
 const CityContext = createContext<CityContextType | undefined>(undefined);
 
 export function CityProvider({ children }: { children: ReactNode }) {
-  const [selectedCity, setSelectedCityState] = useState(cities[0]);
+  const [selectedCity, setSelectedCityState] = useState(enabledCities[0]);
   const [isCityModalOpen, setIsCityModalOpen] = useState(false);
   const [hasSelectedCity, setHasSelectedCity] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const saved = sessionStorage.getItem("selected-city");
-      if (saved) {
+      if (saved && isCityEnabled(saved)) {
         setSelectedCityState(saved);
         setHasSelectedCity(true);
       }
