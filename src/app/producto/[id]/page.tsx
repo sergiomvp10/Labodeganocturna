@@ -72,13 +72,13 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   ].join(", ");
   return {
     title: `${name} ${volume} | Domicilio en ${cityList} - La Bodega Nocturna 23`,
-    description: `Compra ${name} de ${brand} a domicilio en ${cityList}. ${volume}. Precio: $${price?.toLocaleString()} COP. Entrega rápida 23 horas. Productos 100% originales. Pide por WhatsApp.`,
+    description: `Compra ${name} de ${brand} a domicilio en ${cityList}. ${volume}. Precio: $${price?.toLocaleString("es-CO")} COP. Entrega rápida 23 horas. Productos 100% originales. Pide por WhatsApp.`,
     keywords: productKeywords,
     alternates: {
       canonical: `https://www.labodega23.co/producto/${id}/`,
     },
     openGraph: {
-      title: `${name} - $${price?.toLocaleString()} | La Bodega Nocturna 23`,
+      title: `${name} - $${price?.toLocaleString("es-CO")} | La Bodega Nocturna 23`,
       description: `${name} de ${brand}. ${volume}. Domicilio 23 horas en ${cityList}. Productos originales.`,
       url: `https://www.labodega23.co/producto/${id}/`,
       images: [imageUrl(apiProduct?.image)].filter(Boolean) as string[],
@@ -130,7 +130,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
           <p>Marca: {brand}</p>
           <p>Categoría: {category}</p>
           <p>Volumen: {volume}</p>
-          <p>Precio: ${price?.toLocaleString()} COP</p>
+          <p>Precio: ${price?.toLocaleString("es-CO")} COP</p>
           <p>{description}</p>
           <p>{inStock ? "Disponible para entrega inmediata" : "Agotado"}</p>
           <p>Domicilio a {cityList}. Entrega rápida 23 horas. Productos 100% originales.</p>

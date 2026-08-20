@@ -51,7 +51,7 @@ export default async function CategoriaPage({ params }: { params: Promise<{ slug
           <p>Compra {category.name} a domicilio en {cityList}. {categoryProducts.length} productos disponibles. Entrega rápida 23 horas.</p>
           <ul>
             {categoryProducts.map((p) => (
-              <li key={p.id}><a href={`/producto/${p.id}/`}>{p.name} - {p.brand} - ${p.price.toLocaleString()} COP</a></li>
+              <li key={p.id}><a href={`/producto/${p.id}/`}>{p.name} - {p.brand} - ${p.price.toLocaleString("es-CO")} COP</a></li>
             ))}
           </ul>
           <p>Licorería a domicilio en {cityList}. Productos 100% originales. Pide por WhatsApp al +57 311 226 0769.</p>

@@ -66,11 +66,11 @@ export default function ProductCard({ product }: { product: Product }) {
         <div className="mt-auto flex items-center justify-between gap-2">
           <div className="min-w-0">
             <p className="price text-lg font-bold text-brand-gold leading-none">
-              ${product.price.toLocaleString()}
+              ${product.price.toLocaleString("es-CO")}
             </p>
             {product.originalPrice && (
               <p className="price text-xs text-brand-muted line-through mt-0.5">
-                ${product.originalPrice.toLocaleString()}
+                ${product.originalPrice.toLocaleString("es-CO")}
               </p>
             )}
           </div>

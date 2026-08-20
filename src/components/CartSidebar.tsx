@@ -200,7 +200,7 @@ export default function CartSidebar() {
                             {item.product.name}
                           </h4>
                           <p className="price text-brand-gold font-bold text-sm mt-1">
-                            ${item.product.price.toLocaleString()}
+                            ${item.product.price.toLocaleString("es-CO")}
                           </p>
                           <div className="flex items-center gap-3 mt-2">
                             <button
@@ -256,7 +256,7 @@ export default function CartSidebar() {
                               {p.name}
                             </p>
                             <p className="price text-xs font-bold text-brand-gold mt-auto mb-2">
-                              ${p.price.toLocaleString()}
+                              ${p.price.toLocaleString("es-CO")}
                             </p>
                             <button
                               onClick={() => addToCart(p)}
@@ -275,7 +275,7 @@ export default function CartSidebar() {
                   <div className="mt-6 pt-5 border-t border-brand-gold/20 space-y-3">
                     {totalPrice < 200000 ? (
                       <p className="text-xs text-brand-muted text-center">
-                        Agrega ${(200000 - totalPrice).toLocaleString()} más para envío gratis
+                        Agrega ${(200000 - totalPrice).toLocaleString("es-CO")} más para envío gratis
                       </p>
                     ) : (
                       <div className="flex items-center justify-center gap-2 rounded-lg border border-green-400/30 bg-green-400/10 px-3 py-2">
@@ -288,7 +288,7 @@ export default function CartSidebar() {
                     <div className="flex items-center justify-between px-1">
                       <span className="text-sm text-brand-muted">Total</span>
                       <span className="price text-2xl font-bold text-brand-gold">
-                        ${totalPrice.toLocaleString()}
+                        ${totalPrice.toLocaleString("es-CO")}
                       </span>
                     </div>
                     <button
@@ -328,14 +328,14 @@ export default function CartSidebar() {
                       {item.quantity}x {item.product.name}
                     </span>
                     <span className="price text-brand-muted flex-shrink-0 font-medium">
-                      ${(item.product.price * item.quantity).toLocaleString()}
+                      ${(item.product.price * item.quantity).toLocaleString("es-CO")}
                     </span>
                   </div>
                 ))}
                 <div className="border-t border-brand-gold/15 pt-3 mt-1 space-y-2">
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-brand-muted">Subtotal</span>
-                    <span className="price text-sm text-brand-text font-medium">${totalPrice.toLocaleString()}</span>
+                    <span className="price text-sm text-brand-text font-medium">${totalPrice.toLocaleString("es-CO")}</span>
                   </div>
                   {couponApplied && (
                     <div className="flex justify-between items-center">
@@ -343,7 +343,7 @@ export default function CartSidebar() {
                         <Ticket size={14} />
                         {couponApplied} (-{couponDiscount}%)
                       </span>
-                      <span className="price text-sm text-green-400 font-medium">-${discountAmount.toLocaleString()}</span>
+                      <span className="price text-sm text-green-400 font-medium">-${discountAmount.toLocaleString("es-CO")}</span>
                     </div>
                   )}
                   <div className="flex justify-between items-center">
@@ -354,7 +354,7 @@ export default function CartSidebar() {
                   </div>
                   <div className="border-t border-brand-gold/15 pt-2 flex justify-between items-center">
                     <span className="text-sm font-bold text-brand-text">Total</span>
-                    <span className="price text-xl font-bold text-brand-gold">${finalTotal.toLocaleString()}</span>
+                    <span className="price text-xl font-bold text-brand-gold">${finalTotal.toLocaleString("es-CO")}</span>
                   </div>
                 </div>
               </div>
@@ -489,7 +489,7 @@ export default function CartSidebar() {
                       <span className="absolute inset-0 overflow-hidden rounded-2xl">
                         <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent" style={{ animation: "shimmer 2.5s ease-in-out infinite" }} />
                       </span>
-                      <span className="relative">{`Confirmar pedido · $${finalTotal.toLocaleString()}`}</span>
+                      <span className="relative">{`Confirmar pedido · $${finalTotal.toLocaleString("es-CO")}`}</span>
                     </>
                   )}
                 </button>

@@ -142,7 +142,7 @@ export default function FloatingSidebar() {
                         <p className="text-xs text-brand-muted">{product.brand} · {product.category}</p>
                       </div>
                       <div className="flex-shrink-0 text-right">
-                        <p className="text-sm font-bold text-brand-gold">${product.price.toLocaleString()}</p>
+                        <p className="text-sm font-bold text-brand-gold">${product.price.toLocaleString("es-CO")}</p>
                         {product.discount && (
                           <span className="text-[10px] font-bold text-red-400">{product.discount}</span>
                         )}
