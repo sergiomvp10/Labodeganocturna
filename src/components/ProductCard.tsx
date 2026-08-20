@@ -29,7 +29,7 @@ export default function ProductCard({ product }: { product: Product }) {
     : 0;
 
   return (
-    <div className="bg-brand-dark2 rounded-xl border border-brand-gold/10 overflow-hidden group hover:border-brand-gold/30 transition-all duration-300">
+    <div className="h-full flex flex-col bg-brand-dark2 rounded-xl border border-brand-gold/10 overflow-hidden group hover:border-brand-gold/30 transition-all duration-300">
       <Link href={`/producto/${product.id}/`} className="block">
         <div className="relative aspect-square bg-brand-dark p-4 flex items-center justify-center">
           {discount > 0 && (
@@ -53,7 +53,7 @@ export default function ProductCard({ product }: { product: Product }) {
         </div>
       </Link>
 
-      <div className="p-3 md:p-4">
+      <div className="flex-1 flex flex-col p-3 md:p-4">
         <p className="text-brand-gold/60 text-[10px] uppercase tracking-wider mb-0.5">
           {product.category}
         </p>
@@ -63,7 +63,7 @@ export default function ProductCard({ product }: { product: Product }) {
           </h3>
         </Link>
 
-        <div className="flex items-center justify-between gap-2">
+        <div className="mt-auto flex items-center justify-between gap-2">
           <div className="min-w-0">
             <p className="price text-lg font-bold text-brand-gold leading-none">
               ${product.price.toLocaleString()}
