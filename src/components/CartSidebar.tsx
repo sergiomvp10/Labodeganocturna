@@ -2,8 +2,9 @@
 
 import { useCart } from "@/context/CartContext";
 import { useCity } from "@/context/CityContext";
+import { useProducts } from "@/context/ProductsContext";
 import { api } from "@/lib/api";
-import { X, Plus, Minus, Trash2, ShoppingBag, ArrowLeft, CheckCircle, Loader2, Ticket } from "lucide-react";
+import { X, Plus, Minus, Trash2, ShoppingBag, ArrowLeft, CheckCircle, Loader2, Ticket, Truck } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -12,8 +13,9 @@ type Step = "cart" | "checkout" | "confirmation";
 const PAYMENT_METHODS = ["Efectivo", "Nequi", "Bre-b"];
 
 export default function CartSidebar() {
-  const { items, removeFromCart, updateQuantity, totalPrice, totalItems, isCartOpen, setIsCartOpen, clearCart } = useCart();
+  const { items, addToCart, removeFromCart, updateQuantity, totalPrice, totalItems, isCartOpen, setIsCartOpen, clearCart } = useCart();
   const { selectedCity } = useCity();
+  const { products } = useProducts();
   const router = useRouter();
 
   const [step, setStep] = useState<Step>("cart");
@@ -35,6 +37,15 @@ export default function CartSidebar() {
   const priceAfterCoupon = totalPrice - discountAmount;
   const shipping = priceAfterCoupon >= 200000 ? 0 : 6000;
   const finalTotal = priceAfterCoupon + shipping;
+
+  const inCartIds = new Set(items.map((i) => i.product.id));
+  const cartCategories = new Set(items.map((i) => i.product.category.toLowerCase()));
+  const candidates = products.filter((p) => p.inStock && !inCartIds.has(p.id));
+  const suggestions = [
+    ...candidates.filter((p) => cartCategories.has(p.category.toLowerCase())),
+    ...candidates.filter((p) => !cartCategories.has(p.category.toLowerCase()) && p.featured),
+    ...candidates.filter((p) => !cartCategories.has(p.category.toLowerCase()) && !p.featured),
+  ].slice(0, 6);
 
   const handleValidateCoupon = async () => {
     const code = couponCode.trim();
@@ -204,11 +215,60 @@ export default function CartSidebar() {
                     ))}
                   </div>
 
+                  {suggestions.length > 0 && (
+                    <div className="mt-6 pt-5 border-t border-brand-gold/10">
+                      <h3 className="text-sm font-bold text-brand-text mb-3">
+                        Tal vez quisieras comprar...
+                      </h3>
+                      <div className="no-scrollbar flex gap-3 overflow-x-auto pb-1 -mx-1 px-1">
+                        {suggestions.map((p) => (
+                          <div
+                            key={p.id}
+                            className="w-28 shrink-0 bg-brand-dark2 rounded-xl border border-brand-gold/10 p-2 flex flex-col"
+                          >
+                            <div className="h-20 bg-brand-dark rounded-lg overflow-hidden flex items-center justify-center mb-2">
+                              <img
+                                src={p.image}
+                                alt={p.name}
+                                loading="lazy"
+                                decoding="async"
+                                width={96}
+                                height={80}
+                                className="w-full h-full object-contain"
+                              />
+                            </div>
+                            <p className="text-[11px] text-brand-text leading-snug line-clamp-2 mb-1">
+                              {p.name}
+                            </p>
+                            <p className="price text-xs font-bold text-brand-gold mt-auto mb-2">
+                              ${p.price.toLocaleString()}
+                            </p>
+                            <button
+                              onClick={() => addToCart(p)}
+                              aria-label={`Agregar ${p.name} al carrito`}
+                              className="w-full flex items-center justify-center gap-1 bg-brand-gold/15 text-brand-gold text-[11px] font-bold py-1.5 rounded-md hover:bg-brand-gold hover:text-brand-black transition-colors cursor-pointer"
+                            >
+                              <Plus size={12} strokeWidth={3} />
+                              Agregar
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   <div className="mt-6 pt-5 border-t border-brand-gold/20 space-y-3">
-                    {totalPrice < 200000 && (
+                    {totalPrice < 200000 ? (
                       <p className="text-xs text-brand-muted text-center">
                         Agrega ${(200000 - totalPrice).toLocaleString()} más para envío gratis
                       </p>
+                    ) : (
+                      <div className="flex items-center justify-center gap-2 rounded-lg border border-green-400/30 bg-green-400/10 px-3 py-2">
+                        <Truck size={16} className="text-green-400 shrink-0" />
+                        <p className="text-sm font-bold tracking-wide text-green-400">
+                          TIENES ENVÍO GRATIS
+                        </p>
+                      </div>
                     )}
                     <div className="flex items-center justify-between px-1">
                       <span className="text-sm text-brand-muted">Total</span>
