@@ -4,12 +4,15 @@ import { useCity } from "@/context/CityContext";
 import { useCityImages } from "@/context/CityImagesContext";
 import { X } from "lucide-react";
 import { cities, isCityEnabled } from "@/data/products";
+import { useScrollLock } from "@/lib/useScrollLock";
 
 export default function CityModal() {
   const { selectedCity, setSelectedCity, isCityModalOpen, setIsCityModalOpen, hasSelectedCity } = useCity();
   const { cityImages } = useCityImages();
 
   const showModal = isCityModalOpen || !hasSelectedCity;
+
+  useScrollLock(showModal);
 
   if (!showModal) return null;
 
@@ -20,7 +23,7 @@ export default function CityModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-[150] flex items-center justify-center bg-brand-black/95 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[150] overflow-hidden overscroll-none flex items-center justify-center bg-brand-black/95 backdrop-blur-sm">
       <div className="w-full max-w-4xl mx-auto px-4 md:px-6 relative">
         <div className="flex flex-col items-center text-center mb-4 md:mb-14">
           <img

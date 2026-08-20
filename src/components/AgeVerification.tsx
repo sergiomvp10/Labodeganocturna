@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
+import { useScrollLock } from "@/lib/useScrollLock";
 
 const THUMB_SIZE = 52;
 const THUMB_PADDING = 4;
@@ -89,6 +90,8 @@ export default function AgeVerification() {
     };
   }, [handleMove, handleEnd]);
 
+  useScrollLock(!hidden);
+
   const progressWidth = trackRef.current
     ? (thumbLeft - THUMB_PADDING) / (trackRef.current.getBoundingClientRect().width - THUMB_SIZE - THUMB_PADDING * 2) * 100
     : 0;
@@ -97,7 +100,7 @@ export default function AgeVerification() {
 
   return (
     <div
-      className={`fixed inset-0 z-[200] flex items-center justify-center bg-brand-black transition-opacity duration-500 ${
+      className={`fixed inset-0 z-[200] overflow-hidden overscroll-none flex items-center justify-center bg-brand-black transition-opacity duration-500 ${
         verified ? "opacity-0 pointer-events-none" : "opacity-100"
       }`}
     >
