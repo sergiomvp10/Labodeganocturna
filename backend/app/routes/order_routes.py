@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from typing import Optional, List
 import aiosqlite
 import json
-import uuid
+import secrets
 
 from app.database import get_db
 from app.auth import get_current_user
@@ -59,9 +59,18 @@ async def get_orders(
     return [row_to_order(r) for r in rows]
 
 
+async def generate_order_id(db: aiosqlite.Connection) -> str:
+    for _ in range(20):
+        candidate = str(secrets.randbelow(90000000) + 10000000)
+        cursor = await db.execute("SELECT 1 FROM orders WHERE id = ?", (candidate,))
+        if await cursor.fetchone() is None:
+            return candidate
+    raise HTTPException(status_code=500, detail="No se pudo generar el numero de pedido")
+
+
 @router.post("")
 async def create_order(o: OrderCreate, db: aiosqlite.Connection = Depends(get_db)):
-    order_id = str(uuid.uuid4())[:8]
+    order_id = await generate_order_id(db)
     items_json = json.dumps([item.model_dump() for item in o.items])
     await db.execute(
         """INSERT INTO orders (id, client_name, phone, city, address, payment_method, total, notes, items)

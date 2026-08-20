@@ -5,6 +5,7 @@ import { useCity } from "@/context/CityContext";
 import { useProducts } from "@/context/ProductsContext";
 import { api } from "@/lib/api";
 import { Product } from "@/data/products";
+import { saveLastOrder } from "@/lib/lastOrder";
 import { X, Plus, Minus, Trash2, ShoppingBag, ArrowLeft, CheckCircle, Loader2, Ticket, Truck } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -132,6 +133,24 @@ export default function CartSidebar() {
           quantity: i.quantity,
           price: i.product.price,
         })),
+      });
+      saveLastOrder({
+        id: res.id,
+        clientName: name.trim(),
+        phone: phone.trim(),
+        city: city.trim(),
+        address: address.trim(),
+        paymentMethod: payment,
+        items: items.map((i) => ({
+          name: i.product.name,
+          quantity: i.quantity,
+          price: i.product.price,
+        })),
+        subtotal: totalPrice,
+        discount: discountAmount,
+        coupon: couponApplied,
+        shipping,
+        total: finalTotal,
       });
       setOrderId(res.id);
       clearCart();

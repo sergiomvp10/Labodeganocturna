@@ -3,11 +3,25 @@
 import { CheckCircle, ArrowLeft, Phone } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
+import { LastOrder, loadLastOrder, buildOrderWhatsAppMessage } from "@/lib/lastOrder";
+
+const WHATSAPP_NUMBER = "573112260769";
 
 function GraciasContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("pedido") || "";
+  const [order, setOrder] = useState<LastOrder | null>(null);
+
+  useEffect(() => {
+    if (orderId) setOrder(loadLastOrder(orderId));
+  }, [orderId]);
+
+  const whatsappHref = order
+    ? `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(buildOrderWhatsAppMessage(order))}`
+    : `https://wa.me/${WHATSAPP_NUMBER}${
+        orderId ? `?text=${encodeURIComponent(`Hola, quiero consultar mi pedido #${orderId}`)}` : ""
+      }`;
 
   return (
     <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999, backgroundColor: "#0a0a0a", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px" }}>
@@ -40,7 +54,7 @@ function GraciasContent() {
           </Link>
 
           <a
-            href="https://wa.me/573112260769"
+            href={whatsappHref}
             target="_blank"
             rel="noopener noreferrer"
             style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", width: "100%", padding: "14px 0", backgroundColor: "#1a1a1a", color: "#f5f5f5", fontWeight: "bold", borderRadius: "16px", border: "1px solid rgba(201,168,76,0.2)", fontSize: "14px", textDecoration: "none" }}
