@@ -5,7 +5,7 @@ import { formatPrice } from "@/data/products";
 import { useCart } from "@/context/CartContext";
 import { useProducts } from "@/context/ProductsContext";
 import { useCategories } from "@/context/CategoriesContext";
-import { Star, ShoppingCart, Minus, Plus, ArrowLeft, Truck, Clock, Shield } from "lucide-react";
+import { ShoppingCart, Minus, Plus, ArrowLeft, Truck, Clock, Shield } from "lucide-react";
 import Link from "next/link";
 
 export default function ProductPageClient({ id }: { id: string }) {
@@ -55,22 +55,6 @@ export default function ProductPageClient({ id }: { id: string }) {
   const related = allProducts
     .filter((p) => p.category.toLowerCase() === product.category.toLowerCase() && p.id !== product.id)
     .slice(0, 4);
-
-  const renderStars = (rating: number) => {
-    const stars = [];
-    const full = Math.floor(rating);
-    const hasHalf = rating % 1 >= 0.5;
-    for (let i = 0; i < 5; i++) {
-      if (i < full) {
-        stars.push(<Star key={i} size={18} className="fill-yellow-400 text-yellow-400" />);
-      } else if (i === full && hasHalf) {
-        stars.push(<Star key={i} size={18} className="fill-yellow-400/50 text-yellow-400" />);
-      } else {
-        stars.push(<Star key={i} size={18} className="text-gray-300" />);
-      }
-    }
-    return stars;
-  };
 
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
@@ -140,14 +124,7 @@ export default function ProductPageClient({ id }: { id: string }) {
             <h1 className="text-2xl md:text-3xl font-bold text-brand-text mb-2">
               {product.name}
             </h1>
-            <p className="text-sm text-brand-muted mb-3">{product.volume}</p>
-
-            <div className="flex items-center gap-2 mb-4">
-              <div className="flex">{renderStars(product.rating)}</div>
-              <span className="text-sm text-brand-muted">
-                {product.rating} ({product.reviews} resenas)
-              </span>
-            </div>
+            <p className="text-sm text-brand-muted mb-4">{product.volume}</p>
 
             <div className="flex items-end gap-3 mb-6">
               <span className="text-3xl md:text-4xl font-bold text-brand-gold">

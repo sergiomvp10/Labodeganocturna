@@ -94,8 +94,6 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   const brand = apiProduct?.brand;
   const description = apiProduct?.description;
   const price = apiProduct?.price;
-  const rating = apiProduct?.rating;
-  const reviews = apiProduct?.reviews;
   const inStock = apiProduct?.inStock;
   const jsonLd = name ? {
     "@context": "https://schema.org",
@@ -112,13 +110,6 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
       price,
       availability: inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
       seller: { "@type": "Organization", name: "La Bodega Nocturna 23" },
-    },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: rating,
-      reviewCount: reviews,
-      bestRating: 5,
-      worstRating: 1,
     },
   } : null;
   const volume = apiProduct?.volume;
