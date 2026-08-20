@@ -1,26 +1,12 @@
 "use client";
 
-import { useCity } from "@/context/CityContext";
-import { MapPin, ChevronDown } from "lucide-react";
 import Link from "next/link";
 
 export default function Header() {
-  const { selectedCity, setIsCityModalOpen } = useCity();
-
   return (
     <header className="bg-brand-dark sticky top-0 z-50">
       <div className="w-full px-4 sm:px-6 lg:px-10">
         <div className="relative flex items-center justify-center py-4 md:py-6">
-          <button
-            onClick={() => setIsCityModalOpen(true)}
-            className="absolute left-4 md:left-8 lg:left-12 top-1/2 -translate-y-1/2 flex items-center gap-2.5 hover:opacity-80 transition-opacity cursor-pointer"
-          >
-            <MapPin size={20} className="text-brand-gold" />
-            <span className="hidden md:inline text-base md:text-lg font-bold tracking-widest text-brand-text uppercase">
-              {selectedCity}
-            </span>
-          </button>
-
           <Link href="/">
             <img
               src="/logo.png"

@@ -1,18 +1,15 @@
 "use client";
 
-import { Menu, Phone, ShoppingCart, Search, User, X } from "lucide-react";
+import { Phone, ShoppingCart, Search, User, X } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useProducts } from "@/context/ProductsContext";
 import { useState, useRef, useEffect } from "react";
-import { useCategories } from "@/context/CategoriesContext";
 import Link from "next/link";
 import { Product } from "@/data/products";
 
 export default function FloatingSidebar() {
   const { totalItems, setIsCartOpen } = useCart();
-  const { categories } = useCategories();
   const { products } = useProducts();
-  const [showMenu, setShowMenu] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -49,13 +46,6 @@ export default function FloatingSidebar() {
   return (
     <>
       <div className="fixed right-4 top-1/2 -translate-y-1/2 z-[80] flex flex-col items-center gap-1 bg-brand-dark/90 backdrop-blur-md border border-brand-gold/20 rounded-2xl py-3 px-2 shadow-2xl">
-        <button
-          onClick={() => { setShowMenu(!showMenu); setShowSearch(false); setSearchQuery(""); }}
-          className="w-12 h-12 flex items-center justify-center rounded-xl text-brand-muted hover:text-brand-gold hover:bg-brand-gold/10 transition-all cursor-pointer"
-        >
-          <Menu size={22} />
-        </button>
-
         <a
           href="tel:+573112260769"
           className="w-12 h-12 flex items-center justify-center rounded-xl text-brand-muted hover:text-brand-gold hover:bg-brand-gold/10 transition-all"
@@ -77,7 +67,7 @@ export default function FloatingSidebar() {
         </button>
 
         <button
-          onClick={() => { setShowSearch(!showSearch); setShowMenu(false); if (showSearch) setSearchQuery(""); }}
+          onClick={() => { setShowSearch(!showSearch); if (showSearch) setSearchQuery(""); }}
           className={`w-12 h-12 flex items-center justify-center rounded-xl transition-all cursor-pointer ${
             showSearch
               ? "text-brand-gold bg-brand-gold/10"
@@ -94,24 +84,6 @@ export default function FloatingSidebar() {
           <User size={22} />
         </Link>
       </div>
-
-      {showMenu && (
-        <div className="fixed right-20 top-1/2 -translate-y-1/2 z-[79] bg-brand-dark/95 backdrop-blur-md border border-brand-gold/20 rounded-2xl shadow-2xl py-2 w-56">
-          <ul>
-            {categories.map((cat) => (
-              <li key={cat.slug}>
-                <Link
-                  href={`/#${cat.slug}`}
-                  onClick={() => setShowMenu(false)}
-                  className="block px-5 py-2.5 text-sm text-brand-muted hover:text-brand-gold hover:bg-brand-gold/5 transition-colors"
-                >
-                  {cat.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
 
       {showSearch && (
         <>
