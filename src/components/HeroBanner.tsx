@@ -35,53 +35,37 @@ export default function HeroBanner() {
   const next = () => setCurrent((c) => (c + 1) % slides.length);
 
   return (
-    <section className="w-full py-5 bg-brand-black flex justify-center">
-      <div className="w-[78%] max-w-[1200px]">
-        <div className="relative w-full overflow-hidden rounded-2xl">
-          <div
-            className="flex transition-transform duration-700 ease-in-out"
-            style={{ transform: `translateX(-${current * 100}%)` }}
-          >
-            {slides.map((slide, i) => (
-              <div key={i} className="min-w-full">
-                <img
-                  src={slide.image}
-                  alt=""
-                  loading={i === 0 ? "eager" : "lazy"}
-                  decoding={i === 0 ? "sync" : "async"}
-                  fetchPriority={i === 0 ? "high" : "low"}
-                  className="w-full h-auto block"
-                />
-              </div>
-            ))}
-          </div>
-
-          <button
-            onClick={prev}
-            className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-brand-gold/40 text-white p-2 rounded-full transition-colors cursor-pointer z-20"
-          >
-            <ChevronLeft size={18} />
-          </button>
-          <button
-            onClick={next}
-            className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-brand-gold/40 text-white p-2 rounded-full transition-colors cursor-pointer z-20"
-          >
-            <ChevronRight size={18} />
-          </button>
-        </div>
-
-        <div className="flex justify-center gap-2.5 mt-4">
-          {slides.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrent(i)}
-              className={`w-2.5 h-2.5 rounded-full transition-colors cursor-pointer ${
-                i === current ? "bg-brand-gold" : "bg-white/30"
-              }`}
+    <section className="relative w-full overflow-hidden bg-brand-black">
+      <div
+        className="flex transition-transform duration-700 ease-in-out"
+        style={{ transform: `translateX(-${current * 100}%)` }}
+      >
+        {slides.map((slide, i) => (
+          <div key={i} className="min-w-full">
+            <img
+              src={slide.image}
+              alt=""
+              loading={i === 0 ? "eager" : "lazy"}
+              decoding={i === 0 ? "sync" : "async"}
+              fetchPriority={i === 0 ? "high" : "low"}
+              className="w-full h-auto block"
             />
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
+
+      <button
+        onClick={prev}
+        className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-brand-gold/40 text-white p-2 rounded-full transition-colors cursor-pointer z-20"
+      >
+        <ChevronLeft size={18} />
+      </button>
+      <button
+        onClick={next}
+        className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-brand-gold/40 text-white p-2 rounded-full transition-colors cursor-pointer z-20"
+      >
+        <ChevronRight size={18} />
+      </button>
     </section>
   );
 }
