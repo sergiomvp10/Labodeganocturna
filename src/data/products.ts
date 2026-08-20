@@ -451,6 +451,13 @@ export const products: Product[] = [
 
 export const cities = ["Duitama", "Tunja", "Sogamoso"];
 
+/** Ciudades con servicio activo; el resto se muestra como "Proximamente". */
+export const enabledCities = ["Duitama"];
+
+export function isCityEnabled(city: string): boolean {
+  return enabledCities.includes(city);
+}
+
 export function formatPrice(price: number): string {
   return new Intl.NumberFormat("es-CO", {
     style: "currency",
