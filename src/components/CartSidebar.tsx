@@ -24,7 +24,6 @@ export default function CartSidebar() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
-  const [city, setCity] = useState(selectedCity);
   const [payment, setPayment] = useState(PAYMENT_METHODS[0]);
   const [orderId, setOrderId] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -107,12 +106,11 @@ export default function CartSidebar() {
   };
 
   const handleCheckout = () => {
-    setCity(selectedCity);
     setStep("checkout");
   };
 
   const handleSubmit = async () => {
-    if (!name.trim() || !phone.trim() || !address.trim() || !city.trim()) {
+    if (!name.trim() || !phone.trim() || !address.trim() || !selectedCity.trim()) {
       setError("Completa todos los campos");
       return;
     }
@@ -122,7 +120,7 @@ export default function CartSidebar() {
       const res = await api.createOrder({
         clientName: name.trim(),
         phone: phone.trim(),
-        city: city.trim(),
+        city: selectedCity,
         address: address.trim(),
         paymentMethod: payment,
         total: finalTotal,
@@ -138,7 +136,7 @@ export default function CartSidebar() {
         id: res.id,
         clientName: name.trim(),
         phone: phone.trim(),
-        city: city.trim(),
+        city: selectedCity,
         address: address.trim(),
         paymentMethod: payment,
         items: items.map((i) => ({
@@ -414,15 +412,9 @@ export default function CartSidebar() {
 
                 <div>
                   <label className="block text-xs font-semibold text-brand-gold/70 uppercase tracking-wider mb-2">Ciudad</label>
-                  <select
-                    value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                    className="w-full h-12 px-4 rounded-2xl text-base bg-brand-dark2 text-brand-text border border-brand-gold/20 focus:outline-none focus:border-brand-gold/60 focus:ring-1 focus:ring-brand-gold/30 appearance-none cursor-pointer transition-colors"
-                  >
-                    <option value="Duitama">Duitama</option>
-                    <option value="Tunja">Tunja</option>
-                    <option value="Sogamoso">Sogamoso</option>
-                  </select>
+                  <div className="w-full h-12 px-4 rounded-2xl text-base bg-brand-dark2/60 text-brand-muted border border-brand-gold/10 flex items-center">
+                    {selectedCity}
+                  </div>
                 </div>
 
                 <div>
