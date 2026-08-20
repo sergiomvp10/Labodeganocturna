@@ -60,12 +60,12 @@ async def get_orders(
 
 
 async def generate_order_id(db: aiosqlite.Connection) -> str:
-    for _ in range(20):
-        candidate = str(secrets.randbelow(90000000) + 10000000)
-        cursor = await db.execute("SELECT 1 FROM orders WHERE id = ?", (candidate,))
-        if await cursor.fetchone() is None:
-            return candidate
-    raise HTTPException(status_code=500, detail="No se pudo generar el numero de pedido")
+    cursor = await db.execute("SELECT id FROM orders")
+    used = {r["id"] for r in await cursor.fetchall()}
+    free = [f"00{n:03d}" for n in range(1000) if f"00{n:03d}" not in used]
+    if not free:
+        raise HTTPException(status_code=500, detail="No se pudo generar el numero de pedido")
+    return secrets.choice(free)
 
 
 @router.post("")
