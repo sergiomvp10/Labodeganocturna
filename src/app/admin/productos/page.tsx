@@ -400,19 +400,6 @@ function ProductForm({
               </div>
             </div>
 
-            <div>
-              <label className="block text-xs text-[#888] mb-1">Rating</label>
-              <input
-                type="number"
-                step="0.1"
-                min="0"
-                max="5"
-                value={form.rating}
-                onChange={(e) => setForm({ ...form, rating: parseFloat(e.target.value) || 0 })}
-                className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a84c]"
-              />
-            </div>
-
             <div className="flex items-end">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input

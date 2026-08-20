@@ -9,6 +9,7 @@ import CityModal from "@/components/CityModal";
 import AgeVerification from "@/components/AgeVerification";
 import PromoBanner from "@/components/PromoBanner";
 import FloatingSidebar from "@/components/FloatingSidebar";
+import ScrollToTop from "@/components/ScrollToTop";
 import { AuthProvider } from "@/context/AuthContext";
 
 import AdminLoginPage from "@/app/admin/page";
@@ -186,13 +187,19 @@ export default function LayoutShell({ children }: { children: ReactNode }) {
   const isGracias = pathname === "/gracias" || pathname === "/gracias/";
 
   if (isGracias) {
-    return <>{children}</>;
+    return (
+      <>
+        <ScrollToTop />
+        {children}
+      </>
+    );
   }
 
   const content: ReactNode = children;
 
   return (
     <>
+      <ScrollToTop />
       <AgeVerification />
       <Header />
       <FloatingSidebar />
