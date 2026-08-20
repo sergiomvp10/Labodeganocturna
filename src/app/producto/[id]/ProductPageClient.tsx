@@ -93,8 +93,8 @@ export default function ProductPageClient({ id }: { id: string }) {
           Volver al catalogo
         </Link>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-          <div className="bg-brand-dark rounded-xl p-4 md:p-8 flex items-center justify-center h-[55vw] max-h-[350px] md:h-auto md:max-h-none md:aspect-square relative border border-brand-gold/10 overflow-hidden">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 items-start max-w-6xl">
+          <div className="bg-brand-dark rounded-xl p-4 md:p-8 flex items-center justify-center h-[55vw] max-h-[350px] md:h-[420px] lg:h-[460px] relative border border-brand-gold/10 overflow-hidden">
             {product.discount && (
               <div className="absolute top-4 left-4 bg-brand-gold text-brand-black text-sm font-bold px-3 py-1 rounded z-10">
                 {product.discount}
@@ -126,22 +126,22 @@ export default function ProductPageClient({ id }: { id: string }) {
             </h1>
             <p className="text-sm text-brand-muted mb-4">{product.volume}</p>
 
-            <div className="flex items-end gap-3 mb-6">
-              <span className="text-3xl md:text-4xl font-bold text-brand-gold">
+            <div className="flex items-end gap-3 mb-5">
+              <span className="price text-3xl md:text-4xl font-bold text-brand-gold">
                 {formatPrice(product.price)}
               </span>
               {product.originalPrice && (
-                <span className="text-lg text-brand-muted line-through">
+                <span className="price text-lg text-brand-muted line-through">
                   {formatPrice(product.originalPrice)}
                 </span>
               )}
             </div>
 
-            <p className="text-brand-muted text-sm leading-relaxed mb-6">
+            <p className="text-brand-muted text-sm leading-relaxed mb-5">
               {product.description}
             </p>
 
-            <div className="flex items-center gap-4 mb-6">
+            <div className="flex items-center gap-4 mb-5">
               <span className="text-sm font-medium text-brand-text">Cantidad:</span>
               <div className="flex items-center border border-brand-gold/20 rounded">
                 <button
@@ -167,18 +167,18 @@ export default function ProductPageClient({ id }: { id: string }) {
               className="w-full bg-brand-gold hover:bg-brand-gold-light text-brand-black font-bold py-3.5 px-6 rounded flex items-center justify-center gap-2 transition-colors cursor-pointer text-base mb-4 uppercase tracking-wider"
             >
               <ShoppingCart size={20} />
-              Agregar - {formatPrice(product.price * quantity)}
+              <span className="price">Agregar - {formatPrice(product.price * quantity)}</span>
             </button>
 
             {product.inStock ? (
-              <p className="text-green-400 font-medium text-sm mb-6">
+              <p className="text-green-400 font-medium text-sm mb-5">
                 Disponible para entrega inmediata
               </p>
             ) : (
-              <p className="text-red-400 font-medium text-sm mb-6">Agotado</p>
+              <p className="text-red-400 font-medium text-sm mb-5">Agotado</p>
             )}
 
-            <div className="border-t border-brand-gold/10 pt-6 space-y-3">
+            <div className="border-t border-brand-gold/10 pt-5 space-y-3">
               <div className="flex items-center gap-3 text-sm text-brand-muted">
                 <Truck size={18} className="text-brand-gold shrink-0" />
                 <span>Domicilio gratis en pedidos mayores a $200.000</span>
@@ -228,7 +228,7 @@ export default function ProductPageClient({ id }: { id: string }) {
                     <h3 className="font-semibold text-sm text-brand-text line-clamp-2">
                       {p.name}
                     </h3>
-                    <p className="font-bold text-sm mt-1 text-brand-gold">{formatPrice(p.price)}</p>
+                    <p className="price font-bold text-sm mt-1 text-brand-gold">{formatPrice(p.price)}</p>
                   </div>
                 </Link>
               ))}

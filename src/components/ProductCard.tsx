@@ -3,7 +3,7 @@
 import { useCart } from "@/context/CartContext";
 import { useFlyToCart } from "@/context/FlyToCartContext";
 import { Product } from "@/data/products";
-import { ShoppingCart } from "lucide-react";
+import { Plus } from "lucide-react";
 import Link from "next/link";
 import { MouseEvent } from "react";
 
@@ -53,23 +53,23 @@ export default function ProductCard({ product }: { product: Product }) {
         </div>
       </Link>
 
-      <div className="p-4">
-        <p className="text-brand-gold/60 text-[10px] uppercase tracking-wider mb-1">
+      <div className="p-3 md:p-4">
+        <p className="text-brand-gold/60 text-[10px] uppercase tracking-wider mb-0.5">
           {product.category}
         </p>
         <Link href={`/producto/${product.id}/`}>
-          <h3 className="text-sm text-brand-text font-medium leading-tight mb-3 line-clamp-2 hover:text-brand-gold transition-colors min-h-[2.5rem]">
+          <h3 className="text-sm text-brand-text font-medium leading-snug mb-2 line-clamp-2 hover:text-brand-gold transition-colors">
             {product.name}
           </h3>
         </Link>
 
-        <div className="flex items-end justify-between">
-          <div>
-            <p className="text-lg font-bold text-brand-gold">
+        <div className="flex items-center justify-between gap-2">
+          <div className="min-w-0">
+            <p className="price text-lg font-bold text-brand-gold leading-none">
               ${product.price.toLocaleString()}
             </p>
             {product.originalPrice && (
-              <p className="text-xs text-brand-muted line-through">
+              <p className="price text-xs text-brand-muted line-through mt-0.5">
                 ${product.originalPrice.toLocaleString()}
               </p>
             )}
@@ -80,9 +80,10 @@ export default function ProductCard({ product }: { product: Product }) {
               fly(product.image, rect.left + rect.width / 2, rect.top);
               addToCart(product);
             }}
-            className="bg-brand-gold text-brand-black p-2.5 rounded-full hover:bg-brand-goldLight hover:scale-110 transition-all duration-200 cursor-pointer shadow-lg shadow-brand-gold/20"
+            aria-label={`Agregar ${product.name} al carrito`}
+            className="shrink-0 bg-brand-gold text-brand-black p-2 rounded-md hover:bg-brand-goldLight transition-colors duration-200 cursor-pointer"
           >
-            <ShoppingCart size={18} strokeWidth={2.5} />
+            <Plus size={18} strokeWidth={2.5} />
           </button>
         </div>
       </div>
