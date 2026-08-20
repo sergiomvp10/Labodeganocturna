@@ -65,7 +65,7 @@ export default function CityModal() {
                     src={cityImages[city] || `https://picsum.photos/seed/${city.toLowerCase()}/400/300`}
                     alt={city}
                     className={`w-full h-full object-cover transition-transform duration-700 ${
-                      enabled ? "group-hover:scale-110" : "grayscale opacity-50"
+                      enabled ? "group-hover:scale-110" : ""
                     }`}
                   />
                 </div>
@@ -76,11 +76,7 @@ export default function CityModal() {
                   </span>
                 )}
                 <div className="absolute bottom-0 left-0 right-0 p-3 md:p-5 text-center">
-                  <h3
-                    className={`text-lg md:text-2xl font-bold tracking-wider uppercase ${
-                      enabled ? "text-white" : "text-white/60"
-                    }`}
-                  >
+                  <h3 className="text-lg md:text-2xl font-bold text-white tracking-wider uppercase">
                     {city}
                   </h3>
                 </div>
