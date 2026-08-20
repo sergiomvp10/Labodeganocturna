@@ -44,6 +44,15 @@ body {
   overflow-x: hidden;
 }
 
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 .price {
   font-family: "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
   font-variant-numeric: tabular-nums;
