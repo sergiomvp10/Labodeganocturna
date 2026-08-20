@@ -3,17 +3,17 @@
 import { useState, useEffect } from "react";
 import { useSiteConfig } from "@/context/SiteConfigContext";
 import { Product } from "@/data/products";
-import { Star, Tag, Search, Check } from "lucide-react";
+import { Star, Tag, Search, Check, ShoppingCart } from "lucide-react";
 import { api, ProductAPI } from "@/lib/api";
 
 function toProduct(p: ProductAPI): Product {
   return { ...p, originalPrice: p.originalPrice ?? undefined, discount: p.discount ?? undefined };
 }
 
-type Tab = "featured" | "offers";
+type Tab = "featured" | "offers" | "suggestions";
 
 export default function DestacadosPage() {
-  const { featuredIds, setFeaturedIds, offerIds, setOfferIds } = useSiteConfig();
+  const { featuredIds, setFeaturedIds, offerIds, setOfferIds, cartSuggestionIds, setCartSuggestionIds } = useSiteConfig();
   const [products, setProducts] = useState<Product[]>([]);
   const [activeTab, setActiveTab] = useState<Tab>("featured");
   const [search, setSearch] = useState("");
@@ -41,8 +41,10 @@ export default function DestacadosPage() {
       p.category.toLowerCase().includes(search.toLowerCase())
   );
 
-  const activeIds = activeTab === "featured" ? featuredIds : offerIds;
-  const setActiveIds = activeTab === "featured" ? setFeaturedIds : setOfferIds;
+  const activeIds =
+    activeTab === "featured" ? featuredIds : activeTab === "offers" ? offerIds : cartSuggestionIds;
+  const setActiveIds =
+    activeTab === "featured" ? setFeaturedIds : activeTab === "offers" ? setOfferIds : setCartSuggestionIds;
 
   const toggleProduct = (id: number) => {
     if (activeIds.includes(id)) {
@@ -80,12 +82,25 @@ export default function DestacadosPage() {
           <Tag size={16} />
           Ofertas Especiales ({offerIds.length})
         </button>
+        <button
+          onClick={() => setActiveTab("suggestions")}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
+            activeTab === "suggestions"
+              ? "bg-[#c9a84c]/20 text-[#c9a84c]"
+              : "text-[#888] hover:text-white hover:bg-white/5"
+          }`}
+        >
+          <ShoppingCart size={16} />
+          Sugerencias del Carrito ({cartSuggestionIds.length})
+        </button>
       </div>
 
       <p className="text-sm text-[#888]">
         {activeTab === "featured"
           ? "Selecciona los productos que aparecerán en la sección de Productos Destacados del inicio."
-          : "Selecciona los productos que aparecerán en la sección de Ofertas Especiales. Recuerda configurar el precio original y descuento en el módulo de Productos."}
+          : activeTab === "offers"
+          ? "Selecciona los productos que aparecerán en la sección de Ofertas Especiales. Recuerda configurar el precio original y descuento en el módulo de Productos."
+          : "Selecciona los productos que se ofrecerán en el carrito bajo \"Tal vez quisieras agregar...\". Si no seleccionas ninguno, el carrito sugiere automáticamente productos de la misma categoría."}
       </p>
 
       <div className="relative max-w-xs">

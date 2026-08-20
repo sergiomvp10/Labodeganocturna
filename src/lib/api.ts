@@ -136,6 +136,15 @@ export const api = {
       body: JSON.stringify({ ids }),
     }),
 
+  getCartSuggestionIds: () =>
+    request<number[]>("/api/config/cart-suggestions"),
+
+  setCartSuggestionIds: (ids: number[]) =>
+    request<{ ok: boolean }>("/api/config/cart-suggestions", {
+      method: "PUT",
+      body: JSON.stringify({ ids }),
+    }),
+
   getCategories: () =>
     request<CategoryAPI[]>("/api/categories"),
 
@@ -167,6 +176,7 @@ export const api = {
     products: () => request<ProductAPI[]>("/api/storefront/products"),
     featured: () => request<ProductAPI[]>("/api/storefront/featured"),
     offers: () => request<ProductAPI[]>("/api/storefront/offers"),
+    cartSuggestions: () => request<ProductAPI[]>("/api/storefront/cart-suggestions"),
     banners: () => request<BannerAPI[]>("/api/storefront/banners"),
     footer: () => request<FooterAPI>("/api/storefront/footer"),
     categories: () => request<CategoryAPI[]>("/api/storefront/categories"),

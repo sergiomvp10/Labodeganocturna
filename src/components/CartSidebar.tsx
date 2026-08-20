@@ -4,8 +4,9 @@ import { useCart } from "@/context/CartContext";
 import { useCity } from "@/context/CityContext";
 import { useProducts } from "@/context/ProductsContext";
 import { api } from "@/lib/api";
+import { Product } from "@/data/products";
 import { X, Plus, Minus, Trash2, ShoppingBag, ArrowLeft, CheckCircle, Loader2, Ticket, Truck } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 type Step = "cart" | "checkout" | "confirmation";
@@ -32,6 +33,14 @@ export default function CartSidebar() {
   const [couponApplied, setCouponApplied] = useState("");
   const [couponError, setCouponError] = useState("");
   const [validatingCoupon, setValidatingCoupon] = useState(false);
+  const [suggestedIds, setSuggestedIds] = useState<number[]>([]);
+
+  useEffect(() => {
+    api.storefront
+      .cartSuggestions()
+      .then((data) => setSuggestedIds(data.map((p) => p.id)))
+      .catch(() => {});
+  }, []);
 
   const discountAmount = Math.round(totalPrice * couponDiscount / 100);
   const priceAfterCoupon = totalPrice - discountAmount;
@@ -41,11 +50,17 @@ export default function CartSidebar() {
   const inCartIds = new Set(items.map((i) => i.product.id));
   const cartCategories = new Set(items.map((i) => i.product.category.toLowerCase()));
   const candidates = products.filter((p) => p.inStock && !inCartIds.has(p.id));
-  const suggestions = [
-    ...candidates.filter((p) => cartCategories.has(p.category.toLowerCase())),
-    ...candidates.filter((p) => !cartCategories.has(p.category.toLowerCase()) && p.featured),
-    ...candidates.filter((p) => !cartCategories.has(p.category.toLowerCase()) && !p.featured),
-  ].slice(0, 6);
+  const curated = suggestedIds
+    .map((id) => candidates.find((p) => p.id === id))
+    .filter((p): p is Product => p !== undefined);
+  const suggestions = (curated.length > 0
+    ? curated
+    : [
+        ...candidates.filter((p) => cartCategories.has(p.category.toLowerCase())),
+        ...candidates.filter((p) => !cartCategories.has(p.category.toLowerCase()) && p.featured),
+        ...candidates.filter((p) => !cartCategories.has(p.category.toLowerCase()) && !p.featured),
+      ]
+  ).slice(0, 6);
 
   const handleValidateCoupon = async () => {
     const code = couponCode.trim();
@@ -218,7 +233,7 @@ export default function CartSidebar() {
                   {suggestions.length > 0 && (
                     <div className="mt-6 pt-5 border-t border-brand-gold/10">
                       <h3 className="text-sm font-bold text-brand-text mb-3">
-                        Tal vez quisieras comprar...
+                        Tal vez quisieras agregar...
                       </h3>
                       <div className="no-scrollbar flex gap-3 overflow-x-auto pb-1 -mx-1 px-1">
                         {suggestions.map((p) => (

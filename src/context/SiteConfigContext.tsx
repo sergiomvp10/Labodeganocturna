@@ -56,6 +56,8 @@ interface SiteConfigContextType {
   setFeaturedIds: (ids: number[]) => void;
   offerIds: number[];
   setOfferIds: (ids: number[]) => void;
+  cartSuggestionIds: number[];
+  setCartSuggestionIds: (ids: number[]) => void;
 }
 
 const SiteConfigContext = createContext<SiteConfigContextType | undefined>(undefined);
@@ -74,6 +76,7 @@ export function SiteConfigProvider({ children }: { children: ReactNode }) {
   const [footerConfig, setFooterConfigState] = useState<FooterConfig>(DEFAULT_FOOTER);
   const [featuredIds, setFeaturedIdsState] = useState<number[]>([]);
   const [offerIds, setOfferIdsState] = useState<number[]>([]);
+  const [cartSuggestionIds, setCartSuggestionIdsState] = useState<number[]>([]);
   const [loaded, setLoaded] = useState(false);
 
   const refreshBanners = useCallback(async () => {
@@ -104,12 +107,13 @@ export function SiteConfigProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     async function loadAll() {
       try {
-        const [bannersData, ordersData, footerData, featuredData, offersData] = await Promise.all([
+        const [bannersData, ordersData, footerData, featuredData, offersData, suggestionsData] = await Promise.all([
           api.storefront.banners(),
           api.getOrders(),
           api.storefront.footer(),
           api.getFeaturedIds(),
           api.getOfferIds(),
+          api.getCartSuggestionIds().catch(() => [] as number[]),
         ]);
         setBannersState(bannersData.map((b: BannerAPI) => ({ id: String(b.id), image: b.image, active: b.active, order: b.order })));
         setOrdersState(ordersData.map((o) => ({
@@ -120,6 +124,7 @@ export function SiteConfigProvider({ children }: { children: ReactNode }) {
         setFooterConfigState(footerData as FooterConfig);
         setFeaturedIdsState(featuredData);
         setOfferIdsState(offersData);
+        setCartSuggestionIdsState(suggestionsData);
       } catch {}
       setLoaded(true);
     }
@@ -166,6 +171,11 @@ export function SiteConfigProvider({ children }: { children: ReactNode }) {
     api.setOfferIds(ids).catch(() => {});
   };
 
+  const setCartSuggestionIds = (ids: number[]) => {
+    setCartSuggestionIdsState(ids);
+    api.setCartSuggestionIds(ids).catch(() => {});
+  };
+
   if (!loaded) return null;
 
   return (
@@ -187,6 +197,8 @@ export function SiteConfigProvider({ children }: { children: ReactNode }) {
         setFeaturedIds,
         offerIds,
         setOfferIds,
+        cartSuggestionIds,
+        setCartSuggestionIds,
       }}
     >
       {children}
