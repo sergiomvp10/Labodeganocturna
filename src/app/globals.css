@@ -59,6 +59,11 @@ body {
   letter-spacing: 0.01em;
 }
 
+.form-field {
+  font-family: ui-monospace, "SF Mono", "Menlo", "Consolas", "Liberation Mono", monospace;
+  letter-spacing: 0.02em;
+}
+
 @keyframes marquee {
   0% {
     transform: translateX(0);

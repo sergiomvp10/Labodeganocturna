@@ -384,7 +384,7 @@ export default function CartSidebar() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Tu nombre"
-                    className="w-full h-12 px-4 rounded-2xl text-base bg-brand-dark2 text-brand-text border border-brand-gold/20 focus:outline-none focus:border-brand-gold/60 focus:ring-1 focus:ring-brand-gold/30 placeholder-brand-muted/50 transition-colors"
+                    className="form-field w-full h-12 px-4 rounded-2xl text-base bg-brand-dark2 text-brand-text border border-brand-gold/20 focus:outline-none focus:border-brand-gold/60 focus:ring-1 focus:ring-brand-gold/30 placeholder-brand-muted/50 transition-colors"
                   />
                 </div>
 
@@ -395,7 +395,7 @@ export default function CartSidebar() {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="300 000 0000"
-                    className="w-full h-12 px-4 rounded-2xl text-base bg-brand-dark2 text-brand-text border border-brand-gold/20 focus:outline-none focus:border-brand-gold/60 focus:ring-1 focus:ring-brand-gold/30 placeholder-brand-muted/50 transition-colors"
+                    className="form-field w-full h-12 px-4 rounded-2xl text-base bg-brand-dark2 text-brand-text border border-brand-gold/20 focus:outline-none focus:border-brand-gold/60 focus:ring-1 focus:ring-brand-gold/30 placeholder-brand-muted/50 transition-colors"
                   />
                 </div>
 
@@ -406,13 +406,13 @@ export default function CartSidebar() {
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                     placeholder="Calle, número, barrio"
-                    className="w-full h-12 px-4 rounded-2xl text-base bg-brand-dark2 text-brand-text border border-brand-gold/20 focus:outline-none focus:border-brand-gold/60 focus:ring-1 focus:ring-brand-gold/30 placeholder-brand-muted/50 transition-colors"
+                    className="form-field w-full h-12 px-4 rounded-2xl text-base bg-brand-dark2 text-brand-text border border-brand-gold/20 focus:outline-none focus:border-brand-gold/60 focus:ring-1 focus:ring-brand-gold/30 placeholder-brand-muted/50 transition-colors"
                   />
                 </div>
 
                 <div>
                   <label className="block text-xs font-semibold text-brand-gold/70 uppercase tracking-wider mb-2">Ciudad</label>
-                  <div className="w-full h-12 px-4 rounded-2xl text-base bg-brand-dark2/60 text-brand-muted border border-brand-gold/10 flex items-center">
+                  <div className="form-field w-full h-12 px-4 rounded-2xl text-base bg-brand-dark2/60 text-brand-muted border border-brand-gold/10 flex items-center">
                     {selectedCity}
                   </div>
                 </div>
