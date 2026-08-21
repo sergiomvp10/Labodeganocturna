@@ -13,6 +13,7 @@ import ScrollToTop from "@/components/ScrollToTop";
 import { AuthProvider } from "@/context/AuthContext";
 
 import AdminLoginPage from "@/app/admin/page";
+import EstadisticasPage from "@/app/admin/estadisticas/page";
 import ProductosPage from "@/app/admin/productos/page";
 import PedidosPage from "@/app/admin/pedidos/page";
 import DestacadosPage from "@/app/admin/destacados/page";
@@ -26,22 +27,47 @@ import {
   Menu,
   X,
   LayoutDashboard,
+  BarChart3,
 } from "lucide-react";
 
-type AdminPage = "productos" | "pedidos" | "destacados" | "configuracion";
+type AdminPage =
+  | "estadisticas"
+  | "productos"
+  | "pedidos"
+  | "destacados"
+  | "configuracion";
+
+const ADMIN_PAGES: AdminPage[] = [
+  "estadisticas",
+  "productos",
+  "pedidos",
+  "destacados",
+  "configuracion",
+];
+
+const pageFromPathname = (pathname: string | null): AdminPage =>
+  ADMIN_PAGES.find((page) => pathname?.startsWith(`/admin/${page}`)) ??
+  "estadisticas";
 
 const PAGE_LABELS: Record<AdminPage, string> = {
+  estadisticas: "Estadísticas",
   productos: "Productos",
   pedidos: "Pedidos",
   destacados: "Destacados / Ofertas",
   configuracion: "Configuración",
 };
 
-function AdminPanel() {
+function AdminPanel({ pathname }: { pathname: string | null }) {
   const [currentUser, setCurrentUser] = useState<{ username: string; role: string } | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [activePage, setActivePage] = useState<AdminPage>("productos");
+  const [activePage, setActivePage] = useState<AdminPage>(() =>
+    pageFromPathname(pathname)
+  );
   const [checked, setChecked] = useState(false);
+
+  useEffect(() => {
+    setActivePage(pageFromPathname(pathname));
+  }, [pathname]);
 
   useEffect(() => {
     const stored = localStorage.getItem("lbn_admin_session");
@@ -64,6 +90,7 @@ function AdminPanel() {
   }
 
   const navItems: { key: AdminPage; label: string; icon: typeof Package }[] = [
+    { key: "estadisticas", label: "Estadísticas", icon: BarChart3 },
     { key: "productos", label: "Productos", icon: Package },
     { key: "pedidos", label: "Pedidos", icon: ShoppingCart },
     { key: "destacados", label: "Destacados / Ofertas", icon: Star },
@@ -82,7 +109,8 @@ function AdminPanel() {
   };
 
   let pageContent: ReactNode = null;
-  if (activePage === "productos") pageContent = <ProductosPage />;
+  if (activePage === "estadisticas") pageContent = <EstadisticasPage />;
+  else if (activePage === "productos") pageContent = <ProductosPage />;
   else if (activePage === "pedidos") pageContent = <PedidosPage />;
   else if (activePage === "destacados") pageContent = <DestacadosPage />;
   else if (activePage === "configuracion") pageContent = <ConfiguracionPage />;
@@ -181,7 +209,7 @@ export default function LayoutShell({ children }: { children: ReactNode }) {
 
 
   if (isAdmin) {
-    return <AdminPanel />;
+    return <AdminPanel pathname={pathname} />;
   }
 
   const isGracias = pathname === "/gracias" || pathname === "/gracias/";

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSiteConfig, Order } from "@/context/SiteConfigContext";
 import { Search, ChevronDown, Eye, X, Phone, MapPin, CreditCard, Package, Trash2 } from "lucide-react";
+import { parseOrderDate } from "@/lib/orderStats";
 
 const STATUS_LABELS: Record<Order["status"], string> = {
   pending: "Pendiente",
@@ -45,13 +46,13 @@ export default function PedidosPage() {
   });
 
   const formatDate = (d: string) => {
-    const date = new Date(d);
-    return date.toLocaleDateString("es-CO", {
+    return parseOrderDate(d).toLocaleDateString("es-CO", {
       day: "2-digit",
       month: "short",
       year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
+      timeZone: "America/Bogota",
     });
   };
 
