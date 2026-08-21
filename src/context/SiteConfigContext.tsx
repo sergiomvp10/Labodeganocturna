@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
-import { api, BannerAPI, FooterAPI } from "@/lib/api";
+import { api, BannerAPI, FooterAPI, OrderAPI } from "@/lib/api";
 
 export interface BannerItem {
   id: string;
@@ -37,6 +37,30 @@ export interface FooterConfig {
   scheduleSub: string;
   whatsapp: string;
   description: string;
+}
+
+const STATUS_FROM_API: Record<string, Order["status"]> = {
+  pendiente: "pending",
+  confirmado: "confirmed",
+  preparando: "preparing",
+  entregado: "delivered",
+  cancelado: "cancelled",
+};
+
+const STATUS_TO_API: Record<Order["status"], string> = {
+  pending: "pendiente",
+  confirmed: "confirmado",
+  preparing: "preparando",
+  delivered: "entregado",
+  cancelled: "cancelado",
+};
+
+function toOrder(o: OrderAPI): Order {
+  return {
+    ...o,
+    status: STATUS_FROM_API[o.status] ?? (o.status as Order["status"]),
+    items: o.items.map((i) => ({ productId: i.productId || 0, name: i.name, quantity: i.quantity, price: i.price })),
+  };
 }
 
 interface SiteConfigContextType {
@@ -89,11 +113,7 @@ export function SiteConfigProvider({ children }: { children: ReactNode }) {
   const refreshOrders = useCallback(async () => {
     try {
       const data = await api.getOrders();
-      setOrdersState(data.map((o) => ({
-        ...o,
-        status: o.status as Order["status"],
-        items: o.items.map((i) => ({ productId: i.productId || 0, name: i.name, quantity: i.quantity, price: i.price })),
-      })));
+      setOrdersState(data.map(toOrder));
     } catch {}
   }, []);
 
@@ -109,18 +129,14 @@ export function SiteConfigProvider({ children }: { children: ReactNode }) {
       try {
         const [bannersData, ordersData, footerData, featuredData, offersData, suggestionsData] = await Promise.all([
           api.storefront.banners(),
-          api.getOrders(),
+          api.getOrders().catch(() => [] as OrderAPI[]),
           api.storefront.footer(),
           api.getFeaturedIds(),
           api.getOfferIds(),
           api.getCartSuggestionIds().catch(() => [] as number[]),
         ]);
         setBannersState(bannersData.map((b: BannerAPI) => ({ id: String(b.id), image: b.image, active: b.active, order: b.order })));
-        setOrdersState(ordersData.map((o) => ({
-          ...o,
-          status: o.status as Order["status"],
-          items: o.items.map((i) => ({ productId: i.productId || 0, name: i.name, quantity: i.quantity, price: i.price })),
-        })));
+        setOrdersState(ordersData.map(toOrder));
         setFooterConfigState(footerData as FooterConfig);
         setFeaturedIdsState(featuredData);
         setOfferIdsState(offersData);
@@ -145,7 +161,7 @@ export function SiteConfigProvider({ children }: { children: ReactNode }) {
   };
 
   const updateOrderStatus = (id: string, status: Order["status"]) => {
-    api.updateOrderStatus(id, status).catch(() => {});
+    api.updateOrderStatus(id, STATUS_TO_API[status]).catch(() => {});
     const updated = orders.map((o) => (o.id === id ? { ...o, status } : o));
     setOrders(updated);
   };

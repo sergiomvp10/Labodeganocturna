@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from pydantic import BaseModel
 from typing import Optional, List
 import aiosqlite
@@ -7,6 +7,7 @@ import secrets
 
 from app.database import get_db
 from app.auth import get_current_user
+from app.telegram import notify_new_order
 
 router = APIRouter(prefix="/api/orders", tags=["orders"])
 
@@ -69,7 +70,11 @@ async def generate_order_id(db: aiosqlite.Connection) -> str:
 
 
 @router.post("")
-async def create_order(o: OrderCreate, db: aiosqlite.Connection = Depends(get_db)):
+async def create_order(
+    o: OrderCreate,
+    background_tasks: BackgroundTasks,
+    db: aiosqlite.Connection = Depends(get_db),
+):
     order_id = await generate_order_id(db)
     items_json = json.dumps([item.model_dump() for item in o.items])
     await db.execute(
@@ -79,6 +84,20 @@ async def create_order(o: OrderCreate, db: aiosqlite.Connection = Depends(get_db
          o.paymentMethod, o.total, o.notes, items_json)
     )
     await db.commit()
+    background_tasks.add_task(
+        notify_new_order,
+        {
+            "id": order_id,
+            "clientName": o.clientName,
+            "phone": o.phone,
+            "city": o.city,
+            "address": o.address,
+            "paymentMethod": o.paymentMethod,
+            "total": o.total,
+            "notes": o.notes,
+            "items": [item.model_dump() for item in o.items],
+        },
+    )
     return {"id": order_id, "ok": True}
 
 
