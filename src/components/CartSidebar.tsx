@@ -76,6 +76,32 @@ export default function CartSidebar() {
   const shipping = priceAfterCoupon >= FREE_SHIPPING_FROM ? 0 : SHIPPING_COST;
   const finalTotal = priceAfterCoupon + shipping;
 
+  // Guarda el carrito en curso cuando el cliente ya dejo un telefono valido en
+  // el checkout, para poder recuperarlo si abandona sin confirmar.
+  useEffect(() => {
+    if (step !== "checkout" || items.length === 0) return;
+    const digits = phone.replace(/\D/g, "");
+    if (digits.length < 10) return;
+    const timeout = setTimeout(() => {
+      api
+        .saveAbandonedCart({
+          clientName: name.trim(),
+          phone: digits,
+          city: selectedCity,
+          address: address.trim(),
+          total: finalTotal,
+          items: items.map((i) => ({
+            productId: i.product.id,
+            name: i.product.name,
+            quantity: i.quantity,
+            price: i.product.price,
+          })),
+        })
+        .catch(() => {});
+    }, 3000);
+    return () => clearTimeout(timeout);
+  }, [step, phone, name, address, selectedCity, items, finalTotal]);
+
   const inCartIds = new Set(items.map((i) => i.product.id));
   const cartCategories = new Set(items.map((i) => i.product.category.toLowerCase()));
   const candidates = products.filter((p) => p.inStock && !inCartIds.has(p.id));

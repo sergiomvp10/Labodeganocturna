@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useSiteConfig, Order } from "@/context/SiteConfigContext";
-import { Search, ChevronDown, Eye, X, Phone, MapPin, CreditCard, Package, Trash2 } from "lucide-react";
+import { Search, ChevronDown, Eye, X, Phone, MapPin, CreditCard, Package, Trash2, MessageCircle } from "lucide-react";
 import { parseOrderDate } from "@/lib/orderStats";
+import { buildStatusWhatsAppMessage, whatsappLink } from "@/lib/whatsapp";
 
 const STATUS_LABELS: Record<Order["status"], string> = {
   pending: "Pendiente",
@@ -221,6 +222,16 @@ function OrderDetailModal({
               <div className="bg-[#1a1a1a] rounded-lg p-3 text-sm text-[#aaa]">{order.notes}</div>
             </div>
           )}
+
+          <a
+            href={whatsappLink(order.phone, buildStatusWhatsAppMessage(order))}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-green-400 bg-green-500/10 hover:bg-green-500/20 transition-colors"
+          >
+            <MessageCircle size={16} />
+            Avisar al cliente por WhatsApp
+          </a>
 
           <div>
             <h3 className="text-xs text-[#888] uppercase tracking-wider mb-2">Estado</h3>

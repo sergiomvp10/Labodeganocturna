@@ -90,6 +90,10 @@ async def create_order(
         (order_id, o.clientName, o.phone, o.city, o.address,
          o.paymentMethod, o.total, o.subtotal, o.discount, o.shipping, o.notes, items_json)
     )
+    await db.execute(
+        "UPDATE abandoned_carts SET recovered = 1 WHERE phone = ? AND recovered = 0",
+        (o.phone,),
+    )
     await db.commit()
     background_tasks.add_task(
         notify_new_order,

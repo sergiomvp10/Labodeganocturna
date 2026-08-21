@@ -75,6 +75,20 @@ async def init_db():
             image TEXT NOT NULL DEFAULT ''
         );
 
+        CREATE TABLE IF NOT EXISTS abandoned_carts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            client_name TEXT NOT NULL DEFAULT '',
+            phone TEXT NOT NULL,
+            city TEXT NOT NULL DEFAULT '',
+            address TEXT NOT NULL DEFAULT '',
+            items TEXT NOT NULL DEFAULT '[]',
+            total REAL NOT NULL DEFAULT 0,
+            notified INTEGER NOT NULL DEFAULT 0,
+            recovered INTEGER NOT NULL DEFAULT 0,
+            created_at TEXT NOT NULL DEFAULT (datetime('now')),
+            updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+        );
+
         CREATE TABLE IF NOT EXISTS config (
             key TEXT PRIMARY KEY,
             value TEXT NOT NULL DEFAULT '{}'
