@@ -12,6 +12,8 @@ export interface AdminUser {
 
 interface AuthContextType {
   currentUser: AdminUser | null;
+  /** false hasta leer la sesion de localStorage, para no mostrar el login a quien ya entro. */
+  ready: boolean;
   users: AdminUser[];
   login: (username: string, password: string) => Promise<boolean>;
   logout: () => void;
@@ -26,12 +28,14 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [currentUser, setCurrentUser] = useState<AdminUser | null>(null);
   const [users, setUsers] = useState<AdminUser[]>([]);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const storedSession = localStorage.getItem("lbn_admin_session");
     if (storedSession) {
       setCurrentUser(JSON.parse(storedSession));
     }
+    setReady(true);
   }, []);
 
   const refreshUsers = useCallback(async () => {
@@ -99,7 +103,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ currentUser, users, login, logout, addUser, updateUser, deleteUser, refreshUsers }}
+      value={{ currentUser, ready, users, login, logout, addUser, updateUser, deleteUser, refreshUsers }}
     >
       {children}
     </AuthContext.Provider>
