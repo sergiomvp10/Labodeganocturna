@@ -16,6 +16,7 @@ import AdminLoginPage from "@/app/admin/page";
 import EstadisticasPage from "@/app/admin/estadisticas/page";
 import ProductosPage from "@/app/admin/productos/page";
 import PedidosPage from "@/app/admin/pedidos/page";
+import CarritosPage from "@/app/admin/carritos/page";
 import DestacadosPage from "@/app/admin/destacados/page";
 import ConfiguracionPage from "@/app/admin/configuracion/page";
 import {
@@ -28,12 +29,14 @@ import {
   X,
   LayoutDashboard,
   BarChart3,
+  ShoppingBag,
 } from "lucide-react";
 
 type AdminPage =
   | "estadisticas"
   | "productos"
   | "pedidos"
+  | "carritos"
   | "destacados"
   | "configuracion";
 
@@ -41,6 +44,7 @@ const ADMIN_PAGES: AdminPage[] = [
   "estadisticas",
   "productos",
   "pedidos",
+  "carritos",
   "destacados",
   "configuracion",
 ];
@@ -53,6 +57,7 @@ const PAGE_LABELS: Record<AdminPage, string> = {
   estadisticas: "Estadísticas",
   productos: "Productos",
   pedidos: "Pedidos",
+  carritos: "Carritos abandonados",
   destacados: "Destacados / Ofertas",
   configuracion: "Configuración",
 };
@@ -93,6 +98,7 @@ function AdminPanel({ pathname }: { pathname: string | null }) {
     { key: "estadisticas", label: "Estadísticas", icon: BarChart3 },
     { key: "productos", label: "Productos", icon: Package },
     { key: "pedidos", label: "Pedidos", icon: ShoppingCart },
+    { key: "carritos", label: "Carritos abandonados", icon: ShoppingBag },
     { key: "destacados", label: "Destacados / Ofertas", icon: Star },
     { key: "configuracion", label: "Configuración", icon: Settings },
   ];
@@ -112,6 +118,7 @@ function AdminPanel({ pathname }: { pathname: string | null }) {
   if (activePage === "estadisticas") pageContent = <EstadisticasPage />;
   else if (activePage === "productos") pageContent = <ProductosPage />;
   else if (activePage === "pedidos") pageContent = <PedidosPage />;
+  else if (activePage === "carritos") pageContent = <CarritosPage />;
   else if (activePage === "destacados") pageContent = <DestacadosPage />;
   else if (activePage === "configuracion") pageContent = <ConfiguracionPage />;
 

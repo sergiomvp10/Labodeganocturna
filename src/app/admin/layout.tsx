@@ -14,6 +14,7 @@ import {
   X,
   LayoutDashboard,
   BarChart3,
+  ShoppingBag,
 } from "lucide-react";
 
 function AdminLayoutInner({ children }: { children: ReactNode }) {
@@ -44,6 +45,7 @@ function AdminLayoutInner({ children }: { children: ReactNode }) {
     { href: "/admin/estadisticas", label: "Estadísticas", icon: BarChart3 },
     { href: "/admin/productos", label: "Productos", icon: Package },
     { href: "/admin/pedidos", label: "Pedidos", icon: ShoppingCart },
+    { href: "/admin/carritos", label: "Carritos abandonados", icon: ShoppingBag },
     { href: "/admin/destacados", label: "Destacados / Ofertas", icon: Star },
     { href: "/admin/configuracion", label: "Configuración", icon: Settings },
   ];

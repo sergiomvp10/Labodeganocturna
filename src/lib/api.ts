@@ -91,6 +91,18 @@ export const api = {
   deleteOrder: (id: string) =>
     request<{ ok: boolean }>(`/api/orders/${id}`, { method: "DELETE" }),
 
+  saveAbandonedCart: (c: AbandonedCartSaveAPI) =>
+    request<{ id: number; ok: boolean }>("/api/abandoned-carts", {
+      method: "POST",
+      body: JSON.stringify(c),
+    }),
+
+  getAbandonedCarts: () =>
+    request<AbandonedCartAPI[]>("/api/abandoned-carts"),
+
+  deleteAbandonedCart: (id: number) =>
+    request<{ ok: boolean }>(`/api/abandoned-carts/${id}`, { method: "DELETE" }),
+
   getBanners: () =>
     request<BannerAPI[]>("/api/banners"),
 
@@ -242,6 +254,22 @@ export interface OrderCreateAPI {
   discount: number;
   shipping: number;
   notes: string;
+}
+
+export interface AbandonedCartSaveAPI {
+  clientName: string;
+  phone: string;
+  city: string;
+  address: string;
+  items: OrderItemAPI[];
+  total: number;
+}
+
+export interface AbandonedCartAPI extends AbandonedCartSaveAPI {
+  id: number;
+  recovered: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface BannerAPI {
