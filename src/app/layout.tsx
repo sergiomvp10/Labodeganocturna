@@ -58,7 +58,11 @@ const generalKeywords = [
 ];
 
 export const metadata: Metadata = {
-  title: "La Bodega Nocturna 23 | Licorería a Domicilio en Duitama, Tunja y Sogamoso",
+  metadataBase: new URL("https://www.labodega23.co"),
+  title: {
+    default: "La Bodega Nocturna 23 | Licorería a Domicilio en Duitama, Tunja y Sogamoso",
+    template: "%s",
+  },
   description:
     "Licorería a domicilio 23 horas en Duitama, Tunja y Sogamoso. Whisky, tequila, aguardiente, ron, vinos, cervezas, cigarrillos y más. Old Parr, Buchanan's, Jack Daniel's, Don Julio. Entrega rápida, productos 100% originales. Pide ahora por WhatsApp. Los mejores precios de Boyacá.",
   keywords: [...cityKeywords, ...drinkKeywords, ...extraKeywords, ...brandKeywords, ...generalKeywords].join(", "),
@@ -69,10 +73,18 @@ export const metadata: Metadata = {
     siteName: "La Bodega Nocturna 23",
     locale: "es_CO",
     type: "website",
+    images: [{ url: "/logo.png", width: 512, height: 512, alt: "La Bodega Nocturna 23" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "La Bodega Nocturna 23 | Licorería a Domicilio 23 Horas en Boyacá",
+    description: "Whisky, tequila, aguardiente, ron, vinos, cervezas y cigarrillos a domicilio en Duitama, Tunja y Sogamoso.",
+    images: ["/logo.png"],
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
   },
 };
 
@@ -95,7 +107,16 @@ export default function RootLayout({
     name: "La Bodega Nocturna 23",
     url: "https://www.labodega23.co",
     description: "Licorería a domicilio 23 horas en Duitama, Tunja y Sogamoso. Whisky, tequila, aguardiente, ron, vinos, cervezas, cigarrillos y más.",
+    "@id": "https://www.labodega23.co/#tienda",
+    image: "https://www.labodega23.co/logo.png",
+    logo: "https://www.labodega23.co/logo.png",
     telephone: "+573112260769",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Duitama",
+      addressRegion: "Boyacá",
+      addressCountry: "CO",
+    },
     areaServed: cities.map((c) => ({
       "@type": "City",
       name: c,

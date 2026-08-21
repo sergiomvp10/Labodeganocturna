@@ -107,7 +107,6 @@ export function SiteConfigProvider({ children }: { children: ReactNode }) {
   const [featuredIds, setFeaturedIdsState] = useState<number[]>([]);
   const [offerIds, setOfferIdsState] = useState<number[]>([]);
   const [cartSuggestionIds, setCartSuggestionIdsState] = useState<number[]>([]);
-  const [loaded, setLoaded] = useState(false);
 
   const refreshBanners = useCallback(async () => {
     try {
@@ -148,7 +147,6 @@ export function SiteConfigProvider({ children }: { children: ReactNode }) {
         setOfferIdsState(offersData);
         setCartSuggestionIdsState(suggestionsData);
       } catch {}
-      setLoaded(true);
     }
     loadAll();
   }, []);
@@ -197,8 +195,6 @@ export function SiteConfigProvider({ children }: { children: ReactNode }) {
     setCartSuggestionIdsState(ids);
     api.setCartSuggestionIds(ids).catch(() => {});
   };
-
-  if (!loaded) return null;
 
   return (
     <SiteConfigContext.Provider
