@@ -1,7 +1,14 @@
 import type { Metadata, Viewport } from "next";
+import { Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import LayoutShell from "@/components/LayoutShell";
+
+const robotoMono = Roboto_Mono({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-form",
+});
 
 const cities = ["Duitama", "Tunja", "Sogamoso"];
 const drinks = ["whisky", "ron", "aguardiente", "tequila", "vino", "cerveza", "vodka"];
@@ -115,7 +122,7 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="es">
+    <html lang="es" className={robotoMono.variable}>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
