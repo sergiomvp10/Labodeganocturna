@@ -1,6 +1,6 @@
 "use client";
 
-import { Phone, Clock, MapPin, Instagram, Facebook } from "lucide-react";
+import { Instagram, Facebook } from "lucide-react";
 import { useSiteConfig } from "@/context/SiteConfigContext";
 
 export default function Footer() {
@@ -18,37 +18,6 @@ export default function Footer() {
           <p className="text-brand-muted text-sm text-center max-w-md">
             {footerConfig.description}
           </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
-          <div className="text-center">
-            <div className="flex items-center justify-center gap-2 mb-3">
-              <MapPin size={18} className="text-brand-gold" />
-              <h4 className="text-brand-gold font-bold text-sm uppercase tracking-wider">Ciudades</h4>
-            </div>
-            <div className="space-y-1 text-sm text-brand-muted">
-              {footerConfig.cities.map((city) => (
-                <p key={city}>{city}</p>
-              ))}
-            </div>
-          </div>
-
-          <div className="text-center">
-            <div className="flex items-center justify-center gap-2 mb-3">
-              <Clock size={18} className="text-brand-gold" />
-              <h4 className="text-brand-gold font-bold text-sm uppercase tracking-wider">Horario</h4>
-            </div>
-            <p className="text-sm text-brand-muted">{footerConfig.schedule}</p>
-            <p className="text-sm text-brand-muted">{footerConfig.scheduleSub}</p>
-          </div>
-
-          <div className="text-center">
-            <div className="flex items-center justify-center gap-2 mb-3">
-              <Phone size={18} className="text-brand-gold" />
-              <h4 className="text-brand-gold font-bold text-sm uppercase tracking-wider">Contacto</h4>
-            </div>
-            <p className="text-sm text-brand-muted">WhatsApp: {footerConfig.whatsapp}</p>
-          </div>
         </div>
 
         <div className="flex items-center justify-center gap-4 mb-6">
