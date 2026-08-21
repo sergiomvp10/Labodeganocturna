@@ -12,10 +12,11 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (currentUser) {
-      router.push("/admin/estadisticas");
+      router.replace("/admin/estadisticas");
     }
   }, [currentUser, router]);
 
@@ -26,9 +27,11 @@ export default function AdminLoginPage() {
       setError("Ingresa usuario y contraseña");
       return;
     }
+    setLoading(true);
     const success = await login(username, password);
+    setLoading(false);
     if (success) {
-      router.push("/admin/estadisticas");
+      router.replace("/admin/estadisticas");
     } else {
       setError("Usuario o contraseña incorrectos");
     }
@@ -80,9 +83,10 @@ export default function AdminLoginPage() {
 
           <button
             type="submit"
-            className="w-full bg-[#c9a84c] hover:bg-[#dfc070] text-black font-bold py-2.5 rounded-lg transition-colors cursor-pointer text-sm"
+            disabled={loading}
+            className="w-full bg-[#c9a84c] hover:bg-[#dfc070] text-black font-bold py-2.5 rounded-lg transition-colors cursor-pointer text-sm disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            Iniciar Sesión
+            {loading ? "Ingresando..." : "Iniciar Sesión"}
           </button>
         </form>
 

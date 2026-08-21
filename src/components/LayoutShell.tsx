@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode, useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CartSidebar from "@/components/CartSidebar";
@@ -10,7 +10,7 @@ import AgeVerification from "@/components/AgeVerification";
 import PromoBanner from "@/components/PromoBanner";
 import FloatingSidebar from "@/components/FloatingSidebar";
 import ScrollToTop from "@/components/ScrollToTop";
-import { AuthProvider } from "@/context/AuthContext";
+import { AuthProvider, useAuth } from "@/context/AuthContext";
 
 import AdminLoginPage from "@/app/admin/page";
 import EstadisticasPage from "@/app/admin/estadisticas/page";
@@ -68,33 +68,29 @@ const PAGE_LABELS: Record<AdminPage, string> = {
 };
 
 function AdminPanel({ pathname }: { pathname: string | null }) {
-  const [currentUser, setCurrentUser] = useState<{ username: string; role: string } | null>(null);
+  const { currentUser, ready, logout } = useAuth();
+  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activePage, setActivePage] = useState<AdminPage>(() =>
     pageFromPathname(pathname)
   );
-  const [checked, setChecked] = useState(false);
 
   useEffect(() => {
     setActivePage(pageFromPathname(pathname));
   }, [pathname]);
 
-  useEffect(() => {
-    const stored = localStorage.getItem("lbn_admin_session");
-    if (stored) {
-      setCurrentUser(JSON.parse(stored));
-    }
-    setChecked(true);
-  }, []);
+  const isLoginPath = pathname === "/admin" || pathname === "/admin/";
 
-  if (!checked) return null;
+  useEffect(() => {
+    if (ready && !currentUser && !isLoginPath) router.replace("/admin");
+  }, [ready, currentUser, isLoginPath, router]);
+
+  if (!ready) return null;
 
   if (!currentUser) {
     return (
       <div className="fixed inset-0 z-[300] bg-[#0a0a0a]">
-        <AuthProvider>
-          <AdminLoginPage />
-        </AuthProvider>
+        <AdminLoginPage />
       </div>
     );
   }
@@ -110,14 +106,14 @@ function AdminPanel({ pathname }: { pathname: string | null }) {
   ];
 
   const handleLogout = () => {
-    localStorage.removeItem("lbn_admin_session");
-    localStorage.removeItem("lbn_token");
-    setCurrentUser(null);
+    logout();
+    router.replace("/admin");
   };
 
   const navigate = (key: AdminPage) => {
     setActivePage(key);
     setSidebarOpen(false);
+    router.push(`/admin/${key}`);
   };
 
   let pageContent: ReactNode = null;
@@ -130,7 +126,7 @@ function AdminPanel({ pathname }: { pathname: string | null }) {
   else if (activePage === "configuracion") pageContent = <ConfiguracionPage />;
 
   return (
-    <AuthProvider>
+    <>
       <div className="fixed inset-0 z-[300] bg-[#0a0a0a] flex">
         <aside
           className={`fixed md:static inset-y-0 left-0 z-[310] w-64 bg-[#111] border-r border-[#c9a84c]/20 flex flex-col transition-transform duration-300 ${
@@ -213,7 +209,7 @@ function AdminPanel({ pathname }: { pathname: string | null }) {
           <main className="flex-1 overflow-y-auto p-4 md:p-6">{pageContent}</main>
         </div>
       </div>
-    </AuthProvider>
+    </>
   );
 }
 
@@ -223,7 +219,11 @@ export default function LayoutShell({ children }: { children: ReactNode }) {
 
 
   if (isAdmin) {
-    return <AdminPanel pathname={pathname} />;
+    return (
+      <AuthProvider>
+        <AdminPanel pathname={pathname} />
+      </AuthProvider>
+    );
   }
 
   const isGracias = pathname === "/gracias" || pathname === "/gracias/";
