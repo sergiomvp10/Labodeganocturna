@@ -124,6 +124,9 @@ export default function CartSidebar() {
         address: address.trim(),
         paymentMethod: payment,
         total: finalTotal,
+        subtotal: totalPrice,
+        discount: discountAmount,
+        shipping,
         notes: couponApplied ? `Cupón: ${couponApplied} (-${couponDiscount}%)` : "",
         items: items.map((i) => ({
           productId: i.product.id,
@@ -366,7 +369,7 @@ export default function CartSidebar() {
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-brand-muted">Envío</span>
                     <span className={`text-sm font-medium ${shipping === 0 ? "text-green-400" : "text-brand-text"}`}>
-                      {shipping === 0 ? "Gratis" : "$6,000"}
+                      {shipping === 0 ? "Gratis" : "$6.000"}
                     </span>
                   </div>
                   <div className="border-t border-brand-gold/15 pt-2 flex justify-between items-center">

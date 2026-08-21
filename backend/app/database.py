@@ -81,6 +81,12 @@ async def init_db():
         );
     """)
 
+    cursor = await db.execute("PRAGMA table_info(orders)")
+    order_columns = {r[1] for r in await cursor.fetchall()}
+    for column in ("subtotal", "discount", "shipping"):
+        if column not in order_columns:
+            await db.execute(f"ALTER TABLE orders ADD COLUMN {column} REAL NOT NULL DEFAULT 0")
+
     # Seed default admin user if no users exist
     cursor = await db.execute("SELECT COUNT(*) FROM users")
     count = (await cursor.fetchone())[0]

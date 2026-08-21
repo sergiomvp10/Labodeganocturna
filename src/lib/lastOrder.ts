@@ -48,7 +48,7 @@ export function buildOrderWhatsAppMessage(order: LastOrder): string {
     "",
     "*Productos:*",
     ...order.items.map(
-      (i) => `• ${i.quantity} x ${i.name} — ${money(i.price * i.quantity)}`
+      (i) => `${i.quantity} x ${i.name}  ${money(i.price * i.quantity)}`
     ),
     "",
     `Subtotal: ${money(order.subtotal)}`,
@@ -61,7 +61,9 @@ export function buildOrderWhatsAppMessage(order: LastOrder): string {
   }
 
   lines.push(
-    `Envío: ${order.shipping === 0 ? "Gratis" : money(order.shipping)}`,
+    order.shipping === 0
+      ? "Domicilio: GRATIS"
+      : `Domicilio: ${money(order.shipping)}`,
     `*Total: ${money(order.total)}*`,
     "",
     `Pago: ${order.paymentMethod}`,

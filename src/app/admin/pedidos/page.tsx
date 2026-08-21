@@ -199,7 +199,13 @@ function OrderDetailModal({
                   </span>
                 </div>
               ))}
-              <div className="border-t border-[#333] pt-2 flex justify-between text-sm font-bold">
+              <div className="border-t border-[#333] pt-2 flex justify-between text-sm">
+                <span className="text-[#aaa]">Domicilio</span>
+                <span className={order.shipping ? "text-[#aaa]" : "text-green-400"}>
+                  {order.shipping ? formatPrice(order.shipping) : "Gratis"}
+                </span>
+              </div>
+              <div className="flex justify-between text-sm font-bold">
                 <span className="text-white">Total</span>
                 <span className="text-[#c9a84c]">
                   {new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(order.total)}
