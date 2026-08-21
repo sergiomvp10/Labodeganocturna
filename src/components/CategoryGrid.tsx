@@ -4,8 +4,19 @@ import { useEffect, useRef, useState } from "react";
 import { useCategories } from "@/context/CategoriesContext";
 import { CategoryAPI } from "@/lib/api";
 import Link from "next/link";
+import PartnerRedirect from "./PartnerRedirect";
+import { partnerUrl } from "@/lib/partners";
 
-function CategoryCard({ cat, index }: { cat: CategoryAPI; index: number }) {
+function CategoryCard({
+  cat,
+  index,
+  onPartnerClick,
+}: {
+  cat: CategoryAPI;
+  index: number;
+  onPartnerClick: (url: string) => void;
+}) {
+  const partner = partnerUrl(cat.slug);
   const ref = useRef<HTMLAnchorElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -30,6 +41,11 @@ function CategoryCard({ cat, index }: { cat: CategoryAPI; index: number }) {
       ref={ref}
       key={cat.slug}
       href={`/categoria/${cat.slug}/`}
+      onClick={(e) => {
+        if (!partner) return;
+        e.preventDefault();
+        onPartnerClick(partner);
+      }}
       className="group flex flex-col items-center transition-all duration-700 ease-out"
       style={{
         opacity: visible ? 1 : 0,
@@ -61,6 +77,9 @@ function CategoryCard({ cat, index }: { cat: CategoryAPI; index: number }) {
 
 export default function CategoryGrid() {
   const { categories } = useCategories();
+  const [partnerRedirect, setPartnerRedirect] = useState<string | null>(null);
+
+  if (partnerRedirect) return <PartnerRedirect url={partnerRedirect} />;
 
   return (
     <section className="pt-16 md:pt-20 bg-brand-black" style={{ paddingBottom: "12rem" }}>
@@ -76,7 +95,12 @@ export default function CategoryGrid() {
 
         <div className="w-[90%] max-w-[1300px] grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4">
           {categories.map((cat, i) => (
-            <CategoryCard key={cat.slug} cat={cat} index={i} />
+            <CategoryCard
+              key={cat.slug}
+              cat={cat}
+              index={i}
+              onPartnerClick={setPartnerRedirect}
+            />
           ))}
         </div>
       </div>

@@ -5,16 +5,21 @@ import { useProducts } from "@/context/ProductsContext";
 import ProductCard, { ProductCardSkeleton } from "./ProductCard";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import PartnerRedirect from "./PartnerRedirect";
+import { partnerUrl } from "@/lib/partners";
 
 export default function CategoryPage({ slug }: { slug: string }) {
   const { categories } = useCategories();
   const category = categories.find((c) => c.slug === slug);
   const categoryName = category?.name || slug;
   const { products: allProducts, ready } = useProducts();
+  const partner = partnerUrl(slug);
 
   const products = allProducts.filter(
     (p) => p.category.toLowerCase() === categoryName.toLowerCase()
   );
+
+  if (partner) return <PartnerRedirect url={partner} />;
 
   return (
     <div className="bg-brand-black min-h-screen">
