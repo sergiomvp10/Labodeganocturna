@@ -1,4 +1,5 @@
-import { fetchSeoProducts } from "@/lib/seo";
+import { BUILD, fetchSeoCategories, fetchSeoProducts } from "@/lib/seo";
+import { CITIES, CITY_LIST, PHONE } from "@/lib/seoKeywords";
 import ProductPageClient from "./ProductPageClient";
 import type { Metadata } from "next";
 
@@ -25,7 +26,7 @@ async function fetchProduct(id: number): Promise<APIProduct | null> {
   for (let attempt = 0; attempt < 5; attempt++) {
     if (attempt > 0) await new Promise((r) => setTimeout(r, 3000 * attempt));
     try {
-      const res = await fetch(`${API}/api/products/${id}`);
+      const res = await fetch(`${API}/api/products/${id}?build=${encodeURIComponent(BUILD)}`);
       if (res.status === 404) return null;
       if (!res.ok) {
         lastError = `HTTP ${res.status}`;
@@ -64,10 +65,15 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const productKeywords = [
     name, brand,
     ...allCities.map((c) => `${name} ${c}`),
+    ...allCities.map((c) => `${name} a domicilio ${c}`),
+    ...allCities.map((c) => `${brand} a domicilio ${c}`),
     ...allCities.map((c) => `${category} a domicilio ${c}`),
+    ...allCities.map((c) => `licorería a domicilio ${c}`),
     `comprar ${name} online`,
+    `${name} precio`,
     `${brand} precio Colombia`,
     `${category} a domicilio Boyacá`,
+    `${category} barato Boyacá`,
     "La Bodega Nocturna 23",
   ].join(", ");
   return {
@@ -78,6 +84,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       canonical: `https://www.labodega23.co/producto/${id}/`,
     },
     openGraph: {
+      type: "website",
       title: `${name} - $${price?.toLocaleString("es-CO")} | La Bodega Nocturna 23`,
       description: `${name} de ${brand}. ${volume}. Domicilio 23 horas en ${cityList}. Productos originales.`,
       url: `https://www.labodega23.co/producto/${id}/`,
@@ -95,27 +102,48 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   const description = apiProduct?.description;
   const price = apiProduct?.price;
   const inStock = apiProduct?.inStock;
-  const jsonLd = name ? {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name,
-    description,
-    image: imageUrl(apiProduct?.image),
-    brand: { "@type": "Brand", name: brand },
-    sku: id,
-    offers: {
-      "@type": "Offer",
-      url: `https://www.labodega23.co/producto/${id}`,
-      priceCurrency: "COP",
-      price,
-      availability: inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-      seller: { "@type": "Organization", name: "La Bodega Nocturna 23" },
-    },
-  } : null;
   const volume = apiProduct?.volume;
   const category = apiProduct?.category;
-  const allCities = ["Duitama", "Tunja", "Sogamoso"];
-  const cityList = allCities.join(", ");
+  const [catalog, apiCategories] = await Promise.all([fetchSeoProducts(), fetchSeoCategories()]);
+  const categorySlug = apiCategories.find((c) => c.name.toLowerCase() === category?.toLowerCase())?.slug;
+  const related = catalog
+    .filter((p) => p.id !== numId && p.category.toLowerCase() === category?.toLowerCase())
+    .slice(0, 8);
+  const jsonLd = name ? [
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name,
+      description,
+      image: imageUrl(apiProduct?.image),
+      brand: { "@type": "Brand", name: brand },
+      category,
+      sku: id,
+      mpn: id,
+      offers: {
+        "@type": "Offer",
+        url: `${SITE}/producto/${id}/`,
+        priceCurrency: "COP",
+        price,
+        itemCondition: "https://schema.org/NewCondition",
+        availability: inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+        areaServed: CITIES.map((c) => ({ "@type": "City", name: c })),
+        seller: { "@id": `${SITE}/#tienda`, "@type": "Organization", name: "La Bodega Nocturna 23" },
+      },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Inicio", item: `${SITE}/` },
+        ...(categorySlug && category
+          ? [{ "@type": "ListItem", position: 2, name: category, item: `${SITE}/categoria/${categorySlug}/` }]
+          : []),
+        { "@type": "ListItem", position: categorySlug ? 3 : 2, name, item: `${SITE}/producto/${id}/` },
+      ],
+    },
+  ] : null;
+  const cityList = CITY_LIST;
   return (
     <>
       {jsonLd && (
@@ -134,7 +162,24 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
           <p>{description}</p>
           <p>{inStock ? "Disponible para entrega inmediata" : "Agotado"}</p>
           <p>Domicilio a {cityList}. Entrega rápida 23 horas. Productos 100% originales.</p>
-          <p>Compra {name} de {brand} a domicilio en {cityList}. Pide por WhatsApp al +57 311 226 0769.</p>
+          <p>Compra {name} de {brand} a domicilio en {cityList}. Pide por WhatsApp al {PHONE}.</p>
+          {categorySlug && (
+            <p>
+              <a href={`/categoria/${categorySlug}/`}>Ver todo {category} a domicilio en {cityList}</a>
+            </p>
+          )}
+          {related.length > 0 && (
+            <>
+              <h2>También en {category}</h2>
+              <ul>
+                {related.map((p) => (
+                  <li key={p.id}>
+                    <a href={`/producto/${p.id}/`}>{p.name} - {p.brand} - ${p.price.toLocaleString("es-CO")} COP</a>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
         </div>
       )}
       <ProductPageClient id={id} />
