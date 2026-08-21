@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSiteConfig, Order } from "@/context/SiteConfigContext";
 import { Search, ChevronDown, Eye, X, Phone, MapPin, CreditCard, Package, Trash2 } from "lucide-react";
 
@@ -24,10 +24,16 @@ const formatPrice = (price: number) =>
   new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(price);
 
 export default function PedidosPage() {
-  const { orders, updateOrderStatus, deleteOrder } = useSiteConfig();
+  const { orders, updateOrderStatus, deleteOrder, refreshOrders } = useSiteConfig();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+
+  useEffect(() => {
+    refreshOrders();
+    const interval = setInterval(refreshOrders, 30000);
+    return () => clearInterval(interval);
+  }, [refreshOrders]);
 
   const filtered = orders.filter((o) => {
     const matchSearch =
