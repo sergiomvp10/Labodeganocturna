@@ -26,6 +26,9 @@ export interface Order {
   items: OrderItem[];
   paymentMethod: string;
   total: number;
+  subtotal: number;
+  discount: number;
+  shipping: number;
   status: "pending" | "confirmed" | "preparing" | "delivered" | "cancelled";
   createdAt: string;
   notes: string;
@@ -58,6 +61,9 @@ const STATUS_TO_API: Record<Order["status"], string> = {
 function toOrder(o: OrderAPI): Order {
   return {
     ...o,
+    subtotal: o.subtotal ?? 0,
+    discount: o.discount ?? 0,
+    shipping: o.shipping ?? 0,
     status: STATUS_FROM_API[o.status] ?? (o.status as Order["status"]),
     items: o.items.map((i) => ({ productId: i.productId || 0, name: i.name, quantity: i.quantity, price: i.price })),
   };

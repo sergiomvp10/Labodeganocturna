@@ -27,6 +27,9 @@ class OrderCreate(BaseModel):
     items: List[OrderItem]
     paymentMethod: str
     total: float
+    subtotal: float = 0
+    discount: float = 0
+    shipping: float = 0
     notes: str = ""
 
 
@@ -43,6 +46,9 @@ def row_to_order(r) -> dict:
         "address": r["address"],
         "paymentMethod": r["payment_method"],
         "total": r["total"],
+        "subtotal": r["subtotal"],
+        "discount": r["discount"],
+        "shipping": r["shipping"],
         "status": r["status"],
         "notes": r["notes"],
         "createdAt": r["created_at"],
@@ -78,10 +84,11 @@ async def create_order(
     order_id = await generate_order_id(db)
     items_json = json.dumps([item.model_dump() for item in o.items])
     await db.execute(
-        """INSERT INTO orders (id, client_name, phone, city, address, payment_method, total, notes, items)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+        """INSERT INTO orders (id, client_name, phone, city, address, payment_method, total,
+                              subtotal, discount, shipping, notes, items)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
         (order_id, o.clientName, o.phone, o.city, o.address,
-         o.paymentMethod, o.total, o.notes, items_json)
+         o.paymentMethod, o.total, o.subtotal, o.discount, o.shipping, o.notes, items_json)
     )
     await db.commit()
     background_tasks.add_task(
@@ -94,6 +101,9 @@ async def create_order(
             "address": o.address,
             "paymentMethod": o.paymentMethod,
             "total": o.total,
+            "subtotal": o.subtotal,
+            "discount": o.discount,
+            "shipping": o.shipping,
             "notes": o.notes,
             "items": [item.model_dump() for item in o.items],
         },

@@ -221,6 +221,9 @@ export interface OrderAPI {
   address: string;
   paymentMethod: string;
   total: number;
+  subtotal?: number;
+  discount?: number;
+  shipping?: number;
   status: string;
   notes: string;
   createdAt: string;
@@ -235,6 +238,9 @@ export interface OrderCreateAPI {
   items: OrderItemAPI[];
   paymentMethod: string;
   total: number;
+  subtotal: number;
+  discount: number;
+  shipping: number;
   notes: string;
 }
 

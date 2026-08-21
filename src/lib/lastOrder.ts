@@ -61,7 +61,9 @@ export function buildOrderWhatsAppMessage(order: LastOrder): string {
   }
 
   lines.push(
-    `Envío: ${order.shipping === 0 ? "Gratis" : money(order.shipping)}`,
+    order.shipping === 0
+      ? "Domicilio: GRATIS (pedido mayor a $200.000)"
+      : `Domicilio: ${money(order.shipping)}`,
     `*Total: ${money(order.total)}*`,
     "",
     `Pago: ${order.paymentMethod}`,
