@@ -31,7 +31,7 @@ function AdminLayoutInner({ children }: { children: ReactNode }) {
 
   if (isLoginPage) {
     return (
-      <div className="fixed inset-0 z-[300] bg-[#0a0a0a]">
+      <div className="admin-font fixed inset-0 z-[300] bg-[#0a0a0a]">
         {children}
       </div>
     );
@@ -47,7 +47,7 @@ function AdminLayoutInner({ children }: { children: ReactNode }) {
   ];
 
   return (
-    <div className="fixed inset-0 z-[300] bg-[#0a0a0a] flex">
+    <div className="admin-font fixed inset-0 z-[300] bg-[#0a0a0a] flex">
       <aside
         className={`fixed md:static inset-y-0 left-0 z-[310] w-64 bg-[#111] border-r border-[#c9a84c]/20 flex flex-col transition-transform duration-300 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
