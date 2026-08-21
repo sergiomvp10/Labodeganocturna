@@ -74,7 +74,7 @@ export default function CityModal() {
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                 {!enabled && (
-                  <span className="absolute top-2 left-2 md:top-3 md:left-3 bg-red-600 text-white text-xl md:text-2xl font-bold px-4 py-1 md:px-5 md:py-2 rounded tracking-wider uppercase">
+                  <span className="absolute top-2 left-2 right-2 md:top-3 md:left-3 md:right-3 bg-red-600 text-white text-sm md:text-base font-bold py-1 md:py-1.5 rounded tracking-wider uppercase text-center">
                     Próximamente
                   </span>
                 )}
