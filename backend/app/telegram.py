@@ -27,7 +27,7 @@ def build_order_message(order: dict) -> str:
     ]
     for item in order["items"]:
         lines.append(
-            f"- {item['quantity']} x {item['name']} - {_format_price(item['price'] * item['quantity'])}"
+            f"{item['quantity']} x {item['name']}  {_format_price(item['price'] * item['quantity'])}"
         )
     lines.append("")
     subtotal = order.get("subtotal") or sum(i["price"] * i["quantity"] for i in order["items"])
@@ -39,7 +39,7 @@ def build_order_message(order: dict) -> str:
     if shipping:
         lines.append(f"*Domicilio:* {_format_price(shipping)}")
     else:
-        lines.append("*Domicilio:* GRATIS (pedido mayor a $200.000)")
+        lines.append("*Domicilio:* GRATIS")
     lines.append(f"*Total:* {_format_price(order['total'])}")
     if order.get("notes"):
         lines.append(f"*Notas:* {order['notes']}")
