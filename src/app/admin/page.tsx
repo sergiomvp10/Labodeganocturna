@@ -15,7 +15,7 @@ export default function AdminLoginPage() {
 
   useEffect(() => {
     if (currentUser) {
-      router.push("/admin/productos");
+      router.push("/admin/estadisticas");
     }
   }, [currentUser, router]);
 
@@ -28,7 +28,7 @@ export default function AdminLoginPage() {
     }
     const success = await login(username, password);
     if (success) {
-      router.push("/admin/productos");
+      router.push("/admin/estadisticas");
     } else {
       setError("Usuario o contraseña incorrectos");
     }

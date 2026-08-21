@@ -13,6 +13,35 @@ import { useRouter } from "next/navigation";
 type Step = "cart" | "checkout" | "confirmation";
 
 const PAYMENT_METHODS = ["Efectivo", "Nequi", "Bre-b"];
+const FREE_SHIPPING_FROM = 200000;
+const SHIPPING_COST = 6000;
+
+function FreeShippingProgress({ amount }: { amount: number }) {
+  const missing = FREE_SHIPPING_FROM - amount;
+
+  if (missing <= 0) {
+    return (
+      <div className="flex items-center justify-center gap-2 rounded-lg border border-green-400/30 bg-green-400/10 px-3 py-2">
+        <Truck size={16} className="text-green-400 shrink-0" />
+        <p className="text-sm font-bold tracking-wide text-green-400">TIENES ENVÍO GRATIS</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-1.5">
+      <p className="text-xs text-brand-muted text-center">
+        Agrega <span className="price font-bold text-brand-gold">${missing.toLocaleString("es-CO")}</span> más para envío gratis
+      </p>
+      <div className="h-1.5 w-full rounded-full bg-brand-gold/10 overflow-hidden">
+        <div
+          className="h-full rounded-full bg-gradient-to-r from-brand-gold to-yellow-400 transition-[width] duration-500"
+          style={{ width: `${Math.max(4, (amount / FREE_SHIPPING_FROM) * 100)}%` }}
+        />
+      </div>
+    </div>
+  );
+}
 
 export default function CartSidebar() {
   const { items, addToCart, removeFromCart, updateQuantity, totalPrice, totalItems, isCartOpen, setIsCartOpen, clearCart } = useCart();
@@ -44,7 +73,7 @@ export default function CartSidebar() {
 
   const discountAmount = Math.round(totalPrice * couponDiscount / 100);
   const priceAfterCoupon = totalPrice - discountAmount;
-  const shipping = priceAfterCoupon >= 200000 ? 0 : 6000;
+  const shipping = priceAfterCoupon >= FREE_SHIPPING_FROM ? 0 : SHIPPING_COST;
   const finalTotal = priceAfterCoupon + shipping;
 
   const inCartIds = new Set(items.map((i) => i.product.id));
@@ -293,18 +322,7 @@ export default function CartSidebar() {
                   )}
 
                   <div className="mt-6 pt-5 border-t border-brand-gold/20 space-y-3">
-                    {totalPrice < 200000 ? (
-                      <p className="text-xs text-brand-muted text-center">
-                        Agrega ${(200000 - totalPrice).toLocaleString("es-CO")} más para envío gratis
-                      </p>
-                    ) : (
-                      <div className="flex items-center justify-center gap-2 rounded-lg border border-green-400/30 bg-green-400/10 px-3 py-2">
-                        <Truck size={16} className="text-green-400 shrink-0" />
-                        <p className="text-sm font-bold tracking-wide text-green-400">
-                          TIENES ENVÍO GRATIS
-                        </p>
-                      </div>
-                    )}
+                    <FreeShippingProgress amount={totalPrice} />
                     <div className="flex items-center justify-between px-1">
                       <span className="text-sm text-brand-muted">Total</span>
                       <span className="price text-2xl font-bold text-brand-gold">
@@ -369,12 +387,15 @@ export default function CartSidebar() {
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-brand-muted">Envío</span>
                     <span className={`text-sm font-medium ${shipping === 0 ? "text-green-400" : "text-brand-text"}`}>
-                      {shipping === 0 ? "Gratis" : "$6.000"}
+                      {shipping === 0 ? "Gratis" : `$${SHIPPING_COST.toLocaleString("es-CO")}`}
                     </span>
                   </div>
                   <div className="border-t border-brand-gold/15 pt-2 flex justify-between items-center">
                     <span className="text-sm font-bold text-brand-text">Total</span>
                     <span className="price text-xl font-bold text-brand-gold">${finalTotal.toLocaleString("es-CO")}</span>
+                  </div>
+                  <div className="pt-1">
+                    <FreeShippingProgress amount={priceAfterCoupon} />
                   </div>
                 </div>
               </div>

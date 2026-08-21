@@ -13,6 +13,7 @@ import {
   Menu,
   X,
   LayoutDashboard,
+  BarChart3,
 } from "lucide-react";
 
 function AdminLayoutInner({ children }: { children: ReactNode }) {
@@ -40,6 +41,7 @@ function AdminLayoutInner({ children }: { children: ReactNode }) {
   if (!currentUser) return null;
 
   const navItems = [
+    { href: "/admin/estadisticas", label: "Estadísticas", icon: BarChart3 },
     { href: "/admin/productos", label: "Productos", icon: Package },
     { href: "/admin/pedidos", label: "Pedidos", icon: ShoppingCart },
     { href: "/admin/destacados", label: "Destacados / Ofertas", icon: Star },
