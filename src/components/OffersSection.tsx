@@ -4,19 +4,24 @@ import { Product } from "@/data/products";
 import ProductCard from "./ProductCard";
 import { useEffect, useState } from "react";
 import { api, ProductAPI } from "@/lib/api";
+import { isTobaccoCategoryName } from "@/lib/tobacco";
 
 function toProduct(p: ProductAPI): Product {
   return { ...p, originalPrice: p.originalPrice ?? undefined, discount: p.discount ?? undefined };
 }
 
-export default function OffersSection() {
+export default function OffersSection({ hideTobacco = false }: { hideTobacco?: boolean }) {
   const [offers, setOffers] = useState<Product[]>([]);
 
   useEffect(() => {
     api.storefront.offers().then((data) => {
-      setOffers(data.map(toProduct));
+      setOffers(
+        data
+          .map(toProduct)
+          .filter((p) => !hideTobacco || !isTobaccoCategoryName(p.category))
+      );
     }).catch(() => {});
-  }, []);
+  }, [hideTobacco]);
 
   if (offers.length === 0) return null;
 

@@ -5,12 +5,13 @@ import ProductCard, { ProductCardSkeleton } from "./ProductCard";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { api, ProductAPI } from "@/lib/api";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { isTobaccoCategoryName } from "@/lib/tobacco";
 
 function toProduct(p: ProductAPI): Product {
   return { ...p, originalPrice: p.originalPrice ?? undefined, discount: p.discount ?? undefined };
 }
 
-export default function FeaturedProducts() {
+export default function FeaturedProducts({ hideTobacco = false }: { hideTobacco?: boolean }) {
   const [featured, setFeatured] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const innerRef = useRef<HTMLDivElement>(null);
@@ -20,10 +21,16 @@ export default function FeaturedProducts() {
 
   useEffect(() => {
     api.storefront.featured()
-      .then((data) => setFeatured(data.map(toProduct)))
+      .then((data) =>
+        setFeatured(
+          data
+            .map(toProduct)
+            .filter((p) => !hideTobacco || !isTobaccoCategoryName(p.category))
+        )
+      )
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, []);
+  }, [hideTobacco]);
 
   useEffect(() => {
     return () => {

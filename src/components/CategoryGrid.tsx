@@ -6,6 +6,7 @@ import { CategoryAPI } from "@/lib/api";
 import Link from "next/link";
 import PartnerRedirect from "./PartnerRedirect";
 import { partnerUrl } from "@/lib/partners";
+import { isTobaccoSlug } from "@/lib/tobacco";
 
 function CategoryCard({
   cat,
@@ -75,11 +76,15 @@ function CategoryCard({
   );
 }
 
-export default function CategoryGrid() {
+export default function CategoryGrid({ hideTobacco = false }: { hideTobacco?: boolean }) {
   const { categories } = useCategories();
   const [partnerRedirect, setPartnerRedirect] = useState<string | null>(null);
 
   if (partnerRedirect) return <PartnerRedirect url={partnerRedirect} />;
+
+  const visible = hideTobacco
+    ? categories.filter((cat) => !isTobaccoSlug(cat.slug))
+    : categories;
 
   return (
     <section className="pt-16 md:pt-20 bg-brand-black" style={{ paddingBottom: "12rem" }}>
@@ -94,7 +99,7 @@ export default function CategoryGrid() {
         </div>
 
         <div className="w-[90%] max-w-[1300px] grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4">
-          {categories.map((cat, i) => (
+          {visible.map((cat, i) => (
             <CategoryCard
               key={cat.slug}
               cat={cat}
